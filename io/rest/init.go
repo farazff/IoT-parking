@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/farazff/IoT-parking/middleware"
 	"github.com/okian/servo/v2/rest"
 )
 
@@ -9,7 +10,7 @@ func init() {
 
 	//rest.EchoPost("/v1/parking", createParking, middleware.ApiKey)
 	//rest.EchoGet("/v1/parking/:id", getParking, middleware.ApiKey)
-	rest.EchoGet("/v1/parkings", getParkings)
+	rest.EchoGet("/v1/parkings", getParkings, middleware.ApiKey)
 	//rest.EchoPut("/v1/parking/:id", updateParking, middleware.ApiKey)
 	//rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.ApiKey)
 
