@@ -6,5 +6,6 @@ import (
 )
 
 type ParkingRepository interface {
+	GetParking(ctx context.Context, id int) (entity.Parking, error)
 	GetParkings(ctx context.Context) ([]entity.Parking, error)
 }
