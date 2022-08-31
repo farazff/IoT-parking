@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/farazff/IoT-parking/repository/postgres"
+
 	"github.com/okian/servo/v2"
 	_ "github.com/okian/servo/v2/config"
 	_ "github.com/okian/servo/v2/db"
