@@ -12,7 +12,7 @@ func init() {
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.ApiKey)
 	rest.EchoGet("/v1/parkings", getParkings, middleware.ApiKey)
 	//rest.EchoPut("/v1/parking/:id", updateParking, middleware.ApiKey)
-	//rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.ApiKey)
+	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.ApiKey)
 
 	//rest.EchoPost("/v1/zone", createZone, apiKey)
 	//rest.EchoGet("/v1/zone/:id", getZone, apiKey)

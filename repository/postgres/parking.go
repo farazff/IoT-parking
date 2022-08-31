@@ -4,14 +4,18 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
 	"github.com/okian/servo/v2/db"
 )
 
 const (
-	getParkingsQuery    = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at FROM parkings WHERE deleted_at is NULL`
-	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at FROM parkings WHERE deleted_at is NULL AND id = $1`
+	getParkingsQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at 
+							FROM parkings WHERE deleted_at is NULL`
+	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at 
+							FROM parkings WHERE deleted_at is NULL AND id = $1`
+	deleteParkingQuery = `UPDATE parkings SET deleted_at = now() where id = $1`
 )
 
 func (s *service) GetParking(ctx context.Context, id int) (entity.Parking, error) {
@@ -42,4 +46,19 @@ func (s *service) GetParkings(ctx context.Context) ([]entity.Parking, error) {
 		res = append(res, ps[i])
 	}
 	return res, nil
+}
+
+func (s *service) DeleteParking(ctx context.Context, id int) error {
+	ans, err := db.Exec(ctx, deleteParkingQuery, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return err
+	}
+	affected, err := ans.RowsAffected()
+	if int(affected) < 1 {
+		return fmt.Errorf("rule doesn't exist: %w", repository.ErrNotFound)
+	}
+	return nil
 }

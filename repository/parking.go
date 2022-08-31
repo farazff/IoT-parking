@@ -23,3 +23,7 @@ func GetParking(ctx context.Context, id int) (entity.Parking, error) {
 func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return parkingR.GetParkings(ctx)
 }
+
+func DeleteParking(ctx context.Context, id int) error {
+	return parkingR.DeleteParking(ctx, id)
+}
