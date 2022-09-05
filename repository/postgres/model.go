@@ -56,34 +56,82 @@ type SystemAdmin struct {
 	DBDeletedAt *time.Time `db:"deletedAt,omitempty"`
 }
 
-func (s SystemAdmin) Id() int {
-	return s.DBId
+func (sa SystemAdmin) Id() int {
+	return sa.DBId
 }
 
-func (s SystemAdmin) FirstName() string {
-	return s.DBFirstName
+func (sa SystemAdmin) FirstName() string {
+	return sa.DBFirstName
 }
 
-func (s SystemAdmin) LastName() string {
-	return s.DBLastName
+func (sa SystemAdmin) LastName() string {
+	return sa.DBLastName
 }
 
-func (s SystemAdmin) Phone() string {
-	return s.DBPhone
+func (sa SystemAdmin) Phone() string {
+	return sa.DBPhone
 }
 
-func (s SystemAdmin) Enabled() bool {
-	return s.DBEnabled
+func (sa SystemAdmin) Enabled() bool {
+	return sa.DBEnabled
 }
 
-func (s SystemAdmin) CreatedAt() time.Time {
-	return s.DBCreatedAt
+func (sa SystemAdmin) CreatedAt() time.Time {
+	return sa.DBCreatedAt
 }
 
-func (s SystemAdmin) UpdatedAt() time.Time {
-	return s.DBUpdatedAt
+func (sa SystemAdmin) UpdatedAt() time.Time {
+	return sa.DBUpdatedAt
 }
 
-func (s SystemAdmin) DeletedAt() *time.Time {
-	return s.DBDeletedAt
+func (sa SystemAdmin) DeletedAt() *time.Time {
+	return sa.DBDeletedAt
+}
+
+type ParkingAdmin struct {
+	DBId        int        `db:"id"`
+	DBFirstName string     `db:"first_name"`
+	DBLastName  string     `db:"last_name"`
+	DBPhone     string     `db:"phone"`
+	DBPID       int        `db:"p_id"`
+	DBEnabled   bool       `db:"enabled"`
+	DBCreatedAt time.Time  `db:"createdAt"`
+	DBUpdatedAt time.Time  `db:"updatedAt"`
+	DBDeletedAt *time.Time `db:"deletedAt,omitempty"`
+}
+
+func (pa ParkingAdmin) Id() int {
+	return pa.DBId
+}
+
+func (pa ParkingAdmin) FirstName() string {
+	return pa.DBFirstName
+}
+
+func (pa ParkingAdmin) LastName() string {
+	return pa.DBLastName
+}
+
+func (pa ParkingAdmin) Phone() string {
+	return pa.DBPhone
+}
+
+func (pa ParkingAdmin) PID() int {
+	return pa.DBPID
+}
+
+func (pa ParkingAdmin) Enabled() bool {
+	return pa.DBEnabled
+}
+
+func (pa ParkingAdmin) CreatedAt() time.Time {
+	return pa.DBCreatedAt
+}
+
+func (pa ParkingAdmin) UpdatedAt() time.Time {
+	return pa.DBUpdatedAt
+}
+
+func (pa ParkingAdmin) DeletedAt() *time.Time {
+	return pa.DBDeletedAt
 }

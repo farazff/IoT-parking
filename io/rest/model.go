@@ -161,3 +161,88 @@ func toSystemAdminResSlice(parkings []entity.SystemAdmin) []SystemAdminRes {
 	}
 	return SystemAdminsResSlice
 }
+
+type ParkingAdmin struct {
+	FId        int        `json:"id"`
+	FFirstName string     `json:"first_name"`
+	FLastName  string     `json:"last_name"`
+	FPhone     string     `json:"phone"`
+	FPID       int        `json:"p_id"`
+	FEnabled   bool       `json:"enabled"`
+	FCreatedAt time.Time  `json:"createdAt"`
+	FUpdatedAt time.Time  `json:"updatedAt"`
+	FDeletedAt *time.Time `json:"deletedAt,omitempty"`
+}
+
+func (pa ParkingAdmin) Id() int {
+	return pa.FId
+}
+
+func (pa ParkingAdmin) FirstName() string {
+	return pa.FFirstName
+}
+
+func (pa ParkingAdmin) LastName() string {
+	return pa.FLastName
+}
+
+func (pa ParkingAdmin) Phone() string {
+	return pa.FPhone
+}
+
+func (pa ParkingAdmin) PID() int {
+	return pa.FPID
+}
+
+func (pa ParkingAdmin) Enabled() bool {
+	return pa.FEnabled
+}
+
+func (pa ParkingAdmin) CreatedAt() time.Time {
+	return pa.FCreatedAt
+}
+
+func (pa ParkingAdmin) UpdatedAt() time.Time {
+	return pa.FUpdatedAt
+}
+
+func (pa ParkingAdmin) DeletedAt() *time.Time {
+	return pa.FDeletedAt
+}
+
+type ParkingAdminRes struct {
+	Id        int        `json:"id"`
+	FirstName string     `json:"first_name"`
+	LastName  string     `json:"last_name"`
+	Phone     string     `json:"phone"`
+	PID       int        `json:"p_id"`
+	Enabled   bool       `json:"enabled"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+}
+
+func toParkingAdminRes(parkingAdmin entity.ParkingAdmin, id int) ParkingAdminRes {
+	response := ParkingAdminRes{
+		Id:        parkingAdmin.Id(),
+		FirstName: parkingAdmin.FirstName(),
+		LastName:  parkingAdmin.LastName(),
+		PID:       parkingAdmin.PID(),
+		Enabled:   parkingAdmin.Enabled(),
+		CreatedAt: parkingAdmin.CreatedAt(),
+		UpdatedAt: parkingAdmin.UpdatedAt(),
+		DeletedAt: parkingAdmin.DeletedAt(),
+	}
+	if id != -1 {
+		response.Id = id
+	}
+	return response
+}
+
+func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminRes {
+	ParkingAdminsResSlice := make([]ParkingAdminRes, 0)
+	for _, parkingAdmin := range parkingAdmins {
+		ParkingAdminsResSlice = append(ParkingAdminsResSlice, toParkingAdminRes(parkingAdmin, -1))
+	}
+	return ParkingAdminsResSlice
+}
