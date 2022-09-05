@@ -13,6 +13,29 @@ func healthCheck(c echo.Context) error {
 	return c.String(http.StatusOK, "Running")
 }
 
+func createParking(c echo.Context) error {
+	p := new(Parking)
+	if err := c.Bind(p); err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	id, err := manager.CreateParking(c.Request().Context(), p)
+	if err != nil {
+		if errors.Is(err, manager.ErrDuplicateEntity) {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusCreated, toParkingRes(p, id))
+}
+
 func getParking(c echo.Context) error {
 	parkingID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -29,7 +52,7 @@ func getParking(c echo.Context) error {
 			"status":  http.StatusInternalServerError,
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingRes(parking))
+	return c.JSON(http.StatusOK, toParkingRes(parking, -1))
 }
 
 func getParkings(c echo.Context) error {
@@ -41,6 +64,43 @@ func getParkings(c echo.Context) error {
 		})
 	}
 	return c.JSON(http.StatusOK, toParkingResSlice(parkings))
+}
+
+func updateParking(c echo.Context) error {
+	p := new(Parking)
+	if err := c.Bind(p); err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	pid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	p.FId = int(pid)
+
+	err = manager.UpdateParking(c.Request().Context(), p)
+	if err != nil {
+		if errors.Is(err, manager.ErrDuplicateEntity) {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		if errors.Is(err, manager.ErrParkingNotFound) {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusCreated, toParkingRes(p, -1))
 }
 
 func deleteParking(c echo.Context) error {
