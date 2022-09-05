@@ -1,16 +1,24 @@
 FROM golang:latest AS build
 
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-COPY . .
-WORKDIR /app/cmd
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /visitor .
 
-#Second stage of build
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /app/
-COPY --from=build /visitor .
-EXPOSE 65432
-CMD ["./visitor", "serve"]
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+COPY . ./
+
+RUN go build -o /docker-gs-ping
+
+## Deploy
+FROM gcr.io/distroless/base-debian10
+
+WORKDIR /
+
+COPY --from=build /docker-gs-ping /docker-gs-ping
+
+EXPOSE 8080
+
+USER nonroot:nonroot
+
+ENTRYPOINT ["/docker-gs-ping", "serve"]
