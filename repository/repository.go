@@ -28,3 +28,11 @@ type ParkingAdminRepository interface {
 	UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error
 	DeleteParkingAdmin(ctx context.Context, id int) error
 }
+
+type ZoneRepository interface {
+	CreateZone(ctx context.Context, Zone entity.Zone) (int, error)
+	GetZone(ctx context.Context, id int) (entity.Zone, error)
+	GetZones(ctx context.Context) ([]entity.Zone, error)
+	UpdateZone(ctx context.Context, Zone entity.Zone) error
+	DeleteZone(ctx context.Context, id int) error
+}

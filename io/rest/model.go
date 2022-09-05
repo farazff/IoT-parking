@@ -246,3 +246,75 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 	}
 	return ParkingAdminsResSlice
 }
+
+type Zone struct {
+	FId        int        `json:"id"`
+	FPID       int        `json:"p_id"`
+	FCapacity  int        `json:"capacity"`
+	FEnabled   bool       `json:"enabled"`
+	FCreatedAt time.Time  `json:"created-at"`
+	FUpdatedAt time.Time  `json:"updated-at"`
+	FDeletedAt *time.Time `json:"deleted-at"`
+}
+
+func (z Zone) Id() int {
+	return z.FId
+}
+
+func (z Zone) PID() int {
+	return z.FPID
+}
+
+func (z Zone) Capacity() int {
+	return z.FCapacity
+}
+
+func (z Zone) Enabled() bool {
+	return z.FEnabled
+}
+
+func (z Zone) CreatedAt() time.Time {
+	return z.FCreatedAt
+}
+
+func (z Zone) UpdatedAt() time.Time {
+	return z.FUpdatedAt
+}
+
+func (z Zone) DeletedAt() *time.Time {
+	return z.FDeletedAt
+}
+
+type ZoneRes struct {
+	Id        int        `json:"id"`
+	PID       int        `json:"p_id"`
+	Capacity  int        `json:"capacity"`
+	Enabled   bool       `json:"enabled"`
+	CreatedAt time.Time  `json:"created-at"`
+	UpdatedAt time.Time  `json:"updated-at"`
+	DeletedAt *time.Time `json:"deleted-at"`
+}
+
+func toZoneRes(zone entity.Zone, id int) ZoneRes {
+	response := ZoneRes{
+		Id:        zone.Id(),
+		PID:       zone.PID(),
+		Capacity:  zone.Capacity(),
+		Enabled:   zone.Enabled(),
+		CreatedAt: zone.CreatedAt(),
+		UpdatedAt: zone.UpdatedAt(),
+		DeletedAt: zone.DeletedAt(),
+	}
+	if id != -1 {
+		response.Id = id
+	}
+	return response
+}
+
+func toZoneResSlice(zones []entity.Zone) []ZoneRes {
+	ZoneResSlice := make([]ZoneRes, 0)
+	for _, zone := range zones {
+		ZoneResSlice = append(ZoneResSlice, toZoneRes(zone, -1))
+	}
+	return ZoneResSlice
+}

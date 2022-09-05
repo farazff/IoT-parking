@@ -25,6 +25,11 @@ func (s *service) Initialize(_ context.Context) error {
 	if err := repository.RegisterParkingAdmin(s); err != nil {
 		return fmt.Errorf("error while registring parking_admin repository: %w", err)
 	}
+
+	if err := repository.RegisterZone(s); err != nil {
+		return fmt.Errorf("error while registring zone repository: %w", err)
+	}
+
 	return nil
 }
 
