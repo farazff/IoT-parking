@@ -83,3 +83,81 @@ func toParkingResSlice(parkings []entity.Parking) []ParkingRes {
 	}
 	return parkingsResSlice
 }
+
+type SystemAdmin struct {
+	FId        int        `json:"id"`
+	FFirstName string     `json:"first_name"`
+	FLastName  string     `json:"last_name"`
+	FPhone     string     `json:"phone"`
+	FEnabled   bool       `json:"enabled"`
+	FCreatedAt time.Time  `json:"createdAt"`
+	FUpdatedAt time.Time  `json:"updatedAt"`
+	FDeletedAt *time.Time `json:"deletedAt,omitempty"`
+}
+
+func (s SystemAdmin) Id() int {
+	return s.FId
+}
+
+func (s SystemAdmin) FirstName() string {
+	return s.FFirstName
+}
+
+func (s SystemAdmin) LastName() string {
+	return s.FLastName
+}
+
+func (s SystemAdmin) Phone() string {
+	return s.FPhone
+}
+
+func (s SystemAdmin) Enabled() bool {
+	return s.FEnabled
+}
+
+func (s SystemAdmin) CreatedAt() time.Time {
+	return s.FCreatedAt
+}
+
+func (s SystemAdmin) UpdatedAt() time.Time {
+	return s.FUpdatedAt
+}
+
+func (s SystemAdmin) DeletedAt() *time.Time {
+	return s.FDeletedAt
+}
+
+type SystemAdminRes struct {
+	Id        int        `json:"id"`
+	FirstName string     `json:"first_name"`
+	LastName  string     `json:"last_name"`
+	Phone     string     `json:"phone"`
+	Enabled   bool       `json:"enabled"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+}
+
+func toSystemAdminRes(SystemAdmin entity.SystemAdmin, id int) SystemAdminRes {
+	response := SystemAdminRes{
+		Id:        SystemAdmin.Id(),
+		FirstName: SystemAdmin.FirstName(),
+		LastName:  SystemAdmin.LastName(),
+		Enabled:   SystemAdmin.Enabled(),
+		CreatedAt: SystemAdmin.CreatedAt(),
+		UpdatedAt: SystemAdmin.UpdatedAt(),
+		DeletedAt: SystemAdmin.DeletedAt(),
+	}
+	if id != -1 {
+		response.Id = id
+	}
+	return response
+}
+
+func toSystemAdminResSlice(parkings []entity.SystemAdmin) []SystemAdminRes {
+	SystemAdminsResSlice := make([]SystemAdminRes, 0)
+	for _, SystemAdmin := range parkings {
+		SystemAdminsResSlice = append(SystemAdminsResSlice, toSystemAdminRes(SystemAdmin, -1))
+	}
+	return SystemAdminsResSlice
+}

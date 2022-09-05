@@ -44,3 +44,46 @@ func (p Parking) UpdatedAt() time.Time {
 func (p Parking) DeletedAt() *time.Time {
 	return p.DBDeletedAt
 }
+
+type SystemAdmin struct {
+	DBId        int        `db:"id"`
+	DBFirstName string     `db:"first_name"`
+	DBLastName  string     `db:"last_name"`
+	DBPhone     string     `db:"phone"`
+	DBEnabled   bool       `db:"enabled"`
+	DBCreatedAt time.Time  `db:"createdAt"`
+	DBUpdatedAt time.Time  `db:"updatedAt"`
+	DBDeletedAt *time.Time `db:"deletedAt,omitempty"`
+}
+
+func (s SystemAdmin) Id() int {
+	return s.DBId
+}
+
+func (s SystemAdmin) FirstName() string {
+	return s.DBFirstName
+}
+
+func (s SystemAdmin) LastName() string {
+	return s.DBLastName
+}
+
+func (s SystemAdmin) Phone() string {
+	return s.DBPhone
+}
+
+func (s SystemAdmin) Enabled() bool {
+	return s.DBEnabled
+}
+
+func (s SystemAdmin) CreatedAt() time.Time {
+	return s.DBCreatedAt
+}
+
+func (s SystemAdmin) UpdatedAt() time.Time {
+	return s.DBUpdatedAt
+}
+
+func (s SystemAdmin) DeletedAt() *time.Time {
+	return s.DBDeletedAt
+}

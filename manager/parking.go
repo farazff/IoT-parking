@@ -25,7 +25,7 @@ func GetParking(ctx context.Context, id int) (entity.Parking, error) {
 	parking, err := repository.GetParking(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			return nil, ErrParkingNotFound
+			return nil, ErrNotFound
 		}
 		return nil, fmt.Errorf("error in retrieving parking, %w", err)
 	}
@@ -48,7 +48,7 @@ func UpdateParking(ctx context.Context, rule entity.Parking) error {
 			return ErrDuplicateEntity
 		}
 		if errors.Is(err, repository.ErrNotFound) {
-			return ErrParkingNotFound
+			return ErrNotFound
 		}
 		return ErrInternalServer
 	}
@@ -59,7 +59,7 @@ func DeleteParking(ctx context.Context, id int) error {
 	err := repository.DeleteParking(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			return ErrParkingNotFound
+			return ErrNotFound
 		}
 		return fmt.Errorf("error in finding parking with given id, %w", err)
 	}

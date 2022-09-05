@@ -73,7 +73,7 @@ func (s *service) UpdateParking(ctx context.Context, parking entity.Parking) err
 		parking.Id(), parking.Name(), parking.Address(), parking.Phone(), parking.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
-			return fmt.Errorf("parking is already exist: %w", repository.ErrDuplicateEntity)
+			return fmt.Errorf("parking already exist: %w", repository.ErrDuplicateEntity)
 		}
 		return err
 	}
@@ -97,7 +97,7 @@ func (s *service) DeleteParking(ctx context.Context, id int) error {
 	}
 	affected, err := ans.RowsAffected()
 	if int(affected) < 1 {
-		return fmt.Errorf("rule doesn't exist: %w", repository.ErrNotFound)
+		return fmt.Errorf("parking doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
 }

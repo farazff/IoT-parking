@@ -12,3 +12,11 @@ type ParkingRepository interface {
 	UpdateParking(ctx context.Context, parking entity.Parking) error
 	DeleteParking(ctx context.Context, id int) error
 }
+
+type SystemAdminRepository interface {
+	CreateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) (int, error)
+	GetSystemAdmin(ctx context.Context, id int) (entity.SystemAdmin, error)
+	GetSystemAdmins(ctx context.Context) ([]entity.SystemAdmin, error)
+	UpdateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) error
+	DeleteSystemAdmin(ctx context.Context, id int) error
+}

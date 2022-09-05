@@ -3,7 +3,7 @@ package manager
 import "errors"
 
 var (
-	ErrParkingNotFound = errors.New("parking does not exist")
+	ErrNotFound        = errors.New("entity does not exist")
 	ErrInternalServer  = errors.New("internal server error")
 	ErrDuplicateEntity = errors.New("duplicate entity")
 )
