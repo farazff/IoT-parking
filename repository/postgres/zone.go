@@ -20,7 +20,8 @@ const (
 							FROM Zones WHERE deleted_at is NULL AND id = $1`
 	updateZoneQuery = `UPDATE Zones SET (p_id, capacity, enabled, updated_at) = ($2, $3, $4, now()) 
                 			WHERE id = $1`
-	deleteZoneQuery = `UPDATE Zones SET deleted_at = now() where id = $1`
+	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1`
+	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE p_id = $1 and enabled = true`
 )
 
 func (s *service) CreateZone(ctx context.Context, Zone entity.Zone) (int, error) {
@@ -98,4 +99,16 @@ func (s *service) DeleteZone(ctx context.Context, id int) error {
 		return fmt.Errorf("system_admin doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
+}
+
+func (s *service) GetCapacitySum(ctx context.Context, id int) (int, error) {
+	var capacity int
+	err := db.Get(ctx, &capacity, getCapacitySumQuery, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, fmt.Errorf("parking not found: %w", repository.ErrNotFound)
+		}
+		return 0, err
+	}
+	return capacity, nil
 }

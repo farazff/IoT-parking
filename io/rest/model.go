@@ -57,9 +57,11 @@ type ParkingRes struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+
+	Capacity int `json:"capacity,omitempty"`
 }
 
-func toParkingRes(parking entity.Parking, id int) ParkingRes {
+func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
 	response := ParkingRes{
 		Id:        parking.Id(),
 		Name:      parking.Name(),
@@ -69,6 +71,7 @@ func toParkingRes(parking entity.Parking, id int) ParkingRes {
 		CreatedAt: parking.CreatedAt(),
 		UpdatedAt: parking.UpdatedAt(),
 		DeletedAt: parking.DeletedAt(),
+		Capacity:  capacity,
 	}
 	if id != -1 {
 		response.Id = id
@@ -79,7 +82,7 @@ func toParkingRes(parking entity.Parking, id int) ParkingRes {
 func toParkingResSlice(parkings []entity.Parking) []ParkingRes {
 	parkingsResSlice := make([]ParkingRes, 0)
 	for _, parking := range parkings {
-		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, -1))
+		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, 0, -1))
 	}
 	return parkingsResSlice
 }

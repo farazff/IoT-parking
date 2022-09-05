@@ -35,4 +35,5 @@ type ZoneRepository interface {
 	GetZones(ctx context.Context) ([]entity.Zone, error)
 	UpdateZone(ctx context.Context, Zone entity.Zone) error
 	DeleteZone(ctx context.Context, id int) error
+	GetCapacitySum(ctx context.Context, id int) (int, error)
 }

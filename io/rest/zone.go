@@ -37,7 +37,6 @@ func getZone(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "error in Zone id",
-			"status":  http.StatusBadRequest,
 		})
 	}
 
@@ -45,7 +44,6 @@ func getZone(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toZoneRes(Zone, -1))
@@ -56,7 +54,6 @@ func getZones(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toZoneResSlice(Zones))
@@ -104,7 +101,6 @@ func deleteZone(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "",
-			"status":  http.StatusBadRequest,
 		})
 	}
 	err = manager.DeleteZone(c.Request().Context(), ZoneID)

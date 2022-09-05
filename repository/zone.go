@@ -35,3 +35,7 @@ func UpdateZone(ctx context.Context, Zone entity.Zone) error {
 func DeleteZone(ctx context.Context, id int) error {
 	return ZoneR.DeleteZone(ctx, id)
 }
+
+func GetCapacitySum(ctx context.Context, id int) (int, error) {
+	return ZoneR.GetCapacitySum(ctx, id)
+}

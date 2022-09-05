@@ -37,7 +37,6 @@ func getSystemAdmin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "error in SystemAdmin id",
-			"status":  http.StatusBadRequest,
 		})
 	}
 
@@ -45,7 +44,6 @@ func getSystemAdmin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toSystemAdminRes(SystemAdmin, -1))
@@ -56,7 +54,6 @@ func getSystemAdmins(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toSystemAdminResSlice(SystemAdmins))

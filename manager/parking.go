@@ -21,15 +21,16 @@ func CreateParking(ctx context.Context, parking entity.Parking) (int, error) {
 	return id, nil
 }
 
-func GetParking(ctx context.Context, id int) (entity.Parking, error) {
+func GetParking(ctx context.Context, id int) (entity.Parking, int, error) {
 	parking, err := repository.GetParking(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			return nil, ErrNotFound
+			return nil, 0, ErrNotFound
 		}
-		return nil, fmt.Errorf("error in retrieving parking, %w", err)
+		return nil, 0, fmt.Errorf("error in retrieving parking, %w", err)
 	}
-	return parking, nil
+	parkingCapacity, err := repository.GetCapacitySum(ctx, id)
+	return parking, parkingCapacity, nil
 }
 
 func GetParkings(ctx context.Context) ([]entity.Parking, error) {

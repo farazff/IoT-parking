@@ -37,7 +37,6 @@ func getParkingAdmin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "error in ParkingAdmin id",
-			"status":  http.StatusBadRequest,
 		})
 	}
 
@@ -45,7 +44,6 @@ func getParkingAdmin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toParkingAdminRes(ParkingAdmin, -1))
@@ -56,7 +54,6 @@ func getParkingAdmins(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toParkingAdminResSlice(ParkingAdmins))
@@ -104,7 +101,6 @@ func deleteParkingAdmin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "",
-			"status":  http.StatusBadRequest,
 		})
 	}
 	err = manager.DeleteParkingAdmin(c.Request().Context(), ParkingAdminID)

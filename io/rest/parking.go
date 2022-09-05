@@ -33,7 +33,7 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toParkingRes(p, id))
+	return c.JSON(http.StatusCreated, toParkingRes(p, 0, id))
 }
 
 func getParking(c echo.Context) error {
@@ -41,18 +41,16 @@ func getParking(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "error in parking id",
-			"status":  http.StatusBadRequest,
 		})
 	}
 
-	parking, err := manager.GetParking(c.Request().Context(), parkingID)
+	parking, capacity, err := manager.GetParking(c.Request().Context(), parkingID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingRes(parking, -1))
+	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, -1))
 }
 
 func getParkings(c echo.Context) error {
@@ -60,7 +58,6 @@ func getParkings(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
-			"status":  http.StatusInternalServerError,
 		})
 	}
 	return c.JSON(http.StatusOK, toParkingResSlice(parkings))
@@ -100,7 +97,7 @@ func updateParking(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toParkingRes(p, -1))
+	return c.JSON(http.StatusCreated, toParkingRes(p, 0, -1))
 }
 
 func deleteParking(c echo.Context) error {
@@ -108,7 +105,6 @@ func deleteParking(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "",
-			"status":  http.StatusBadRequest,
 		})
 	}
 	err = manager.DeleteParking(c.Request().Context(), parkingID)
