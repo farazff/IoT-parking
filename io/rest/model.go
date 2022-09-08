@@ -176,7 +176,7 @@ type ParkingAdmin struct {
 	FFirstName string     `json:"first_name"`
 	FLastName  string     `json:"last_name"`
 	FPhone     string     `json:"phone"`
-	FPID       int        `json:"p_id"`
+	FPID       int        `json:"parking_id"`
 	FEnabled   bool       `json:"enabled"`
 	FCreatedAt time.Time  `json:"createdAt"`
 	FUpdatedAt time.Time  `json:"updatedAt"`
@@ -224,7 +224,7 @@ type ParkingAdminRes struct {
 	FirstName string     `json:"first_name"`
 	LastName  string     `json:"last_name"`
 	Phone     string     `json:"phone"`
-	PID       int        `json:"p_id"`
+	PID       int        `json:"parking_id"`
 	Enabled   bool       `json:"enabled"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
@@ -258,7 +258,7 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 
 type Zone struct {
 	FId               int        `json:"id"`
-	FPID              int        `json:"p_id"`
+	FPID              int        `json:"parking_id"`
 	FCapacity         int        `json:"capacity"`
 	FRemainedCapacity int        `json:"remained_capacity"`
 	FEnabled          bool       `json:"enabled"`
@@ -301,7 +301,7 @@ func (z Zone) DeletedAt() *time.Time {
 
 type ZoneRes struct {
 	Id               int        `json:"id"`
-	PID              int        `json:"p_id"`
+	PID              int        `json:"parking_id"`
 	Capacity         int        `json:"capacity"`
 	RemainedCapacity int        `json:"remained_capacity"`
 	Enabled          bool       `json:"enabled"`
@@ -337,7 +337,7 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 
 type Whitelist struct {
 	FId     int    `json:"id"`
-	FPID    int    `json:"p_id"`
+	FPID    int    `json:"parking_id"`
 	FCarTag string `json:"car_tag"`
 }
 
@@ -355,7 +355,7 @@ func (w Whitelist) CarTag() string {
 
 type WhitelistRes struct {
 	Id     int    `json:"id"`
-	PID    int    `json:"p_id"`
+	PID    int    `json:"parking_id"`
 	CarTag string `json:"car_tag"`
 }
 

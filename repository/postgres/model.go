@@ -98,7 +98,7 @@ type ParkingAdmin struct {
 	DBFirstName string     `db:"first_name"`
 	DBLastName  string     `db:"last_name"`
 	DBPhone     string     `db:"phone"`
-	DBPID       int        `db:"p_id"`
+	DBPID       int        `db:"parking_id"`
 	DBEnabled   bool       `db:"enabled"`
 	DBCreatedAt time.Time  `db:"createdAt"`
 	DBUpdatedAt time.Time  `db:"updatedAt"`
@@ -143,7 +143,7 @@ func (pa ParkingAdmin) DeletedAt() *time.Time {
 
 type Zone struct {
 	DBId               int        `db:"id"`
-	DBPID              int        `db:"p_id"`
+	DBPID              int        `db:"parking_id"`
 	DBCapacity         int        `db:"capacity"`
 	DBRemainedCapacity int        `json:"remained_capacity"`
 	DBEnabled          bool       `db:"enabled"`

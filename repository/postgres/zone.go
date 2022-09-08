@@ -12,16 +12,16 @@ import (
 )
 
 const (
-	createZoneQuery = `INSERT INTO Zones(id, p_id, capacity, remained_capacity, enabled, created_at, updated_at) 
+	createZoneQuery = `INSERT INTO Zones(id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at) 
 							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
-	getZonesQuery = `SELECT id, p_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
+	getZonesQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL`
-	getZoneByIdQuery = `SELECT id, p_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
+	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL AND id = $1`
-	updateZoneQuery = `UPDATE Zones SET (p_id, capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, $5, now()) 
+	updateZoneQuery = `UPDATE Zones SET (parking_id, capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1`
 	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1`
-	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE p_id = $1 and enabled = true`
+	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
 )
 
 func (s *service) CreateZone(ctx context.Context, Zone entity.Zone) (int, error) {
