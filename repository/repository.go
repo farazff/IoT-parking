@@ -6,7 +6,7 @@ import (
 )
 
 type ParkingRepository interface {
-	CreateParking(ctx context.Context, parking entity.Parking) (int, error)
+	CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error)
 	GetParking(ctx context.Context, id int) (entity.Parking, error)
 	GetParkings(ctx context.Context) ([]entity.Parking, error)
 	UpdateParking(ctx context.Context, parking entity.Parking) error
@@ -36,4 +36,10 @@ type ZoneRepository interface {
 	UpdateZone(ctx context.Context, Zone entity.Zone) error
 	DeleteZone(ctx context.Context, id int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
+}
+
+type WhitelistRepository interface {
+	CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error)
+	GetWhitelists(ctx context.Context) ([]entity.Whitelist, error)
+	DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error
 }

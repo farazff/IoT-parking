@@ -3,6 +3,7 @@ module github.com/farazff/IoT-parking
 go 1.19
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/labstack/echo/v4 v4.7.1
 	github.com/lib/pq v1.10.4
 	github.com/okian/servo/v2 v2.8.18

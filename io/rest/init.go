@@ -31,4 +31,8 @@ func init() {
 	rest.EchoGet("/v1/systemAdmins", getSystemAdmins, middleware.ApiKey)
 	rest.EchoPut("/v1/systemAdmin/:id", updateSystemAdmin, middleware.ApiKey)
 	rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
+
+	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
+	rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
+	rest.EchoDelete("/v1/WhiteList", deleteWhitelist, middleware.ApiKey)
 }

@@ -6,19 +6,21 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
+	"github.com/google/uuid"
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateParking(ctx context.Context, parking entity.Parking) (int, error) {
-	id, err := repository.CreateParking(ctx, parking)
+func CreateParking(ctx context.Context, parking entity.Parking) (int, string, error) {
+	uuid := uuid.New()
+	id, err := repository.CreateParking(ctx, parking, uuid.String())
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
-			return id, ErrDuplicateEntity
+			return id, "", ErrDuplicateEntity
 		}
 		lg.Error("error during creating parking: %v", err)
-		return id, ErrInternalServer
+		return id, "", ErrInternalServer
 	}
-	return id, nil
+	return id, uuid.String(), nil
 }
 
 func GetParking(ctx context.Context, id int) (entity.Parking, int, error) {

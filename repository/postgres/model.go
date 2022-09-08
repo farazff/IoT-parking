@@ -11,6 +11,7 @@ type Parking struct {
 	DBCreatedAt time.Time  `db:"created_at"`
 	DBUpdatedAt time.Time  `db:"updated_at"`
 	DBDeletedAt *time.Time `db:"deleted_at"`
+	DBUuid      string     `db:"uuid"`
 }
 
 func (p Parking) Id() int {
@@ -43,6 +44,10 @@ func (p Parking) UpdatedAt() time.Time {
 
 func (p Parking) DeletedAt() *time.Time {
 	return p.DBDeletedAt
+}
+
+func (p Parking) Uuid() string {
+	return p.DBUuid
 }
 
 type SystemAdmin struct {
@@ -177,4 +182,22 @@ func (z Zone) UpdatedAt() time.Time {
 
 func (z Zone) DeletedAt() *time.Time {
 	return z.DBDeletedAt
+}
+
+type Whitelist struct {
+	DBId     int    `db:"id"`
+	DBPID    int    `db:"parking_id"`
+	DBCarTag string `db:"car_tag"`
+}
+
+func (w Whitelist) Id() int {
+	return w.DBId
+}
+
+func (w Whitelist) PID() int {
+	return w.DBPID
+}
+
+func (w Whitelist) CarTag() string {
+	return w.DBCarTag
 }

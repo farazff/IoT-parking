@@ -11,4 +11,5 @@ type Parking interface {
 	CreatedAt() time.Time
 	UpdatedAt() time.Time
 	DeletedAt() *time.Time
+	Uuid() string
 }

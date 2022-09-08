@@ -30,6 +30,10 @@ func (s *service) Initialize(_ context.Context) error {
 		return fmt.Errorf("error while registring zone repository: %w", err)
 	}
 
+	if err := repository.RegisterWhitelist(s); err != nil {
+		return fmt.Errorf("error while registring whitelist repository: %w", err)
+	}
+
 	return nil
 }
 

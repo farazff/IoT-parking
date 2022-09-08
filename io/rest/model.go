@@ -14,6 +14,7 @@ type Parking struct {
 	FCreatedAt time.Time  `json:"createdAt"`
 	FUpdatedAt time.Time  `json:"updatedAt"`
 	FDeletedAt *time.Time `json:"deletedAt,omitempty"`
+	FUuid      string     `json:"uuid"`
 }
 
 func (p Parking) Id() int {
@@ -48,6 +49,10 @@ func (p Parking) DeletedAt() *time.Time {
 	return p.FDeletedAt
 }
 
+func (p Parking) Uuid() string {
+	return p.FUuid
+}
+
 type ParkingRes struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`
@@ -57,8 +62,8 @@ type ParkingRes struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-
-	Capacity int `json:"capacity,omitempty"`
+	Uuid      string     `json:"uuid,omitempty"`
+	Capacity  int        `json:"capacity,omitempty"`
 }
 
 func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
@@ -71,6 +76,7 @@ func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
 		CreatedAt: parking.CreatedAt(),
 		UpdatedAt: parking.UpdatedAt(),
 		DeletedAt: parking.DeletedAt(),
+		Uuid:      parking.Uuid(),
 		Capacity:  capacity,
 	}
 	if id != -1 {
@@ -327,4 +333,48 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 		ZoneResSlice = append(ZoneResSlice, toZoneRes(zone, -1))
 	}
 	return ZoneResSlice
+}
+
+type Whitelist struct {
+	FId     int    `json:"id"`
+	FPID    int    `json:"p_id"`
+	FCarTag string `json:"car_tag"`
+}
+
+func (w Whitelist) Id() int {
+	return w.FId
+}
+
+func (w Whitelist) PID() int {
+	return w.FPID
+}
+
+func (w Whitelist) CarTag() string {
+	return w.FCarTag
+}
+
+type WhitelistRes struct {
+	Id     int    `json:"id"`
+	PID    int    `json:"p_id"`
+	CarTag string `json:"car_tag"`
+}
+
+func toWhitelistRes(whitelist entity.Whitelist, id int) WhitelistRes {
+	response := WhitelistRes{
+		Id:     whitelist.Id(),
+		PID:    whitelist.PID(),
+		CarTag: whitelist.CarTag(),
+	}
+	if id != -1 {
+		response.Id = id
+	}
+	return response
+}
+
+func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
+	whitelistResSlice := make([]WhitelistRes, 0)
+	for _, whitelist := range whitelists {
+		whitelistResSlice = append(whitelistResSlice, toWhitelistRes(whitelist, -1))
+	}
+	return whitelistResSlice
 }

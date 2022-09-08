@@ -22,7 +22,7 @@ func createParking(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateParking(c.Request().Context(), p)
+	id, uuid, err := manager.CreateParking(c.Request().Context(), p)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -33,6 +33,7 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+	p.FUuid = uuid
 	return c.JSON(http.StatusCreated, toParkingRes(p, 0, id))
 }
 
