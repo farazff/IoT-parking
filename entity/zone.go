@@ -6,6 +6,7 @@ type Zone interface {
 	Id() int
 	PID() int
 	Capacity() int
+	RemainedCapacity() int
 	Enabled() bool
 	CreatedAt() time.Time
 	UpdatedAt() time.Time

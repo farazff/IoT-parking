@@ -12,13 +12,13 @@ import (
 )
 
 const (
-	createZoneQuery = `INSERT INTO Zones(id, p_id, capacity, enabled, created_at, updated_at) 
-							VALUES($1, $2, $3, $4, now(), now()) RETURNING id`
-	getZonesQuery = `SELECT id, p_id, capacity, enabled, created_at, updated_at, deleted_at 
+	createZoneQuery = `INSERT INTO Zones(id, p_id, capacity, remained_capacity, enabled, created_at, updated_at) 
+							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
+	getZonesQuery = `SELECT id, p_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL`
-	getZoneByIdQuery = `SELECT id, p_id, capacity, enabled, created_at, updated_at, deleted_at 
+	getZoneByIdQuery = `SELECT id, p_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL AND id = $1`
-	updateZoneQuery = `UPDATE Zones SET (p_id, capacity, enabled, updated_at) = ($2, $3, $4, now()) 
+	updateZoneQuery = `UPDATE Zones SET (p_id, capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1`
 	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1`
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE p_id = $1 and enabled = true`
@@ -27,7 +27,7 @@ const (
 func (s *service) CreateZone(ctx context.Context, Zone entity.Zone) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, createZoneQuery,
-		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.Enabled()).Scan(&id)
+		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.RemainedCapacity(), Zone.Enabled()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Zone already exist: %w", repository.ErrDuplicateEntity)
@@ -69,7 +69,7 @@ func (s *service) GetZones(ctx context.Context) ([]entity.Zone, error) {
 
 func (s *service) UpdateZone(ctx context.Context, Zone entity.Zone) error {
 	ans, err := db.Exec(ctx, updateZoneQuery,
-		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.Enabled())
+		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.RemainedCapacity(), Zone.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("system_admin already exist: %w", repository.ErrDuplicateEntity)

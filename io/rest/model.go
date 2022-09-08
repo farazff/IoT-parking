@@ -251,13 +251,14 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 }
 
 type Zone struct {
-	FId        int        `json:"id"`
-	FPID       int        `json:"p_id"`
-	FCapacity  int        `json:"capacity"`
-	FEnabled   bool       `json:"enabled"`
-	FCreatedAt time.Time  `json:"created-at"`
-	FUpdatedAt time.Time  `json:"updated-at"`
-	FDeletedAt *time.Time `json:"deleted-at"`
+	FId               int        `json:"id"`
+	FPID              int        `json:"p_id"`
+	FCapacity         int        `json:"capacity"`
+	FRemainedCapacity int        `json:"remained_capacity"`
+	FEnabled          bool       `json:"enabled"`
+	FCreatedAt        time.Time  `json:"created-at"`
+	FUpdatedAt        time.Time  `json:"updated-at"`
+	FDeletedAt        *time.Time `json:"deleted-at"`
 }
 
 func (z Zone) Id() int {
@@ -270,6 +271,10 @@ func (z Zone) PID() int {
 
 func (z Zone) Capacity() int {
 	return z.FCapacity
+}
+
+func (z Zone) RemainedCapacity() int {
+	return z.FRemainedCapacity
 }
 
 func (z Zone) Enabled() bool {
@@ -289,24 +294,26 @@ func (z Zone) DeletedAt() *time.Time {
 }
 
 type ZoneRes struct {
-	Id        int        `json:"id"`
-	PID       int        `json:"p_id"`
-	Capacity  int        `json:"capacity"`
-	Enabled   bool       `json:"enabled"`
-	CreatedAt time.Time  `json:"created-at"`
-	UpdatedAt time.Time  `json:"updated-at"`
-	DeletedAt *time.Time `json:"deleted-at"`
+	Id               int        `json:"id"`
+	PID              int        `json:"p_id"`
+	Capacity         int        `json:"capacity"`
+	RemainedCapacity int        `json:"remained_capacity"`
+	Enabled          bool       `json:"enabled"`
+	CreatedAt        time.Time  `json:"created-at"`
+	UpdatedAt        time.Time  `json:"updated-at"`
+	DeletedAt        *time.Time `json:"deleted-at"`
 }
 
 func toZoneRes(zone entity.Zone, id int) ZoneRes {
 	response := ZoneRes{
-		Id:        zone.Id(),
-		PID:       zone.PID(),
-		Capacity:  zone.Capacity(),
-		Enabled:   zone.Enabled(),
-		CreatedAt: zone.CreatedAt(),
-		UpdatedAt: zone.UpdatedAt(),
-		DeletedAt: zone.DeletedAt(),
+		Id:               zone.Id(),
+		PID:              zone.PID(),
+		Capacity:         zone.Capacity(),
+		RemainedCapacity: zone.RemainedCapacity(),
+		Enabled:          zone.Enabled(),
+		CreatedAt:        zone.CreatedAt(),
+		UpdatedAt:        zone.UpdatedAt(),
+		DeletedAt:        zone.DeletedAt(),
 	}
 	if id != -1 {
 		response.Id = id

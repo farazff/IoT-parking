@@ -137,13 +137,14 @@ func (pa ParkingAdmin) DeletedAt() *time.Time {
 }
 
 type Zone struct {
-	DBId        int        `db:"id"`
-	DBPID       int        `db:"p_id"`
-	DBCapacity  int        `db:"capacity"`
-	DBEnabled   bool       `db:"enabled"`
-	DBCreatedAt time.Time  `db:"created-at"`
-	DBUpdatedAt time.Time  `db:"updated-at"`
-	DBDeletedAt *time.Time `db:"deleted-at"`
+	DBId               int        `db:"id"`
+	DBPID              int        `db:"p_id"`
+	DBCapacity         int        `db:"capacity"`
+	DBRemainedCapacity int        `json:"remained_capacity"`
+	DBEnabled          bool       `db:"enabled"`
+	DBCreatedAt        time.Time  `db:"created-at"`
+	DBUpdatedAt        time.Time  `db:"updated-at"`
+	DBDeletedAt        *time.Time `db:"deleted-at"`
 }
 
 func (z Zone) Id() int {
@@ -156,6 +157,10 @@ func (z Zone) PID() int {
 
 func (z Zone) Capacity() int {
 	return z.DBCapacity
+}
+
+func (z Zone) RemainedCapacity() int {
+	return z.DBRemainedCapacity
 }
 
 func (z Zone) Enabled() bool {
