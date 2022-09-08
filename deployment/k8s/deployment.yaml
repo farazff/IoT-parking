@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: parking
+  name: parking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parking
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: parking
+    spec:
+      containers:
+        - image: farazff/parking:1.0
+          name: parking
+          resources: {}
+          ports:
+            - containerPort: 65432
+          envFrom:
+            - configMapRef:
+                name: parking-config
+status: {}
