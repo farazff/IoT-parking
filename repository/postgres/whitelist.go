@@ -13,7 +13,7 @@ import (
 
 const (
 	createWhitelistQuery = `INSERT INTO Whitelists(id, parking_id, car_tag) VALUES($1, $2, $3) RETURNING id`
-	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM Whitelists WHERE deleted_at is NULL`
+	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM Whitelists WHERE deleted_at is NULL AND parking_id = $1`
 	deleteWhitelistQuery = `DELETE FROM Whitelists where parking_id = $1 AND car_tag = $2`
 )
 
@@ -30,9 +30,9 @@ func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelis
 	return id, nil
 }
 
-func (s *service) GetWhitelists(ctx context.Context) ([]entity.Whitelist, error) {
+func (s *service) GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error) {
 	var ps []Whitelist
-	err := db.Select(ctx, &ps, getWhitelistsQuery)
+	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound

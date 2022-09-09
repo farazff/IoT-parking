@@ -41,6 +41,6 @@ type ZoneRepository interface {
 
 type WhitelistRepository interface {
 	CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error)
-	GetWhitelists(ctx context.Context) ([]entity.Whitelist, error)
+	GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error)
 	DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error
 }

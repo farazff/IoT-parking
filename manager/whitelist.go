@@ -9,7 +9,17 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error) {
+func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode int) (int, error) {
+	parkingId, err := GetParkingId(ctx, adminCode)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return 0, ErrNotFound
+		}
+		return 0, fmt.Errorf("error in finding parking admin with given id, %w", err)
+	}
+	if Whitelist.PID() != parkingId {
+		return 0, ErrNoAccess
+	}
 	id, err := repository.CreateWhitelist(ctx, Whitelist)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
@@ -21,8 +31,15 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, erro
 	return id, nil
 }
 
-func GetWhitelists(ctx context.Context) ([]entity.Whitelist, error) {
-	Whitelists, err := repository.GetWhitelists(ctx)
+func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Whitelist, error) {
+	parkingId, err := GetParkingId(ctx, req.AdminCode)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return make([]entity.Whitelist, 0), ErrNotFound
+		}
+		return make([]entity.Whitelist, 0), fmt.Errorf("error in finding parking admin with given id, %w", err)
+	}
+	Whitelists, err := repository.GetWhitelists(ctx, parkingId)
 	if err != nil {
 		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
 	}
@@ -30,7 +47,6 @@ func GetWhitelists(ctx context.Context) ([]entity.Whitelist, error) {
 }
 
 func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-
 	parkingId, err := GetParkingId(ctx, req.AdminCode)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {

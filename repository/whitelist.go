@@ -20,8 +20,8 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, erro
 	return WhitelistR.CreateWhitelist(ctx, Whitelist)
 }
 
-func GetWhitelists(ctx context.Context) ([]entity.Whitelist, error) {
-	return WhitelistR.GetWhitelists(ctx)
+func GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error) {
+	return WhitelistR.GetWhitelists(ctx, parkingId)
 }
 
 func DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error {

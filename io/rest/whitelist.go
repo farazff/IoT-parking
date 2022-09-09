@@ -10,7 +10,7 @@ import (
 )
 
 func createWhitelist(c echo.Context) error {
-	p := new(Whitelist)
+	p := new(WhitelistCreateReq)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -18,9 +18,9 @@ func createWhitelist(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateWhitelist(c.Request().Context(), p)
+	id, err := manager.CreateWhitelist(c.Request().Context(), p, p.AdminCode)
 	if err != nil {
-		if errors.Is(err, manager.ErrDuplicateEntity) {
+		if errors.Is(err, manager.ErrDuplicateEntity) || errors.Is(err, manager.ErrNoAccess) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
 				"message": err.Error(),
 			})
@@ -33,7 +33,15 @@ func createWhitelist(c echo.Context) error {
 }
 
 func getWhitelists(c echo.Context) error {
-	Whitelists, err := manager.GetWhitelists(c.Request().Context())
+	wgr := new(entity.WhitelistGetReq)
+	err := c.Bind(wgr)
+	if err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	Whitelists, err := manager.GetWhitelists(c.Request().Context(), *wgr)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),

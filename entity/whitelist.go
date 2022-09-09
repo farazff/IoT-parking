@@ -10,3 +10,7 @@ type WhitelistDeleteReq struct {
 	AdminCode int    `json:"admin_code"`
 	CarTag    string `json:"car_tag"`
 }
+
+type WhitelistGetReq struct {
+	AdminCode int `json:"admin_code"`
+}

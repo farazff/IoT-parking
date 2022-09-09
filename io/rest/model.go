@@ -341,6 +341,11 @@ type Whitelist struct {
 	FCarTag string `json:"car_tag"`
 }
 
+type WhitelistCreateReq struct {
+	Whitelist
+	AdminCode int `json:"admin_code"`
+}
+
 func (w Whitelist) Id() int {
 	return w.FId
 }
