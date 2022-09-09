@@ -35,3 +35,7 @@ func UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) e
 func DeleteParkingAdmin(ctx context.Context, id int) error {
 	return ParkingAdminR.DeleteParkingAdmin(ctx, id)
 }
+
+func GetParkingId(ctx context.Context, adminId int) (int, error) {
+	return ParkingAdminR.GetParkingId(ctx, adminId)
+}

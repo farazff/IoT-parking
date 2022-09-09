@@ -14,7 +14,7 @@ import (
 const (
 	createWhitelistQuery = `INSERT INTO Whitelists(id, parking_id, car_tag) VALUES($1, $2, $3) RETURNING id`
 	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM Whitelists WHERE deleted_at is NULL`
-	deleteWhitelistQuery = `DELETE FROM Whitelists where parking_uuid = $1 AND car_tag = $2`
+	deleteWhitelistQuery = `DELETE FROM Whitelists where parking_id = $1 AND car_tag = $2`
 )
 
 func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error) {
@@ -47,8 +47,8 @@ func (s *service) GetWhitelists(ctx context.Context) ([]entity.Whitelist, error)
 	return res, nil
 }
 
-func (s *service) DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-	ans, err := db.Exec(ctx, deleteWhitelistQuery, req.ParkingUuid, req.CarTag)
+func (s *service) DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error {
+	ans, err := db.Exec(ctx, deleteWhitelistQuery, parkingId, carTag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return repository.ErrNotFound

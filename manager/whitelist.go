@@ -30,7 +30,16 @@ func GetWhitelists(ctx context.Context) ([]entity.Whitelist, error) {
 }
 
 func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-	err := repository.DeleteWhitelist(ctx, req)
+
+	parkingId, err := GetParkingId(ctx, req.AdminCode)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return ErrNotFound
+		}
+		return fmt.Errorf("error in finding parking admin with given id, %w", err)
+	}
+
+	err = repository.DeleteWhitelist(ctx, parkingId, req.CarTag)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return ErrNotFound

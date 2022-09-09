@@ -65,3 +65,14 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 	}
 	return nil
 }
+
+func GetParkingId(ctx context.Context, adminId int) (int, error) {
+	parkingId, err := repository.GetParkingId(ctx, adminId)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return 0, ErrNotFound
+		}
+		return 0, fmt.Errorf("error in finding ParkingAdmin with given id, %w", err)
+	}
+	return parkingId, nil
+}
