@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	createZoneQuery = `INSERT INTO Zones(id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at) 
-							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
+	createZoneQuery = `INSERT INTO Zones(parking_id, capacity, remained_capacity, enabled, created_at, updated_at) 
+							VALUES($1, $2, $3, $4, now(), now()) RETURNING id`
 	getZonesQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL`
 	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 

@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	createParkingAdminQuery = `INSERT INTO parking_admins(id, first_name, last_name, phone, parking_id, enabled, created_at, updated_at) 
-							VALUES($1, $2, $3, $4, $5, $6, now(), now()) RETURNING id`
+	createParkingAdminQuery = `INSERT INTO parking_admins(first_name, last_name, phone, parking_id, enabled, created_at, updated_at) 
+							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
 	getParkingAdminsQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled, created_at, updated_at, deleted_at 
 							FROM parking_admins WHERE deleted_at is NULL`
 	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled, created_at, updated_at, deleted_at 
@@ -26,8 +26,8 @@ const (
 
 func (s *service) CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createParkingAdminQuery,
-		ParkingAdmin.Id(), ParkingAdmin.FirstName(), ParkingAdmin.LastName(), ParkingAdmin.Phone(), ParkingAdmin.PID(), ParkingAdmin.Enabled()).Scan(&id)
+	err := db.WQueryRow(ctx, createParkingAdminQuery, ParkingAdmin.FirstName(), ParkingAdmin.LastName(),
+		ParkingAdmin.Phone(), ParkingAdmin.PID(), ParkingAdmin.Enabled()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("ParkingAdmin already exist: %w", repository.ErrDuplicateEntity)

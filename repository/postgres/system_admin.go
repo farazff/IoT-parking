@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	createSystemAdminQuery = `INSERT INTO SystemAdmins(id, first_name, last_name, phone, enabled, created_at, updated_at) 
-							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
+	createSystemAdminQuery = `INSERT INTO SystemAdmins(first_name, last_name, phone, enabled, created_at, updated_at) 
+							VALUES($1, $2, $3, $4, now(), now()) RETURNING id`
 	getSystemAdminsQuery = `SELECT id, first_name, last_name, phone, enabled, created_at, updated_at, deleted_at 
 							FROM SystemAdmins WHERE deleted_at is NULL`
 	getSystemAdminByIdQuery = `SELECT id, first_name, last_name, phone, enabled, created_at, updated_at, deleted_at 
@@ -25,8 +25,8 @@ const (
 
 func (s *service) CreateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createSystemAdminQuery,
-		SystemAdmin.Id(), SystemAdmin.FirstName(), SystemAdmin.LastName(), SystemAdmin.Phone(), SystemAdmin.Enabled()).Scan(&id)
+	err := db.WQueryRow(ctx, createSystemAdminQuery, SystemAdmin.FirstName(), SystemAdmin.LastName(),
+		SystemAdmin.Phone(), SystemAdmin.Enabled()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("SystemAdmin already exist: %w", repository.ErrDuplicateEntity)
