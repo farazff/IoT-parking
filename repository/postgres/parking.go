@@ -25,7 +25,7 @@ const (
 
 const uniqueViolation = "23505"
 
-func (s *service) CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error) {
+func (s *service) CreateParking(ctx context.Context, parking entity.Parking) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, createParkingQuery, parking.Name(), parking.Address(), parking.Phone(), parking.Enabled(),
 		parking.Uuid()).Scan(&id)

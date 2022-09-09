@@ -6,7 +6,7 @@ import (
 )
 
 type ParkingRepository interface {
-	CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error)
+	CreateParking(ctx context.Context, parking entity.Parking) (int, error)
 	GetParking(ctx context.Context, id int) (entity.Parking, error)
 	GetParkings(ctx context.Context) ([]entity.Parking, error)
 	UpdateParking(ctx context.Context, parking entity.Parking) error
@@ -31,16 +31,22 @@ type ParkingAdminRepository interface {
 }
 
 type ZoneRepository interface {
-	CreateZone(ctx context.Context, Zone entity.Zone) (int, error)
+	CreateZone(ctx context.Context, zone entity.Zone) (int, error)
 	GetZone(ctx context.Context, id int) (entity.Zone, error)
 	GetZones(ctx context.Context) ([]entity.Zone, error)
-	UpdateZone(ctx context.Context, Zone entity.Zone) error
+	UpdateZone(ctx context.Context, zone entity.Zone) error
 	DeleteZone(ctx context.Context, id int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
 }
 
 type WhitelistRepository interface {
-	CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error)
+	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist) (int, error)
 	GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error)
 	DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error
+	IsCarWhitelist(ct context.Context, parkingId int, carTag string) (bool, error)
+}
+
+type LogRepository interface {
+	CarEnter(ctx context.Context, log entity.Log) (int, error)
+	CarExit(ctx context.Context, pId int, carTag string) error
 }

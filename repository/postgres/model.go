@@ -201,3 +201,31 @@ func (w Whitelist) PID() int {
 func (w Whitelist) CarTag() string {
 	return w.DBCarTag
 }
+
+type Log struct {
+	DBId        int        `db:"id"`
+	DBCarTag    string     `db:"car_tag"`
+	DBEnterTime time.Time  `db:"enter_time"`
+	DBExitTime  *time.Time `db:"exit_time"`
+	DBParkingId int        `db:"parking_id"`
+}
+
+func (l Log) Id() int {
+	return l.DBId
+}
+
+func (l Log) CarTag() string {
+	return l.DBCarTag
+}
+
+func (l Log) EnterTime() time.Time {
+	return l.DBEnterTime
+}
+
+func (l Log) ExitTime() *time.Time {
+	return l.DBExitTime
+}
+
+func (l Log) ParkingID() int {
+	return l.DBParkingId
+}

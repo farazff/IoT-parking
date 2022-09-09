@@ -24,10 +24,10 @@ const (
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
 )
 
-func (s *service) CreateZone(ctx context.Context, Zone entity.Zone) (int, error) {
+func (s *service) CreateZone(ctx context.Context, zone entity.Zone) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, createZoneQuery,
-		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.RemainedCapacity(), Zone.Enabled()).Scan(&id)
+		zone.Id(), zone.PID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Zone already exist: %w", repository.ErrDuplicateEntity)
@@ -67,9 +67,9 @@ func (s *service) GetZones(ctx context.Context) ([]entity.Zone, error) {
 	return res, nil
 }
 
-func (s *service) UpdateZone(ctx context.Context, Zone entity.Zone) error {
+func (s *service) UpdateZone(ctx context.Context, zone entity.Zone) error {
 	ans, err := db.Exec(ctx, updateZoneQuery,
-		Zone.Id(), Zone.PID(), Zone.Capacity(), Zone.RemainedCapacity(), Zone.Enabled())
+		zone.Id(), zone.PID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("system_admin already exist: %w", repository.ErrDuplicateEntity)

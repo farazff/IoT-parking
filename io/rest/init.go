@@ -35,4 +35,8 @@ func init() {
 	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
 	rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
 	rest.EchoDelete("/v1/WhiteList", deleteWhitelist, middleware.ApiKey)
+
+	rest.EchoPost("v1/carEnter", carEnter, middleware.ApiKey)
+	rest.EchoPut("v1/carExit", carExit, middleware.ApiKey)
+
 }

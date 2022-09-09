@@ -7,4 +7,5 @@ var (
 	ErrInternalServer  = errors.New("internal server error")
 	ErrDuplicateEntity = errors.New("duplicate entity")
 	ErrNoAccess        = errors.New("no access")
+	ErrInvalidCarTag   = errors.New("invalid car tag")
 )

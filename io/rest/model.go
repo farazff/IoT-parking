@@ -62,7 +62,6 @@ type ParkingRes struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-	Uuid      string     `json:"uuid,omitempty"`
 	Capacity  int        `json:"capacity,omitempty"`
 }
 
@@ -76,7 +75,6 @@ func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
 		CreatedAt: parking.CreatedAt(),
 		UpdatedAt: parking.UpdatedAt(),
 		DeletedAt: parking.DeletedAt(),
-		Uuid:      parking.Uuid(),
 		Capacity:  capacity,
 	}
 	if id != -1 {
@@ -382,4 +380,62 @@ func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
 		whitelistResSlice = append(whitelistResSlice, toWhitelistRes(whitelist, -1))
 	}
 	return whitelistResSlice
+}
+
+type Log struct {
+	FId        int        `json:"id"`
+	FCarTag    string     `json:"car_tag"`
+	FEnterTime time.Time  `json:"enter_time"`
+	FExitTime  *time.Time `json:"exit_time,omitempty"`
+	FParkingId int        `json:"parking_id"`
+}
+
+func (l Log) Id() int {
+	return l.FId
+}
+
+func (l Log) CarTag() string {
+	return l.FCarTag
+}
+
+func (l Log) EnterTime() time.Time {
+	return l.FEnterTime
+}
+
+func (l Log) ExitTime() *time.Time {
+	return l.FExitTime
+}
+
+func (l Log) ParkingID() int {
+	return l.FParkingId
+}
+
+type LogRes struct {
+	Id        int        `json:"id"`
+	CarTag    string     `json:"car_tag"`
+	EnterTime time.Time  `json:"enter_time"`
+	ExitTime  *time.Time `json:"exit_time,omitempty"`
+	ParkingId int        `json:"parking_id"`
+}
+
+func toLogRes(log entity.Log, id int) LogRes {
+	response := LogRes{
+		Id:        log.Id(),
+		CarTag:    log.CarTag(),
+		EnterTime: log.EnterTime(),
+		ExitTime:  log.ExitTime(),
+		ParkingId: log.ParkingID(),
+	}
+	if id != -1 {
+		response.Id = id
+	}
+	return response
+}
+
+func toLogResSlice(logs []entity.Log) []LogRes {
+	logResSlice := make([]LogRes, 0)
+	for _, log := range logs {
+		logResSlice = append(logResSlice, toLogRes(log, -1))
+	}
+	return logResSlice
 }

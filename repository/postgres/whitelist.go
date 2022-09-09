@@ -15,6 +15,7 @@ const (
 	createWhitelistQuery = `INSERT INTO whitelist(parking_id, car_tag) VALUES($1, $2) RETURNING id`
 	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE deleted_at is NULL AND parking_id = $1`
 	deleteWhitelistQuery = `DELETE FROM whitelist where parking_id = $1 AND car_tag = $2`
+	isCarWhiteListQuery  = `SELECT count(*) from whitelist where parking_id = $1 and car_tag = $2`
 )
 
 func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error) {
@@ -59,4 +60,19 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingId int, carTag str
 		return fmt.Errorf("whitelist doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
+}
+
+func (s *service) IsCarWhitelist(ctx context.Context, parkingId int, carTag string) (bool, error) {
+	var count int
+	err := db.Get(ctx, &count, getCapacitySumQuery, parkingId, carTag)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, fmt.Errorf("log not found: %w", repository.ErrNotFound)
+		}
+		return false, err
+	}
+	if count >= 1 {
+		return true, nil
+	}
+	return false, nil
 }

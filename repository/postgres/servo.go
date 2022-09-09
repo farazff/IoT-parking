@@ -34,6 +34,10 @@ func (s *service) Initialize(_ context.Context) error {
 		return fmt.Errorf("error while registring whitelist repository: %w", err)
 	}
 
+	if err := repository.RegisterLog(s); err != nil {
+		return fmt.Errorf("error while registring log repository: %w", err)
+	}
+
 	return nil
 }
 
