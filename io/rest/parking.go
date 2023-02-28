@@ -21,8 +21,7 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-
-	id, err := manager.CreateParking(c.Request().Context(), p)
+	id, uuid, err := manager.CreateParking(c.Request().Context(), p)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -33,7 +32,8 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toParkingRes(p, 0, id))
+	p.FId = id
+	return c.JSON(http.StatusCreated, toParkingRes(p, 0, uuid))
 }
 
 func getParking(c echo.Context) error {
@@ -50,7 +50,7 @@ func getParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, -1))
+	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, ""))
 }
 
 func getParkings(c echo.Context) error {
@@ -97,7 +97,7 @@ func updateParking(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toParkingRes(p, 0, -1))
+	return c.JSON(http.StatusCreated, toParkingRes(p, 0, ""))
 }
 
 func deleteParking(c echo.Context) error {

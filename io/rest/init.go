@@ -38,5 +38,4 @@ func init() {
 
 	rest.EchoPost("v1/carEnter", carEnter, middleware.ApiKey)
 	rest.EchoPut("v1/carExit", carExit, middleware.ApiKey)
-
 }

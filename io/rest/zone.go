@@ -10,15 +10,22 @@ import (
 )
 
 func createZone(c echo.Context) error {
-	p := new(Zone)
-	if err := c.Bind(p); err != nil {
+	z := new(Zone)
+	if err := c.Bind(z); err != nil {
 		lg.Error(err)
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
 		})
 	}
 
-	id, err := manager.CreateZone(c.Request().Context(), p)
+	if err := c.Validate(z); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
+	id, err := manager.CreateZone(c.Request().Context(), z)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -29,7 +36,7 @@ func createZone(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toZoneRes(p, id))
+	return c.JSON(http.StatusCreated, toZoneRes(z, id))
 }
 
 func getZone(c echo.Context) error {
@@ -60,8 +67,8 @@ func getZones(c echo.Context) error {
 }
 
 func updateZone(c echo.Context) error {
-	p := new(Zone)
-	if err := c.Bind(p); err != nil {
+	z := new(Zone)
+	if err := c.Bind(z); err != nil {
 		lg.Error(err)
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
@@ -74,9 +81,9 @@ func updateZone(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	p.FId = int(pid)
+	z.FId = int(pid)
 
-	err = manager.UpdateZone(c.Request().Context(), p)
+	err = manager.UpdateZone(c.Request().Context(), z)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -93,7 +100,7 @@ func updateZone(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toZoneRes(p, -1))
+	return c.JSON(http.StatusCreated, toZoneRes(z, -1))
 }
 
 func deleteZone(c echo.Context) error {

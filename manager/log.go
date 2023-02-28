@@ -27,7 +27,7 @@ func CarEnter(ctx context.Context, log entity.Log) (int, error) {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
 			return id, ErrDuplicateEntity
 		}
-		lg.Error("error during creating parking: %v", err)
+		lg.Errorf("error during creating parking: %v", err)
 		return id, ErrInternalServer
 	}
 	return id, nil

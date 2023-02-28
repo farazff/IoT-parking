@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/lib/pq"
 	"github.com/okian/servo/v2/db"
 )
 
@@ -20,9 +19,6 @@ func (s *service) CarEnter(ctx context.Context, log entity.Log) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), log.ParkingID()).Scan(&id)
 	if err != nil {
-		if err.(*pq.Error).Code == uniqueViolation {
-			return -1, fmt.Errorf("parking already exist: %w", repository.ErrDuplicateEntity)
-		}
 		return -1, err
 	}
 	return id, nil

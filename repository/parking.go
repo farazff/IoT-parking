@@ -16,8 +16,8 @@ func RegisterParking(p ParkingRepository) error {
 	return nil
 }
 
-func CreateParking(ctx context.Context, parking entity.Parking) (int, error) {
-	return parkingR.CreateParking(ctx, parking)
+func CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error) {
+	return parkingR.CreateParking(ctx, parking, uuid)
 }
 
 func GetParking(ctx context.Context, id int) (entity.Parking, error) {

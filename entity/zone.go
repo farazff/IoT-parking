@@ -1,11 +1,13 @@
 package entity
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Zone interface {
 	Id() int
-	PID() int
-	ZID() int
+	PID() uuid.UUID
 	Capacity() int
 	RemainedCapacity() int
 	Enabled() bool

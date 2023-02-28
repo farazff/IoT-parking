@@ -1,6 +1,10 @@
 package postgres
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Parking struct {
 	DBId        int        `db:"id"`
@@ -143,25 +147,20 @@ func (pa ParkingAdmin) DeletedAt() *time.Time {
 
 type Zone struct {
 	DBId               int        `db:"id"`
-	DBPID              int        `db:"parking_id"`
-	DBZID              int        `db:"zone_id"`
+	DBPID              uuid.UUID  `db:"parking_id"`
 	DBCapacity         int        `db:"capacity"`
-	DBRemainedCapacity int        `json:"remained_capacity"`
+	DBRemainedCapacity int        `db:"remained_capacity"`
 	DBEnabled          bool       `db:"enabled"`
-	DBCreatedAt        time.Time  `db:"created-at"`
-	DBUpdatedAt        time.Time  `db:"updated-at"`
-	DBDeletedAt        *time.Time `db:"deleted-at"`
-}
-
-func (z Zone) ZID() int {
-	return z.DBZID
+	DBCreatedAt        time.Time  `db:"created_at"`
+	DBUpdatedAt        time.Time  `db:"updated_at"`
+	DBDeletedAt        *time.Time `db:"deleted_at"`
 }
 
 func (z Zone) Id() int {
 	return z.DBId
 }
 
-func (z Zone) PID() int {
+func (z Zone) PID() uuid.UUID {
 	return z.DBPID
 }
 

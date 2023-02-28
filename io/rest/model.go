@@ -1,8 +1,10 @@
 package rest
 
 import (
-	"github.com/farazff/IoT-parking/entity"
 	"time"
+
+	"github.com/farazff/IoT-parking/entity"
+	"github.com/google/uuid"
 )
 
 type Parking struct {
@@ -54,31 +56,26 @@ func (p Parking) Uuid() string {
 }
 
 type ParkingRes struct {
-	Id        int        `json:"id"`
-	Name      string     `json:"name"`
-	Address   string     `json:"address"`
-	Phone     string     `json:"phone"`
-	Enabled   bool       `json:"enabled"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-	Capacity  int        `json:"capacity,omitempty"`
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	Enabled  bool   `json:"enabled"`
+	Capacity int    `json:"capacity,omitempty"`
+	Uuid     string `json:"uuid,omitempty"`
 }
 
-func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
+func toParkingRes(parking entity.Parking, capacity int, uuid string) ParkingRes {
 	response := ParkingRes{
-		Id:        parking.Id(),
-		Name:      parking.Name(),
-		Address:   parking.Address(),
-		Phone:     parking.Phone(),
-		Enabled:   parking.Enabled(),
-		CreatedAt: parking.CreatedAt(),
-		UpdatedAt: parking.UpdatedAt(),
-		DeletedAt: parking.DeletedAt(),
-		Capacity:  capacity,
+		Id:       parking.Id(),
+		Name:     parking.Name(),
+		Address:  parking.Address(),
+		Phone:    parking.Phone(),
+		Enabled:  parking.Enabled(),
+		Capacity: capacity,
 	}
-	if id != -1 {
-		response.Id = id
+	if uuid != "" {
+		response.Uuid = uuid
 	}
 	return response
 }
@@ -86,7 +83,7 @@ func toParkingRes(parking entity.Parking, capacity int, id int) ParkingRes {
 func toParkingResSlice(parkings []entity.Parking) []ParkingRes {
 	parkingsResSlice := make([]ParkingRes, 0)
 	for _, parking := range parkings {
-		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, 0, -1))
+		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, 0, ""))
 	}
 	return parkingsResSlice
 }
@@ -256,8 +253,7 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 
 type Zone struct {
 	FId               int        `json:"id"`
-	FPID              int        `json:"parking_id"`
-	FZID              int        `json:"zone_id"`
+	FPID              uuid.UUID  `json:"parking_id"`
 	FCapacity         int        `json:"capacity"`
 	FRemainedCapacity int        `json:"remained_capacity"`
 	FEnabled          bool       `json:"enabled"`
@@ -266,15 +262,11 @@ type Zone struct {
 	FDeletedAt        *time.Time `json:"deleted-at"`
 }
 
-func (z Zone) ZID() int {
-	return z.FZID
-}
-
 func (z Zone) Id() int {
 	return z.FId
 }
 
-func (z Zone) PID() int {
+func (z Zone) PID() uuid.UUID {
 	return z.FPID
 }
 
@@ -303,14 +295,11 @@ func (z Zone) DeletedAt() *time.Time {
 }
 
 type ZoneRes struct {
-	Id               int        `json:"id"`
-	PID              int        `json:"parking_id"`
-	Capacity         int        `json:"capacity"`
-	RemainedCapacity int        `json:"remained_capacity"`
-	Enabled          bool       `json:"enabled"`
-	CreatedAt        time.Time  `json:"created-at"`
-	UpdatedAt        time.Time  `json:"updated-at"`
-	DeletedAt        *time.Time `json:"deleted-at"`
+	Id               int       `json:"id"`
+	PID              uuid.UUID `json:"parking_id"`
+	Capacity         int       `json:"capacity" validate:"gtefield=RemainedCapacity"`
+	RemainedCapacity int       `json:"remained_capacity"`
+	Enabled          bool      `json:"enabled"`
 }
 
 func toZoneRes(zone entity.Zone, id int) ZoneRes {
@@ -320,9 +309,6 @@ func toZoneRes(zone entity.Zone, id int) ZoneRes {
 		Capacity:         zone.Capacity(),
 		RemainedCapacity: zone.RemainedCapacity(),
 		Enabled:          zone.Enabled(),
-		CreatedAt:        zone.CreatedAt(),
-		UpdatedAt:        zone.UpdatedAt(),
-		DeletedAt:        zone.DeletedAt(),
 	}
 	if id != -1 {
 		response.Id = id
