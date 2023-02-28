@@ -15,6 +15,15 @@ spec:
       containers:
         - name: postgres
           image: postgres:latest # Sets Image
+          resources:
+            limits:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
+            requests:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432  # Exposes container port

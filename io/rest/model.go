@@ -257,12 +257,17 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 type Zone struct {
 	FId               int        `json:"id"`
 	FPID              int        `json:"parking_id"`
+	FZID              int        `json:"zone_id"`
 	FCapacity         int        `json:"capacity"`
 	FRemainedCapacity int        `json:"remained_capacity"`
 	FEnabled          bool       `json:"enabled"`
 	FCreatedAt        time.Time  `json:"created-at"`
 	FUpdatedAt        time.Time  `json:"updated-at"`
 	FDeletedAt        *time.Time `json:"deleted-at"`
+}
+
+func (z Zone) ZID() int {
+	return z.FZID
 }
 
 func (z Zone) Id() int {

@@ -20,7 +20,15 @@ spec:
       containers:
         - image: farazff/parking:1.0
           name: parking
-          resources: {}
+          resources:
+            limits:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
+            requests:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
           ports:
             - containerPort: 65432
           envFrom:
