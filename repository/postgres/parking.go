@@ -21,7 +21,7 @@ const (
 							FROM parkings WHERE deleted_at is NULL AND id = $1`
 	updateParkingQuery = `UPDATE parkings SET (name, address, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1`
-	deleteParkingQuery = `UPDATE parkings SET deleted_at = now() where id = $1`
+	deleteParkingQuery = `UPDATE parkings SET deleted_at = now() where id = $1 and deleted_at is null`
 )
 
 const uniqueViolation = "23505"

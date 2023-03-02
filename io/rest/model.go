@@ -56,16 +56,16 @@ func (p Parking) Uuid() uuid.UUID {
 }
 
 type ParkingRes struct {
-	Id       int       `json:"id"`
-	Name     string    `json:"name"`
-	Address  string    `json:"address"`
-	Phone    string    `json:"phone"`
-	Enabled  bool      `json:"enabled"`
-	Capacity int       `json:"capacity,omitempty"`
-	Uuid     uuid.UUID `json:"uuid,omitempty"`
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	Enabled  bool   `json:"enabled"`
+	Capacity int    `json:"capacity,omitempty"`
+	Uuid     string `json:"uuid,omitempty"`
 }
 
-func toParkingRes(parking entity.Parking, capacity int, uuid uuid.UUID) ParkingRes {
+func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) ParkingRes {
 	response := ParkingRes{
 		Id:       parking.Id(),
 		Name:     parking.Name(),
@@ -74,8 +74,8 @@ func toParkingRes(parking entity.Parking, capacity int, uuid uuid.UUID) ParkingR
 		Enabled:  parking.Enabled(),
 		Capacity: capacity,
 	}
-	if uuid.String() != "" {
-		response.Uuid = uuid
+	if Puuid != uuid.Nil {
+		response.Uuid = Puuid.String()
 	}
 	return response
 }

@@ -8,11 +8,11 @@ import (
 func init() {
 	rest.EchoGet("/health_check", healthCheck)
 
-	rest.EchoPost("/v1/parking", createParking, middleware.ApiKey)
-	rest.EchoGet("/v1/parking/:id", getParking, middleware.ApiKey)
-	rest.EchoGet("/v1/parkings", getParkings, middleware.ApiKey)
-	rest.EchoPut("/v1/parking/:id", updateParking, middleware.ApiKey)
-	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.ApiKey)
+	rest.EchoPost("/v1/parking", createParking, middleware.AdminApiKey)
+	rest.EchoGet("/v1/parking/:id", getParking, middleware.AdminApiKey)
+	rest.EchoGet("/v1/parkings", getParkings, middleware.AdminApiKey)
+	rest.EchoPut("/v1/parking/:id", updateParking, middleware.AdminApiKey)
+	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.AdminApiKey)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
 	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
