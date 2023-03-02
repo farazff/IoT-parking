@@ -20,7 +20,7 @@ const (
 	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at, uuid 
 							FROM parkings WHERE deleted_at is NULL AND id = $1`
 	updateParkingQuery = `UPDATE parkings SET (name, address, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
-                			WHERE id = $1`
+                			WHERE id = $1 and deleted_at is null`
 	deleteParkingQuery = `UPDATE parkings SET deleted_at = now() where id = $1 and deleted_at is null`
 )
 

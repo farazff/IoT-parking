@@ -15,13 +15,13 @@ import (
 const (
 	createParkingAdminQuery = `INSERT INTO parking_admins(first_name, last_name, phone, parking_id, enabled, created_at, updated_at) 
 							VALUES($1, $2, $3, $4, $5, now(), now()) RETURNING id`
-	getParkingAdminsQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled, created_at, updated_at, deleted_at 
+	getParkingAdminsQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled 
 							FROM parking_admins WHERE deleted_at is NULL`
-	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled, created_at, updated_at, deleted_at 
+	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled 
 							FROM parking_admins WHERE deleted_at is NULL AND id = $1`
 	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, parking_id, enabled, updated_at)= ($2, $3, $4, $5, $6, now()) 
-                			WHERE id = $1`
-	deleteParkingAdminQuery = `UPDATE parking_admins SET deleted_at = now() where id = $1`
+                			WHERE id = $1 and deleted_at is null`
+	deleteParkingAdminQuery = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
 	getParkingIdQuery       = `select parking_id from parking_admins where id = $1`
 )
 

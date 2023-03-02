@@ -20,11 +20,11 @@ func init() {
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
 
-	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.ApiKey)
-	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.ApiKey)
-	rest.EchoGet("/v1/parkingAdmins", getParkingAdmin, middleware.ApiKey)
-	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.ApiKey)
-	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.ApiKey)
+	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.AdminApiKey)
+	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.AdminApiKey)
+	rest.EchoGet("/v1/parkingAdmins", getParkingAdmins, middleware.AdminApiKey)
+	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.AdminApiKey)
+	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.AdminApiKey)
 
 	//rest.EchoPost("/v1/systemAdmin", createSystemAdmin, middleware.ApiKey)
 	//rest.EchoGet("/v1/systemAdmin/:id", getSystemAdmin, middleware.ApiKey)

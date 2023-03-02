@@ -215,15 +215,12 @@ func (pa ParkingAdmin) DeletedAt() *time.Time {
 }
 
 type ParkingAdminRes struct {
-	Id        int        `json:"id"`
-	FirstName string     `json:"first_name"`
-	LastName  string     `json:"last_name"`
-	Phone     string     `json:"phone"`
-	PID       uuid.UUID  `json:"parking_id"`
-	Enabled   bool       `json:"enabled"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+	Id        int       `json:"id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Phone     string    `json:"phone"`
+	PID       uuid.UUID `json:"parking_id"`
+	Enabled   bool      `json:"enabled"`
 }
 
 func toParkingAdminRes(parkingAdmin entity.ParkingAdmin, id int) ParkingAdminRes {
@@ -231,11 +228,9 @@ func toParkingAdminRes(parkingAdmin entity.ParkingAdmin, id int) ParkingAdminRes
 		Id:        parkingAdmin.Id(),
 		FirstName: parkingAdmin.FirstName(),
 		LastName:  parkingAdmin.LastName(),
+		Phone:     parkingAdmin.Phone(),
 		PID:       parkingAdmin.PID(),
 		Enabled:   parkingAdmin.Enabled(),
-		CreatedAt: parkingAdmin.CreatedAt(),
-		UpdatedAt: parkingAdmin.UpdatedAt(),
-		DeletedAt: parkingAdmin.DeletedAt(),
 	}
 	if id != -1 {
 		response.Id = id
