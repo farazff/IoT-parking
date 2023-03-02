@@ -11,7 +11,7 @@ import (
 
 func CarEnter(ctx context.Context, log entity.Log) (int, error) {
 
-	isCarWhiteList, err := repository.IsCarWhitelist(ctx, log.ParkingID(), log.CarTag())
+	isCarWhiteList, err := repository.IsCarWhitelist(ctx, log.PID(), log.CarTag())
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return 0, ErrNotFound

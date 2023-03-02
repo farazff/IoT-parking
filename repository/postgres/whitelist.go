@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/okian/servo/v2/db"
 )
@@ -62,7 +63,7 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingId int, carTag str
 	return nil
 }
 
-func (s *service) IsCarWhitelist(ctx context.Context, parkingId int, carTag string) (bool, error) {
+func (s *service) IsCarWhitelist(ctx context.Context, parkingId int, carTag uuid.UUID) (bool, error) {
 	var count int
 	err := db.Get(ctx, &count, getCapacitySumQuery, parkingId, carTag)
 	if err != nil {

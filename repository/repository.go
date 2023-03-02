@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/farazff/IoT-parking/entity"
+	"github.com/google/uuid"
 )
 
 type ParkingRepository interface {
@@ -43,7 +44,7 @@ type WhitelistRepository interface {
 	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist) (int, error)
 	GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error)
 	DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error
-	IsCarWhitelist(ct context.Context, parkingId int, carTag string) (bool, error)
+	IsCarWhitelist(ct context.Context, parkingId uuid.UUID, carTag string) (bool, error)
 }
 
 type LogRepository interface {
