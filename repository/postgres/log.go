@@ -17,7 +17,7 @@ const (
 
 func (s *service) CarEnter(ctx context.Context, log entity.Log) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), log.ParkingID()).Scan(&id)
+	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), log.PID()).Scan(&id)
 	if err != nil {
 		return -1, err
 	}
