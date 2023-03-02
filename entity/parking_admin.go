@@ -1,13 +1,16 @@
 package entity
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type ParkingAdmin interface {
 	Id() int
 	FirstName() string
 	LastName() string
 	Phone() string
-	PID() int
+	PID() uuid.UUID
 	Enabled() bool
 	CreatedAt() time.Time
 	UpdatedAt() time.Time

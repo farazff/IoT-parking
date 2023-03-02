@@ -16,7 +16,7 @@ type Parking struct {
 	FCreatedAt time.Time  `json:"createdAt"`
 	FUpdatedAt time.Time  `json:"updatedAt"`
 	FDeletedAt *time.Time `json:"deletedAt,omitempty"`
-	FUuid      string     `json:"uuid"`
+	FUuid      uuid.UUID  `json:"uuid"`
 }
 
 func (p Parking) Id() int {
@@ -51,21 +51,21 @@ func (p Parking) DeletedAt() *time.Time {
 	return p.FDeletedAt
 }
 
-func (p Parking) Uuid() string {
+func (p Parking) Uuid() uuid.UUID {
 	return p.FUuid
 }
 
 type ParkingRes struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Enabled  bool   `json:"enabled"`
-	Capacity int    `json:"capacity,omitempty"`
-	Uuid     string `json:"uuid,omitempty"`
+	Id       int       `json:"id"`
+	Name     string    `json:"name"`
+	Address  string    `json:"address"`
+	Phone    string    `json:"phone"`
+	Enabled  bool      `json:"enabled"`
+	Capacity int       `json:"capacity,omitempty"`
+	Uuid     uuid.UUID `json:"uuid,omitempty"`
 }
 
-func toParkingRes(parking entity.Parking, capacity int, uuid string) ParkingRes {
+func toParkingRes(parking entity.Parking, capacity int, uuid uuid.UUID) ParkingRes {
 	response := ParkingRes{
 		Id:       parking.Id(),
 		Name:     parking.Name(),
@@ -74,7 +74,7 @@ func toParkingRes(parking entity.Parking, capacity int, uuid string) ParkingRes 
 		Enabled:  parking.Enabled(),
 		Capacity: capacity,
 	}
-	if uuid != "" {
+	if uuid.String() != "" {
 		response.Uuid = uuid
 	}
 	return response
@@ -83,7 +83,7 @@ func toParkingRes(parking entity.Parking, capacity int, uuid string) ParkingRes 
 func toParkingResSlice(parkings []entity.Parking) []ParkingRes {
 	parkingsResSlice := make([]ParkingRes, 0)
 	for _, parking := range parkings {
-		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, 0, ""))
+		parkingsResSlice = append(parkingsResSlice, toParkingRes(parking, 0, uuid.UUID{}))
 	}
 	return parkingsResSlice
 }
@@ -171,7 +171,7 @@ type ParkingAdmin struct {
 	FFirstName string     `json:"first_name"`
 	FLastName  string     `json:"last_name"`
 	FPhone     string     `json:"phone"`
-	FPID       int        `json:"parking_id"`
+	FPID       uuid.UUID  `json:"parking_id"`
 	FEnabled   bool       `json:"enabled"`
 	FCreatedAt time.Time  `json:"createdAt"`
 	FUpdatedAt time.Time  `json:"updatedAt"`
@@ -194,7 +194,7 @@ func (pa ParkingAdmin) Phone() string {
 	return pa.FPhone
 }
 
-func (pa ParkingAdmin) PID() int {
+func (pa ParkingAdmin) PID() uuid.UUID {
 	return pa.FPID
 }
 
@@ -219,7 +219,7 @@ type ParkingAdminRes struct {
 	FirstName string     `json:"first_name"`
 	LastName  string     `json:"last_name"`
 	Phone     string     `json:"phone"`
-	PID       int        `json:"parking_id"`
+	PID       uuid.UUID  `json:"parking_id"`
 	Enabled   bool       `json:"enabled"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
@@ -325,9 +325,9 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 }
 
 type Whitelist struct {
-	FId     int    `json:"id"`
-	FPID    int    `json:"parking_id"`
-	FCarTag string `json:"car_tag"`
+	FId     int       `json:"id"`
+	FPID    uuid.UUID `json:"parking_id"`
+	FCarTag string    `json:"car_tag"`
 }
 
 type WhitelistCreateReq struct {
@@ -339,7 +339,7 @@ func (w Whitelist) Id() int {
 	return w.FId
 }
 
-func (w Whitelist) PID() int {
+func (w Whitelist) PID() uuid.UUID {
 	return w.FPID
 }
 
@@ -348,9 +348,9 @@ func (w Whitelist) CarTag() string {
 }
 
 type WhitelistRes struct {
-	Id     int    `json:"id"`
-	PID    int    `json:"parking_id"`
-	CarTag string `json:"car_tag"`
+	Id     int       `json:"id"`
+	PID    uuid.UUID `json:"parking_id"`
+	CarTag string    `json:"car_tag"`
 }
 
 func toWhitelistRes(whitelist entity.Whitelist, id int) WhitelistRes {
@@ -378,7 +378,7 @@ type Log struct {
 	FCarTag    string     `json:"car_tag"`
 	FEnterTime time.Time  `json:"enter_time"`
 	FExitTime  *time.Time `json:"exit_time,omitempty"`
-	FParkingId int        `json:"parking_id"`
+	FPID       uuid.UUID  `json:"parking_id"`
 }
 
 func (l Log) Id() int {
@@ -397,8 +397,8 @@ func (l Log) ExitTime() *time.Time {
 	return l.FExitTime
 }
 
-func (l Log) ParkingID() int {
-	return l.FParkingId
+func (l Log) PID() uuid.UUID {
+	return l.FPID
 }
 
 type LogRes struct {
@@ -406,7 +406,7 @@ type LogRes struct {
 	CarTag    string     `json:"car_tag"`
 	EnterTime time.Time  `json:"enter_time"`
 	ExitTime  *time.Time `json:"exit_time,omitempty"`
-	ParkingId int        `json:"parking_id"`
+	PID       uuid.UUID  `json:"parking_id"`
 }
 
 func toLogRes(log entity.Log, id int) LogRes {
@@ -415,7 +415,7 @@ func toLogRes(log entity.Log, id int) LogRes {
 		CarTag:    log.CarTag(),
 		EnterTime: log.EnterTime(),
 		ExitTime:  log.ExitTime(),
-		ParkingId: log.ParkingID(),
+		PID:       log.PID(),
 	}
 	if id != -1 {
 		response.Id = id

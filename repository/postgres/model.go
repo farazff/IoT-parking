@@ -15,7 +15,7 @@ type Parking struct {
 	DBCreatedAt time.Time  `db:"created_at"`
 	DBUpdatedAt time.Time  `db:"updated_at"`
 	DBDeletedAt *time.Time `db:"deleted_at"`
-	DBUuid      string     `db:"uuid"`
+	DBUuid      uuid.UUID  `db:"uuid"`
 }
 
 func (p Parking) Id() int {
@@ -50,7 +50,7 @@ func (p Parking) DeletedAt() *time.Time {
 	return p.DBDeletedAt
 }
 
-func (p Parking) Uuid() string {
+func (p Parking) Uuid() uuid.UUID {
 	return p.DBUuid
 }
 
@@ -102,7 +102,7 @@ type ParkingAdmin struct {
 	DBFirstName string     `db:"first_name"`
 	DBLastName  string     `db:"last_name"`
 	DBPhone     string     `db:"phone"`
-	DBPID       int        `db:"parking_id"`
+	DBPID       uuid.UUID  `db:"parking_id"`
 	DBEnabled   bool       `db:"enabled"`
 	DBCreatedAt time.Time  `db:"createdAt"`
 	DBUpdatedAt time.Time  `db:"updatedAt"`
@@ -125,7 +125,7 @@ func (pa ParkingAdmin) Phone() string {
 	return pa.DBPhone
 }
 
-func (pa ParkingAdmin) PID() int {
+func (pa ParkingAdmin) PID() uuid.UUID {
 	return pa.DBPID
 }
 
@@ -189,16 +189,16 @@ func (z Zone) DeletedAt() *time.Time {
 }
 
 type Whitelist struct {
-	DBId     int    `db:"id"`
-	DBPID    int    `db:"parking_id"`
-	DBCarTag string `db:"car_tag"`
+	DBId     int       `db:"id"`
+	DBPID    uuid.UUID `db:"parking_id"`
+	DBCarTag string    `db:"car_tag"`
 }
 
 func (w Whitelist) Id() int {
 	return w.DBId
 }
 
-func (w Whitelist) PID() int {
+func (w Whitelist) PID() uuid.UUID {
 	return w.DBPID
 }
 
@@ -211,7 +211,7 @@ type Log struct {
 	DBCarTag    string     `db:"car_tag"`
 	DBEnterTime time.Time  `db:"enter_time"`
 	DBExitTime  *time.Time `db:"exit_time"`
-	DBParkingId int        `db:"parking_id"`
+	DBPID       uuid.UUID  `db:"parking_id"`
 }
 
 func (l Log) Id() int {
@@ -230,6 +230,6 @@ func (l Log) ExitTime() *time.Time {
 	return l.DBExitTime
 }
 
-func (l Log) ParkingID() int {
-	return l.DBParkingId
+func (l Log) PID() uuid.UUID {
+	return l.DBPID
 }

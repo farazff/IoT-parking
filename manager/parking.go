@@ -10,17 +10,17 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateParking(ctx context.Context, parking entity.Parking) (int, string, error) {
-	uuid := uuid.New()
-	id, err := repository.CreateParking(ctx, parking, uuid.String())
+func CreateParking(ctx context.Context, parking entity.Parking) (int, uuid.UUID, error) {
+	Puuid := uuid.New()
+	id, err := repository.CreateParking(ctx, parking, Puuid.String())
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
-			return id, "", ErrDuplicateEntity
+			return -1, uuid.UUID{}, ErrDuplicateEntity
 		}
 		lg.Error("error during creating parking: %v", err)
-		return id, "", ErrInternalServer
+		return -1, uuid.UUID{}, ErrInternalServer
 	}
-	return id, uuid.String(), nil
+	return id, Puuid, nil
 }
 
 func GetParking(ctx context.Context, id int) (entity.Parking, int, error) {

@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Parking interface {
 	Id() int
@@ -11,5 +14,5 @@ type Parking interface {
 	CreatedAt() time.Time
 	UpdatedAt() time.Time
 	DeletedAt() *time.Time
-	Uuid() string
+	Uuid() uuid.UUID
 }

@@ -3,6 +3,7 @@ package rest
 import (
 	"errors"
 	"github.com/farazff/IoT-parking/manager"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
 	"net/http"
@@ -50,7 +51,7 @@ func getParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, ""))
+	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, uuid.UUID{}))
 }
 
 func getParkings(c echo.Context) error {
@@ -97,7 +98,7 @@ func updateParking(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toParkingRes(p, 0, ""))
+	return c.JSON(http.StatusCreated, toParkingRes(p, 0, uuid.UUID{}))
 }
 
 func deleteParking(c echo.Context) error {

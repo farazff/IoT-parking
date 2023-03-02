@@ -1,13 +1,16 @@
 package entity
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Log interface {
 	Id() int
 	CarTag() string
 	EnterTime() time.Time
 	ExitTime() *time.Time
-	ParkingID() int
+	PID() uuid.UUID
 }
 
 type CarExit struct {
