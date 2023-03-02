@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/farazff/IoT-parking/entity"
+	"github.com/google/uuid"
 )
 
 var ParkingAdminR ParkingAdminRepository
@@ -36,6 +37,6 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 	return ParkingAdminR.DeleteParkingAdmin(ctx, id)
 }
 
-func GetParkingId(ctx context.Context, adminId int) (int, error) {
+func GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error) {
 	return ParkingAdminR.GetParkingId(ctx, adminId)
 }

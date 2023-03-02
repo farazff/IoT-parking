@@ -31,7 +31,7 @@ func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelis
 	return id, nil
 }
 
-func (s *service) GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error) {
+func (s *service) GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error) {
 	var ps []Whitelist
 	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingId)
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *service) GetWhitelists(ctx context.Context, parkingId int) ([]entity.Wh
 	return res, nil
 }
 
-func (s *service) DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error {
+func (s *service) DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) error {
 	ans, err := db.Exec(ctx, deleteWhitelistQuery, parkingId, carTag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -63,7 +63,7 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingId int, carTag str
 	return nil
 }
 
-func (s *service) IsCarWhitelist(ctx context.Context, parkingId int, carTag uuid.UUID) (bool, error) {
+func (s *service) IsCarWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) (bool, error) {
 	var count int
 	err := db.Get(ctx, &count, getCapacitySumQuery, parkingId, carTag)
 	if err != nil {

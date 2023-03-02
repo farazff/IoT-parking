@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/okian/servo/v2/db"
 )
@@ -101,14 +102,14 @@ func (s *service) DeleteParkingAdmin(ctx context.Context, id int) error {
 	return nil
 }
 
-func (s *service) GetParkingId(ctx context.Context, AdminId int) (int, error) {
-	var parkingId int
+func (s *service) GetParkingId(ctx context.Context, AdminId int) (uuid.UUID, error) {
+	var parkingId uuid.UUID
 	err := db.Get(ctx, &parkingId, getParkingIdQuery, AdminId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return 0, fmt.Errorf("parking admin not found: %w", repository.ErrNotFound)
+			return uuid.UUID{}, fmt.Errorf("parking admin not found: %w", repository.ErrNotFound)
 		}
-		return 0, err
+		return uuid.UUID{}, err
 	}
 	return parkingId, nil
 }

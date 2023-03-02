@@ -28,7 +28,7 @@ type ParkingAdminRepository interface {
 	GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error)
 	UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error
 	DeleteParkingAdmin(ctx context.Context, id int) error
-	GetParkingId(ctx context.Context, adminId int) (int, error)
+	GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error)
 }
 
 type ZoneRepository interface {
@@ -42,8 +42,8 @@ type ZoneRepository interface {
 
 type WhitelistRepository interface {
 	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist) (int, error)
-	GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error)
-	DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error
+	GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error)
+	DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) error
 	IsCarWhitelist(ct context.Context, parkingId uuid.UUID, carTag string) (bool, error)
 }
 

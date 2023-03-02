@@ -21,11 +21,11 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, erro
 	return WhitelistR.CreateWhitelist(ctx, Whitelist)
 }
 
-func GetWhitelists(ctx context.Context, parkingId int) ([]entity.Whitelist, error) {
+func GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error) {
 	return WhitelistR.GetWhitelists(ctx, parkingId)
 }
 
-func DeleteWhitelist(ctx context.Context, parkingId int, carTag string) error {
+func DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) error {
 	return WhitelistR.DeleteWhitelist(ctx, parkingId, carTag)
 }
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
+	"github.com/google/uuid"
 	"github.com/okian/servo/v2/lg"
 )
 
@@ -66,13 +67,13 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 	return nil
 }
 
-func GetParkingId(ctx context.Context, adminId int) (int, error) {
+func GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error) {
 	parkingId, err := repository.GetParkingId(ctx, adminId)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			return 0, ErrNotFound
+			return uuid.UUID{}, ErrNotFound
 		}
-		return 0, fmt.Errorf("error in finding ParkingAdmin with given id, %w", err)
+		return uuid.UUID{}, fmt.Errorf("error in finding ParkingAdmin with given id, %w", err)
 	}
 	return parkingId, nil
 }
