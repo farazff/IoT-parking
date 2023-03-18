@@ -35,6 +35,7 @@ type ParkingAdminRepository interface {
 type ZoneRepository interface {
 	CreateZone(ctx context.Context, zone entity.Zone, pUuid uuid.UUID) (int, error)
 	GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error)
+	GetZone(ctx context.Context, id int) (entity.Zone, error)
 	UpdateZone(ctx context.Context, zone entity.Zone) error
 	DeleteZone(ctx context.Context, id int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
