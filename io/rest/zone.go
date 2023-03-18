@@ -127,3 +127,39 @@ func deleteZone(c echo.Context) error {
 		"message": "Zone deleted successfully",
 	})
 }
+
+func EnterZone(c echo.Context) error {
+	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err = manager.EnterZone(c.Request().Context(), int(zid))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
+}
+
+func ExitZone(c echo.Context) error {
+	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err = manager.ExitZone(c.Request().Context(), int(zid))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
+}

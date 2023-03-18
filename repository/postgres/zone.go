@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/google/uuid"
 
 	"github.com/farazff/IoT-parking/entity"
@@ -22,8 +23,13 @@ const (
 							FROM Zones WHERE deleted_at is NULL AND id = $1`
 	updateZoneQuery = `UPDATE Zones SET (capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, now()) 
                 			WHERE id = $1 and deleted_at is NULL`
-	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL`
+	deleteZoneQuery = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL`
+
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
+
+	carEnterToZoneQuery = `update zones set remained_capacity = remained_capacity - 1 where id = $1`
+
+	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1 where id = $1`
 )
 
 func (s *service) CreateZone(ctx context.Context, zone entity.Zone, PUuid uuid.UUID) (int, error) {
@@ -116,4 +122,20 @@ func (s *service) GetZone(ctx context.Context, id int) (entity.Zone, error) {
 	}
 
 	return t, nil
+}
+
+func (s *service) ZoneCarEnter(ctx context.Context, zoneID int) error {
+	_, err := db.Exec(ctx, carEnterToZoneQuery, zoneID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *service) ZoneCarExit(ctx context.Context, zoneID int) error {
+	_, err := db.Exec(ctx, carExitFromZoneQuery, zoneID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

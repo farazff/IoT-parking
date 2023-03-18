@@ -24,6 +24,8 @@ func init() {
 	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneEnter/:id", EnterZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneExit/:id", ExitZone, middleware.ApiKey)
 
 	//rest.EchoPost("/v1/systemAdmin", createSystemAdmin, middleware.ApiKey)
 	//rest.EchoGet("/v1/systemAdmin/:id", getSystemAdmin, middleware.ApiKey)

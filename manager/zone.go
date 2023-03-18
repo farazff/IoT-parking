@@ -111,3 +111,19 @@ func checkAccess(ctx context.Context, adminUUID uuid.UUID, zoneID int) (bool, er
 	}
 	return true, nil
 }
+
+func EnterZone(ctx context.Context, zoneID int) error {
+	err := repository.ZoneCarEnter(ctx, zoneID)
+	if err != nil {
+		return ErrInternalServer
+	}
+	return nil
+}
+
+func ExitZone(ctx context.Context, zoneID int) error {
+	err := repository.ZoneCarExit(ctx, zoneID)
+	if err != nil {
+		return ErrInternalServer
+	}
+	return nil
+}

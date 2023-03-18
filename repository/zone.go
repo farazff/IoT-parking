@@ -40,3 +40,11 @@ func GetCapacitySum(ctx context.Context, id int) (int, error) {
 func GetZone(ctx context.Context, id int) (entity.Zone, error) {
 	return ZoneR.GetZone(ctx, id)
 }
+
+func ZoneCarEnter(ctx context.Context, ZoneID int) error {
+	return ZoneR.ZoneCarEnter(ctx, ZoneID)
+}
+
+func ZoneCarExit(ctx context.Context, ZoneID int) error {
+	return ZoneR.ZoneCarExit(ctx, ZoneID)
+}
