@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
@@ -52,7 +53,7 @@ func GetZones(ctx context.Context) ([]entity.Zone, error) {
 }
 
 func UpdateZone(ctx context.Context, zone entity.Zone) error {
-	isValid, err := checkAccess(ctx, zone)
+	isValid, err := checkAccess(ctx, zone.AdminUuid(), zone.Id())
 	if err != nil {
 		return err
 	}
@@ -74,8 +75,8 @@ func UpdateZone(ctx context.Context, zone entity.Zone) error {
 	return nil
 }
 
-func DeleteZone(ctx context.Context, id int) error {
-	isValid, err := checkAccess(ctx, zone)
+func DeleteZone(ctx context.Context, id int, adminUUID uuid.UUID) error {
+	isValid, err := checkAccess(ctx, adminUUID, id)
 	if err != nil {
 		return err
 	}
@@ -92,8 +93,8 @@ func DeleteZone(ctx context.Context, id int) error {
 	return nil
 }
 
-func checkAccess(ctx context.Context, zone entity.Zone) (bool, error) {
-	parkingUUID, err := repository.GetParkingIdByUuid(ctx, zone.AdminUuid())
+func checkAccess(ctx context.Context, adminUUID uuid.UUID, zoneID int) (bool, error) {
+	parkingUUID, err := repository.GetParkingIdByUuid(ctx, adminUUID)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return false, ErrParkingNotFound
@@ -101,7 +102,7 @@ func checkAccess(ctx context.Context, zone entity.Zone) (bool, error) {
 		return false, err
 	}
 
-	tempZone, err := repository.GetZone(ctx, zone.Id())
+	tempZone, err := repository.GetZone(ctx, zoneID)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return false, ErrNotFound

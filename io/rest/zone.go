@@ -2,6 +2,7 @@ package rest
 
 import (
 	"errors"
+	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
@@ -110,7 +111,16 @@ func deleteZone(c echo.Context) error {
 			"message": "",
 		})
 	}
-	err = manager.DeleteZone(c.Request().Context(), ZoneID)
+
+	zD := new(entity.ZoneDelete)
+	if err := c.Bind(zD); err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err = manager.DeleteZone(c.Request().Context(), ZoneID, zD.AdminUUID)
 	if err != nil {
 		lg.Error(err)
 		if errors.Is(err, manager.ErrNotFound) {

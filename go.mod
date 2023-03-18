@@ -1,6 +1,6 @@
 module github.com/farazff/IoT-parking
 
-go 1.19
+go 1.20
 
 require (
 	github.com/google/uuid v1.3.0
@@ -9,7 +9,7 @@ require (
 	github.com/okian/servo/v2 v2.8.18
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
-	go.uber.org/automaxprocs v1.5.1
+	go.uber.org/automaxprocs v1.5.2
 )
 
 require (

@@ -16,3 +16,7 @@ type Zone interface {
 	UpdatedAt() time.Time
 	DeletedAt() *time.Time
 }
+
+type ZoneDelete struct {
+	AdminUUID uuid.UUID `json:"admin_uuid"`
+}
