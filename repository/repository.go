@@ -28,21 +28,20 @@ type ParkingAdminRepository interface {
 	GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error)
 	UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error
 	DeleteParkingAdmin(ctx context.Context, id int) error
-	GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error)
+	GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error)
 	GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error)
 }
 
 type ZoneRepository interface {
 	CreateZone(ctx context.Context, zone entity.Zone, pUuid uuid.UUID) (int, error)
-	GetZone(ctx context.Context, id int) (entity.Zone, error)
-	GetZones(ctx context.Context) ([]entity.Zone, error)
+	GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error)
 	UpdateZone(ctx context.Context, zone entity.Zone) error
 	DeleteZone(ctx context.Context, id int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
 }
 
 type WhitelistRepository interface {
-	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist) (int, error)
+	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist, parkingUUID uuid.UUID) (int, error)
 	GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error)
 	DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) error
 	IsCarWhitelist(ct context.Context, parkingId uuid.UUID, carTag string) (bool, error)

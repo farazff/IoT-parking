@@ -13,15 +13,15 @@ import (
 )
 
 const (
-	createWhitelistQuery = `INSERT INTO whitelist(parking_id, car_tag) VALUES($1, $2) RETURNING id`
-	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE deleted_at is NULL AND parking_id = $1`
-	deleteWhitelistQuery = `DELETE FROM whitelist where parking_id = $1 AND car_tag = $2`
-	isCarWhiteListQuery  = `SELECT count(*) from whitelist where parking_id = $1 and car_tag = $2`
+	createWhitelistQuery = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
+	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE parking_id = $1`
+	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND car_tag = $2`
+	isCarWhiteListQuery  = `SELECT count(*) from whitelists where parking_id = $1 and car_tag = $2`
 )
 
-func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error) {
+func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingUUID uuid.UUID) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createWhitelistQuery, Whitelist.PID(), Whitelist.CarTag()).Scan(&id)
+	err := db.WQueryRow(ctx, createWhitelistQuery, parkingUUID, Whitelist.CarTag()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Whitelist already exist: %w", repository.ErrDuplicateEntity)

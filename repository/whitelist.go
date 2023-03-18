@@ -17,8 +17,8 @@ func RegisterWhitelist(p WhitelistRepository) error {
 	return nil
 }
 
-func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist) (int, error) {
-	return WhitelistR.CreateWhitelist(ctx, Whitelist)
+func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingUUID uuid.UUID) (int, error) {
+	return WhitelistR.CreateWhitelist(ctx, Whitelist, parkingUUID)
 }
 
 func GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error) {

@@ -17,9 +17,7 @@ const (
 	createZoneQuery = `INSERT INTO Zones(parking_id, capacity, remained_capacity, enabled, created_at, updated_at) 
 							VALUES($1, $2, $3, $4, now(), now()) RETURNING id`
 	getZonesQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
-							FROM Zones WHERE deleted_at is NULL`
-	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
-							FROM Zones WHERE deleted_at is NULL AND id = $1`
+							FROM Zones WHERE deleted_at is NULL AND parking_id = $1`
 	updateZoneQuery = `UPDATE Zones SET (capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, now()) 
                 			WHERE id = $1 and deleted_at is NULL`
 	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL`
@@ -42,22 +40,9 @@ func (s *service) CreateZone(ctx context.Context, zone entity.Zone, PUuid uuid.U
 	return id, nil
 }
 
-func (s *service) GetZone(ctx context.Context, id int) (entity.Zone, error) {
-	t := Zone{}
-	err := db.Get(ctx, &t, getZoneByIdQuery, id)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, repository.ErrNotFound
-		}
-		return nil, err
-	}
-
-	return t, nil
-}
-
-func (s *service) GetZones(ctx context.Context) ([]entity.Zone, error) {
+func (s *service) GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error) {
 	var ps []Zone
-	err := db.Select(ctx, &ps, getZonesQuery)
+	err := db.Select(ctx, &ps, getZonesQuery, parkingUUID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound

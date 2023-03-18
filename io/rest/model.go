@@ -338,12 +338,12 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 type Whitelist struct {
 	FId     int       `json:"id"`
 	FPID    uuid.UUID `json:"parking_id"`
-	FCarTag string    `json:"car_tag"`
+	FCarTag string    `json:"car_tag" validate:"required"`
 }
 
 type WhitelistCreateReq struct {
 	Whitelist
-	AdminCode int `json:"admin_code"`
+	AdminCode uuid.UUID `json:"admin_code" validate:"required"`
 }
 
 func (w Whitelist) Id() int {

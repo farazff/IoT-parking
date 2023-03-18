@@ -21,12 +21,8 @@ func CreateZone(ctx context.Context, Zone entity.Zone, pUuid uuid.UUID) (int, er
 	return ZoneR.CreateZone(ctx, Zone, pUuid)
 }
 
-func GetZone(ctx context.Context, id int) (entity.Zone, error) {
-	return ZoneR.GetZone(ctx, id)
-}
-
-func GetZones(ctx context.Context) ([]entity.Zone, error) {
-	return ZoneR.GetZones(ctx)
+func GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error) {
+	return ZoneR.GetZones(ctx, parkingUUID)
 }
 
 func UpdateZone(ctx context.Context, Zone entity.Zone) error {

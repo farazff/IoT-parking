@@ -18,7 +18,14 @@ func createWhitelist(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateWhitelist(c.Request().Context(), p, p.AdminCode)
+	if err := c.Validate(p); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
+	_, err := manager.CreateWhitelist(c.Request().Context(), p, p.AdminCode)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) || errors.Is(err, manager.ErrNoAccess) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -29,7 +36,9 @@ func createWhitelist(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toWhitelistRes(p, id))
+	return c.JSON(http.StatusCreated, echo.Map{
+		"message": "whitelist created",
+	})
 }
 
 func getWhitelists(c echo.Context) error {

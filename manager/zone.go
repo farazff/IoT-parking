@@ -33,19 +33,15 @@ func CreateZone(ctx context.Context, zone entity.Zone) (int, error) {
 	return id, nil
 }
 
-func GetZone(ctx context.Context, id int) (entity.Zone, error) {
-	Zone, err := repository.GetZone(ctx, id)
+func GetZones(ctx context.Context, adminUUID uuid.UUID) ([]entity.Zone, error) {
+	parkingUUID, err := repository.GetParkingUUID(ctx, adminUUID)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			return nil, ErrNotFound
+			return nil, ErrParkingNotFound
 		}
-		return nil, fmt.Errorf("error in retrieving Zone, %w", err)
+		return nil, err
 	}
-	return Zone, nil
-}
-
-func GetZones(ctx context.Context) ([]entity.Zone, error) {
-	Zones, err := repository.GetZones(ctx)
+	Zones, err := repository.GetZones(ctx, parkingUUID)
 	if err != nil {
 		return nil, fmt.Errorf("error in retrieving Zones, %w", err)
 	}

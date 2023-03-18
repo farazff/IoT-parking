@@ -71,8 +71,8 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 	return nil
 }
 
-func GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error) {
-	parkingId, err := repository.GetParkingId(ctx, adminId)
+func GetParkingUUID(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error) {
+	parkingId, err := repository.GetParkingUUID(ctx, adminId)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return uuid.UUID{}, ErrNotFound

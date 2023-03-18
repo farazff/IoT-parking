@@ -9,10 +9,10 @@ type Whitelist interface {
 }
 
 type WhitelistDeleteReq struct {
-	AdminCode int    `json:"admin_code"`
-	CarTag    string `json:"car_tag"`
+	AdminCode uuid.UUID `json:"admin_code"`
+	CarTag    string    `json:"car_tag"`
 }
 
 type WhitelistGetReq struct {
-	AdminCode int `json:"admin_code"`
+	AdminCode uuid.UUID `json:"admin_code"`
 }

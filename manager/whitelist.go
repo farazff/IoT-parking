@@ -6,21 +6,19 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
+	"github.com/google/uuid"
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode int) (int, error) {
-	parkingId, err := GetParkingId(ctx, adminCode)
+func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode uuid.UUID) (int, error) {
+	parkingUUID, err := GetParkingUUID(ctx, adminCode)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return 0, ErrNotFound
 		}
 		return 0, fmt.Errorf("error in finding parking admin with given id, %w", err)
 	}
-	if Whitelist.PID() != parkingId {
-		return 0, ErrNoAccess
-	}
-	id, err := repository.CreateWhitelist(ctx, Whitelist)
+	id, err := repository.CreateWhitelist(ctx, Whitelist, parkingUUID)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
 			return id, ErrDuplicateEntity
@@ -32,7 +30,7 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode 
 }
 
 func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Whitelist, error) {
-	parkingId, err := GetParkingId(ctx, req.AdminCode)
+	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return make([]entity.Whitelist, 0), ErrNotFound
@@ -47,7 +45,7 @@ func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Wh
 }
 
 func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-	parkingId, err := GetParkingId(ctx, req.AdminCode)
+	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return ErrNotFound

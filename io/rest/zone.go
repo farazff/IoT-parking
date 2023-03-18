@@ -2,12 +2,13 @@ package rest
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
-	"net/http"
-	"strconv"
 )
 
 func createZone(c echo.Context) error {
@@ -40,25 +41,15 @@ func createZone(c echo.Context) error {
 	return c.JSON(http.StatusCreated, toZoneRes(z, id))
 }
 
-func getZone(c echo.Context) error {
-	ZoneID, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
+func getZones(c echo.Context) error {
+	AC := new(entity.WhitelistGetReq)
+	if err := c.Bind(AC); err != nil {
+		lg.Error(err)
 		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": "error in Zone id",
-		})
-	}
-
-	Zone, err := manager.GetZone(c.Request().Context(), ZoneID)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toZoneRes(Zone, -1))
-}
-
-func getZones(c echo.Context) error {
-	Zones, err := manager.GetZones(c.Request().Context())
+	Zones, err := manager.GetZones(c.Request().Context(), AC.AdminCode)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),

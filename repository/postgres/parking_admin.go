@@ -23,7 +23,7 @@ const (
 	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, parking_id, enabled, updated_at)= ($2, $3, $4, $5, $6, now()) 
                 			WHERE id = $1 and deleted_at is null`
 	deleteParkingAdminQuery = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
-	getParkingIdQuery       = `select parking_id from parking_admins where id = $1`
+	getParkingUUIDQuery     = `select parking_id from parking_admins where uuid = $1`
 	getParkingIdQueryByUuid = `select parking_id from parking_admins where uuid = $1`
 )
 
@@ -107,16 +107,16 @@ func (s *service) DeleteParkingAdmin(ctx context.Context, id int) error {
 	return nil
 }
 
-func (s *service) GetParkingId(ctx context.Context, AdminId int) (uuid.UUID, error) {
-	var parkingId uuid.UUID
-	err := db.Get(ctx, &parkingId, getParkingIdQuery, AdminId)
+func (s *service) GetParkingUUID(ctx context.Context, AdminUUID uuid.UUID) (uuid.UUID, error) {
+	var parkingUUID uuid.UUID
+	err := db.Get(ctx, &parkingUUID, getParkingUUIDQuery, AdminUUID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return uuid.UUID{}, fmt.Errorf("parking admin not found: %w", repository.ErrNotFound)
 		}
 		return uuid.UUID{}, err
 	}
-	return parkingId, nil
+	return parkingUUID, nil
 }
 
 func (s *service) GetParkingIdByUuid(ctx context.Context, AdminId uuid.UUID) (uuid.UUID, error) {

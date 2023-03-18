@@ -21,7 +21,6 @@ func init() {
 	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.AdminApiKey)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
-	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
@@ -34,7 +33,7 @@ func init() {
 
 	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
 	rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
-	rest.EchoDelete("/v1/WhiteList", deleteWhitelist, middleware.ApiKey)
+	rest.EchoDelete("/v1/Whitelist", deleteWhitelist, middleware.ApiKey)
 
 	rest.EchoPost("v1/carEnter", carEnter, middleware.ApiKey)
 	rest.EchoPut("v1/carExit", carExit, middleware.ApiKey)

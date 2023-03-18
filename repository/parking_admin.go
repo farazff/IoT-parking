@@ -37,8 +37,8 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 	return ParkingAdminR.DeleteParkingAdmin(ctx, id)
 }
 
-func GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error) {
-	return ParkingAdminR.GetParkingId(ctx, adminId)
+func GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error) {
+	return ParkingAdminR.GetParkingUUID(ctx, adminUUID)
 }
 
 func GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error) {
