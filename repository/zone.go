@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/farazff/IoT-parking/entity"
+	"github.com/google/uuid"
 )
 
 var ZoneR ZoneRepository
@@ -16,8 +17,8 @@ func RegisterZone(p ZoneRepository) error {
 	return nil
 }
 
-func CreateZone(ctx context.Context, Zone entity.Zone) (int, error) {
-	return ZoneR.CreateZone(ctx, Zone)
+func CreateZone(ctx context.Context, Zone entity.Zone, pUuid uuid.UUID) (int, error) {
+	return ZoneR.CreateZone(ctx, Zone, pUuid)
 }
 
 func GetZone(ctx context.Context, id int) (entity.Zone, error) {

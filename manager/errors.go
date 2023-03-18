@@ -8,4 +8,5 @@ var (
 	ErrDuplicateEntity = errors.New("duplicate entity")
 	ErrNoAccess        = errors.New("no access")
 	ErrInvalidCarTag   = errors.New("invalid car tag")
+	ErrParkingNotFound = errors.New("parking not found")
 )

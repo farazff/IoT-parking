@@ -10,16 +10,20 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, error) {
-	id, err := repository.CreateParkingAdmin(ctx, ParkingAdmin)
+func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, uuid.UUID, error) {
+	PAUuid := uuid.New()
+	id, err := repository.CreateParkingAdmin(ctx, ParkingAdmin, PAUuid)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
-			return id, ErrDuplicateEntity
+			return id, uuid.UUID{}, ErrDuplicateEntity
+		}
+		if errors.Is(err, repository.ErrParkingForeignKeyConstraint) {
+			return id, uuid.UUID{}, ErrParkingNotFound
 		}
 		lg.Error("error during creating ParkingAdmin: %v", err)
-		return id, ErrInternalServer
+		return id, uuid.UUID{}, ErrInternalServer
 	}
-	return id, nil
+	return id, PAUuid, nil
 }
 
 func GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAdmin, error) {

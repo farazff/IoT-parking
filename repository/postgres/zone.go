@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
@@ -19,19 +20,22 @@ const (
 							FROM Zones WHERE deleted_at is NULL`
 	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
 							FROM Zones WHERE deleted_at is NULL AND id = $1`
-	updateZoneQuery = `UPDATE Zones SET (parking_id, capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, $5, now()) 
+	updateZoneQuery = `UPDATE Zones SET (capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, now()) 
                 			WHERE id = $1 and deleted_at is NULL`
 	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL`
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
 )
 
-func (s *service) CreateZone(ctx context.Context, zone entity.Zone) (int, error) {
+func (s *service) CreateZone(ctx context.Context, zone entity.Zone, PUuid uuid.UUID) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, createZoneQuery,
-		zone.PID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled()).Scan(&id)
+		PUuid, zone.Capacity(), zone.RemainedCapacity(), zone.Enabled()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Zone already exist: %w", repository.ErrDuplicateEntity)
+		}
+		if err.(*pq.Error).Code == foreignKeyViolation {
+			return -1, repository.ErrParkingForeignKeyConstraint
 		}
 		return -1, err
 	}
@@ -70,7 +74,7 @@ func (s *service) GetZones(ctx context.Context) ([]entity.Zone, error) {
 
 func (s *service) UpdateZone(ctx context.Context, zone entity.Zone) error {
 	ans, err := db.Exec(ctx, updateZoneQuery,
-		zone.Id(), zone.PID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled())
+		zone.Id(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("system_admin already exist: %w", repository.ErrDuplicateEntity)

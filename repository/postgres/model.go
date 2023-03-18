@@ -106,7 +106,12 @@ type ParkingAdmin struct {
 	DBEnabled   bool       `db:"enabled"`
 	DBCreatedAt time.Time  `db:"createdAt"`
 	DBUpdatedAt time.Time  `db:"updatedAt"`
-	DBDeletedAt *time.Time `db:"deletedAt,omitempty"`
+	DBDeletedAt *time.Time `db:"deletedAt"`
+	DBUuid      uuid.UUID  `db:"uuid"`
+}
+
+func (pa ParkingAdmin) Uuid() uuid.UUID {
+	return pa.DBUuid
 }
 
 func (pa ParkingAdmin) Id() int {
@@ -154,6 +159,10 @@ type Zone struct {
 	DBCreatedAt        time.Time  `db:"created_at"`
 	DBUpdatedAt        time.Time  `db:"updated_at"`
 	DBDeletedAt        *time.Time `db:"deleted_at"`
+}
+
+func (z Zone) AdminUuid() uuid.UUID {
+	return uuid.UUID{}
 }
 
 func (z Zone) Id() int {

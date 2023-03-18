@@ -8,6 +8,7 @@ import (
 type Zone interface {
 	Id() int
 	PID() uuid.UUID
+	AdminUuid() uuid.UUID
 	Capacity() int
 	RemainedCapacity() int
 	Enabled() bool

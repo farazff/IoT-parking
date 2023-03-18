@@ -15,4 +15,5 @@ type ParkingAdmin interface {
 	CreatedAt() time.Time
 	UpdatedAt() time.Time
 	DeletedAt() *time.Time
+	Uuid() uuid.UUID
 }

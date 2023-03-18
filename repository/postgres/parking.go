@@ -25,6 +25,7 @@ const (
 )
 
 const uniqueViolation = "23505"
+const foreignKeyViolation = "23503"
 
 func (s *service) CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error) {
 	var id int

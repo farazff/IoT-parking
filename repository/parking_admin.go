@@ -17,8 +17,8 @@ func RegisterParkingAdmin(p ParkingAdminRepository) error {
 	return nil
 }
 
-func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, error) {
-	return ParkingAdminR.CreateParkingAdmin(ctx, ParkingAdmin)
+func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin, uuid uuid.UUID) (int, error) {
+	return ParkingAdminR.CreateParkingAdmin(ctx, ParkingAdmin, uuid)
 }
 
 func GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAdmin, error) {
@@ -39,4 +39,8 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 
 func GetParkingId(ctx context.Context, adminId int) (uuid.UUID, error) {
 	return ParkingAdminR.GetParkingId(ctx, adminId)
+}
+
+func GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error) {
+	return ParkingAdminR.GetParkingIdByUuid(ctx, adminId)
 }
