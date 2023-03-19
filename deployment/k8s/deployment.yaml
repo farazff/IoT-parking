@@ -18,8 +18,9 @@ spec:
         app: parking
     spec:
       containers:
-        - image: farazff/parking:1.0
+        - image: farazff/parking:1.1
           name: parking
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: 1500m

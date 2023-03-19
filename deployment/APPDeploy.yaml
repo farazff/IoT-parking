@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: parking-config
+  labels:
+    app: parking
+data:
+  DB_DBNAME: parking
+  DB_DRIVER: postgres
+  DB_HOST: postgres
+  DB_PASSWORD: admin
+  DB_PORT: '5432'
+  DB_TZ: Asia/Tehran
+  DB_USER: postgres
+  ENVIRONMENT: DEVELOPMENT
+  LOG_CONSOLE: DEBUG
+  LOG_EXTRA_APPNAME: 'true'
+  LOG_EXTRA_BRANCH: 'true'
+  LOG_EXTRA_COMMIT: 'true'
+  LOG_EXTRA_DATA: 'true'
+  LOG_LEVEL: DEBUG
+  MONITORING: 'false'
+  REST: 'true'
+  REST_LOG: 'true'
+  REST_MIDDLEWARE_BODY_LIMIT: ''
+  REST_MIDDLEWARE_CORE: 'true'
+  REST_MIDDLEWARE_GZIP: 'false'
+  REST_MIDDLEWARE_RECOVER: 'true'
+  REST_MIDDLEWARE_REMOVE_TRAILING_SLASH: 'true'
+  REST_PORT: '8080'
+  REST_VALIDATOR: 'true'
+  DEBUG: 'true'
+  API_KEY: 'user'
+  ADMIN_API_KEY: 'admin'
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: parking
+  name: parking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parking
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: parking
+    spec:
+      containers:
+        - image: farazff/parking:1.2
+          name: parking
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
+            requests:
+              cpu: 1500m
+              ephemeral-storage: 1G
+              memory: 600M
+          ports:
+            - containerPort: 65432
+          envFrom:
+            - configMapRef:
+                name: parking-config
+status: {}
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: parking-service
+spec:
+  selector:
+    app: parking
+  ports:
+    - protocol: TCP
+      port: 7676
+      targetPort: 65432
