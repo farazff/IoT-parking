@@ -22,9 +22,10 @@ const (
 							FROM parking_admins WHERE deleted_at is NULL AND id = $1`
 	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, parking_id, enabled, updated_at)= ($2, $3, $4, $5, $6, now()) 
                 			WHERE id = $1 and deleted_at is null`
-	deleteParkingAdminQuery = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
-	getParkingUUIDQuery     = `select parking_id from parking_admins where uuid = $1`
-	getParkingIdQueryByUuid = `select parking_id from parking_admins where uuid = $1`
+	deleteParkingAdminQuery        = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
+	getParkingUUIDQuery            = `select parking_id from parking_admins where uuid = $1`
+	getParkingIdQueryByUuid        = `select parking_id from parking_admins where uuid = $1`
+	getParkingAdminPasswordByPhone = `SELECT password FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
 )
 
 func (s *service) CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin, uuid uuid.UUID) (int, error) {
@@ -54,6 +55,19 @@ func (s *service) GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAd
 	}
 
 	return t, nil
+}
+
+func (s *service) GetParkingAdminPasswordByPhone(ctx context.Context, phone string) (string, error) {
+	var password string
+	err := db.Get(ctx, &password, getParkingAdminPasswordByPhone, phone)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", repository.ErrNotFound
+		}
+		return "", err
+	}
+
+	return password, nil
 }
 
 func (s *service) GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error) {

@@ -9,4 +9,5 @@ var (
 	ErrNoAccess        = errors.New("no access")
 	ErrInvalidCarTag   = errors.New("invalid car tag")
 	ErrParkingNotFound = errors.New("parking not found")
+	ErrUnauthorized    = errors.New("unauthorized")
 )

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
 	"github.com/okian/servo/v2/lg"
@@ -16,7 +17,7 @@ func CarEnter(ctx context.Context, log entity.Log) (int, error) {
 		if errors.Is(err, repository.ErrNotFound) {
 			return 0, ErrNotFound
 		}
-		return 0, fmt.Errorf("error in finding log with given information, %w", err)
+		return 0, fmt.Errorf("error in finding withelist with given information, %w", err)
 	}
 	if !isCarWhiteList {
 		return 0, ErrInvalidCarTag

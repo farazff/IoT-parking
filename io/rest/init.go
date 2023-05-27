@@ -20,6 +20,8 @@ func init() {
 	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.AdminApiKey)
 	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.AdminApiKey)
 
+	rest.EchoPost("/v1/ParkingAdmin/signIn", parkingAdminSignIn)
+
 	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)

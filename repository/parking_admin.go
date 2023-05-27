@@ -25,6 +25,10 @@ func GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAdmin, error) {
 	return ParkingAdminR.GetParkingAdmin(ctx, id)
 }
 
+func GetParkingAdminPasswordByPhone(ctx context.Context, phone string) (string, error) {
+	return ParkingAdminR.GetParkingAdminPasswordByPhone(ctx, phone)
+}
+
 func GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error) {
 	return ParkingAdminR.GetParkingAdmins(ctx)
 }

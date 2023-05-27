@@ -11,6 +11,7 @@ import (
 	"github.com/okian/servo/v2"
 	_ "github.com/okian/servo/v2/config"
 	_ "github.com/okian/servo/v2/db"
+	_ "github.com/okian/servo/v2/kv/redis"
 	_ "github.com/okian/servo/v2/lg"
 	_ "github.com/okian/servo/v2/rest"
 	"github.com/spf13/cobra"

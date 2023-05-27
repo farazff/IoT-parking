@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
 	"github.com/google/uuid"
@@ -65,7 +66,7 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carT
 
 func (s *service) IsCarWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) (bool, error) {
 	var count int
-	err := db.Get(ctx, &count, getCapacitySumQuery, parkingId, carTag)
+	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingId, carTag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, fmt.Errorf("log not found: %w", repository.ErrNotFound)

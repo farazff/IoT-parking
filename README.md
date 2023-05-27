@@ -1,9 +1,25 @@
 # IoT-parking
 
-Run the following line to start database:
+There are 3 different ways to run the project. 
+
+1.First way is to run to code locally and run the database and the redis using docker.
+So, for staring the database container, we need to run the following command:
 
 ```code
-docker run --rm   --name pg-parking -e POSTGRES_PASSWORD=admin -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data  postgres
+docker run --rm --name parking-db -e POSTGRES_PASSWORD=admin -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data  postgres
+```
+After that we need to start the redis container whit the following command:
+```code
+docker run --rm --name parking-redis -d -p 6379:6379 redis
+```
+
+Then these configs must be set in .env file to run locally:
+```code
+PARKING_REDIS_HOST=localhost
+PARKING_REDIS_PORT='6379'
+PARKING_DB_HOST=localhost
+PARKING_DB_PASSWORD=admin
+PARKING_DB_PORT='5432'
 ```
 
 ```code

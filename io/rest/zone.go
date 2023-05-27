@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
@@ -42,6 +43,20 @@ func createZone(c echo.Context) error {
 }
 
 func getZones(c echo.Context) error {
+
+	_, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	AC := new(entity.WhitelistGetReq)
 	if err := c.Bind(AC); err != nil {
 		lg.Error(err)
