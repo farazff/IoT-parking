@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/farazff/IoT-parking/entity"
-	"github.com/google/uuid"
 )
 
 var ZoneR ZoneRepository
@@ -17,28 +16,28 @@ func RegisterZone(p ZoneRepository) error {
 	return nil
 }
 
-func CreateZone(ctx context.Context, Zone entity.Zone, pUuid uuid.UUID) (int, error) {
-	return ZoneR.CreateZone(ctx, Zone, pUuid)
+func CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error) {
+	return ZoneR.CreateZone(ctx, zone, parkingID)
 }
 
-func GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error) {
-	return ZoneR.GetZones(ctx, parkingUUID)
+func GetZones(ctx context.Context, parkingID int) ([]entity.Zone, error) {
+	return ZoneR.GetZones(ctx, parkingID)
 }
 
-func UpdateZone(ctx context.Context, Zone entity.Zone) error {
-	return ZoneR.UpdateZone(ctx, Zone)
+func UpdateZone(ctx context.Context, Zone entity.Zone, parkingID int) error {
+	return ZoneR.UpdateZone(ctx, Zone, parkingID)
 }
 
-func DeleteZone(ctx context.Context, id int) error {
-	return ZoneR.DeleteZone(ctx, id)
+func DeleteZone(ctx context.Context, id int, parkingID int) error {
+	return ZoneR.DeleteZone(ctx, id, parkingID)
 }
 
 func GetCapacitySum(ctx context.Context, id int) (int, error) {
 	return ZoneR.GetCapacitySum(ctx, id)
 }
 
-func GetZone(ctx context.Context, id int) (entity.Zone, error) {
-	return ZoneR.GetZone(ctx, id)
+func GetZone(ctx context.Context, id int, parkingID int) (entity.Zone, error) {
+	return ZoneR.GetZone(ctx, id, parkingID)
 }
 
 func ZoneCarEnter(ctx context.Context, ZoneID int) error {

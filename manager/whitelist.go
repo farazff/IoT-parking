@@ -29,36 +29,36 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode 
 	return id, nil
 }
 
-func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Whitelist, error) {
-	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
-	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return make([]entity.Whitelist, 0), ErrNotFound
-		}
-		return make([]entity.Whitelist, 0), fmt.Errorf("error in finding parking admin with given id, %w", err)
-	}
-	Whitelists, err := repository.GetWhitelists(ctx, parkingId)
-	if err != nil {
-		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
-	}
-	return Whitelists, nil
-}
+//func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Whitelist, error) {
+//	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
+//	if err != nil {
+//		if errors.Is(err, repository.ErrNotFound) {
+//			return make([]entity.Whitelist, 0), ErrNotFound
+//		}
+//		return make([]entity.Whitelist, 0), fmt.Errorf("error in finding parking admin with given id, %w", err)
+//	}
+//	Whitelists, err := repository.GetWhitelists(ctx, parkingId)
+//	if err != nil {
+//		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+//	}
+//	return Whitelists, nil
+//}
 
-func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
-	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return ErrNotFound
-		}
-		return fmt.Errorf("error in finding parking admin with given id, %w", err)
-	}
-
-	err = repository.DeleteWhitelist(ctx, parkingId, req.CarTag)
-	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return ErrNotFound
-		}
-		return fmt.Errorf("error in finding Whitelist with given id, %w", err)
-	}
-	return nil
-}
+//func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
+//	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
+//	if err != nil {
+//		if errors.Is(err, repository.ErrNotFound) {
+//			return ErrNotFound
+//		}
+//		return fmt.Errorf("error in finding parking admin with given id, %w", err)
+//	}
+//
+//	err = repository.DeleteWhitelist(ctx, parkingId, req.CarTag)
+//	if err != nil {
+//		if errors.Is(err, repository.ErrNotFound) {
+//			return ErrNotFound
+//		}
+//		return fmt.Errorf("error in finding Whitelist with given id, %w", err)
+//	}
+//	return nil
+//}

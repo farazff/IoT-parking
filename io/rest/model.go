@@ -256,73 +256,51 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 }
 
 type Zone struct {
-	FId               int `json:"id"`
-	FPID              uuid.UUID
-	FCapacity         int        `json:"capacity" validate:"gtefield=FRemainedCapacity"`
-	FRemainedCapacity int        `json:"remained_capacity"`
-	FEnabled          bool       `json:"enabled"`
-	FCreatedAt        time.Time  `json:"created-at"`
-	FUpdatedAt        time.Time  `json:"updated-at"`
-	FDeletedAt        *time.Time `json:"deleted-at"`
-	FAdminUuid        uuid.UUID  `json:"admin_uuid"`
+	FID               int  `json:"id"`
+	FCapacity         int  `json:"capacity" validate:"gtefield=FRemainedCapacity"`
+	FEnabled          bool `json:"enabled"`
+	FRemainedCapacity int  `json:"remained_capacity"`
+	FParkingID        int  `json:"parking_id"`
 }
 
-func (z Zone) AdminUuid() uuid.UUID {
-	return z.FAdminUuid
-}
-
-func (z Zone) Id() int {
-	return z.FId
-}
-
-func (z Zone) PID() uuid.UUID {
-	return z.FPID
+func (z Zone) ID() int {
+	return z.FID
 }
 
 func (z Zone) Capacity() int {
 	return z.FCapacity
 }
 
-func (z Zone) RemainedCapacity() int {
-	return z.FRemainedCapacity
-}
-
 func (z Zone) Enabled() bool {
 	return z.FEnabled
 }
 
-func (z Zone) CreatedAt() time.Time {
-	return z.FCreatedAt
+func (z Zone) RemainedCapacity() int {
+	return z.FRemainedCapacity
 }
 
-func (z Zone) UpdatedAt() time.Time {
-	return z.FUpdatedAt
-}
-
-func (z Zone) DeletedAt() *time.Time {
-	return z.FDeletedAt
+func (z Zone) ParkingID() int {
+	return z.FParkingID
 }
 
 type ZoneRes struct {
-	Id               int    `json:"id"`
-	PID              string `json:"parking_id,omitempty"`
-	Capacity         int    `json:"capacity"`
-	RemainedCapacity int    `json:"remained_capacity"`
-	Enabled          bool   `json:"enabled"`
+	ID               int  `json:"id"`
+	Capacity         int  `json:"capacity"`
+	Enabled          bool `json:"enabled"`
+	RemainedCapacity int  `json:"remained_capacity"`
+	ParkingID        int  `json:"parking_id,omitempty"`
 }
 
 func toZoneRes(zone entity.Zone, id int) ZoneRes {
 	response := ZoneRes{
-		Id:               zone.Id(),
+		ID:               zone.ID(),
 		Capacity:         zone.Capacity(),
-		RemainedCapacity: zone.RemainedCapacity(),
 		Enabled:          zone.Enabled(),
-	}
-	if zone.PID() != uuid.Nil {
-		response.PID = zone.PID().String()
+		RemainedCapacity: zone.RemainedCapacity(),
+		ParkingID:        zone.ParkingID(),
 	}
 	if id != -1 {
-		response.Id = id
+		response.ID = id
 	}
 	return response
 }

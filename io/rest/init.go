@@ -8,6 +8,12 @@ import (
 func init() {
 	rest.EchoGet("/health_check", healthCheck)
 
+	//rest.EchoPost("/v1/systemAdmin", createSystemAdmin, middleware.ApiKey)
+	//rest.EchoGet("/v1/systemAdmin/:id", getSystemAdmin, middleware.ApiKey)
+	//rest.EchoGet("/v1/systemAdmins", getSystemAdmins, middleware.ApiKey)
+	//rest.EchoPut("/v1/systemAdmin/:id", updateSystemAdmin, middleware.ApiKey)
+	//rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
+
 	rest.EchoPost("/v1/parking", createParking, middleware.AdminApiKey)
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.AdminApiKey)
 	rest.EchoGet("/v1/parkings", getParkings, middleware.AdminApiKey)
@@ -24,20 +30,15 @@ func init() {
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
+	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zoneEnter/:id", EnterZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zoneExit/:id", ExitZone, middleware.ApiKey)
-
-	//rest.EchoPost("/v1/systemAdmin", createSystemAdmin, middleware.ApiKey)
-	//rest.EchoGet("/v1/systemAdmin/:id", getSystemAdmin, middleware.ApiKey)
-	//rest.EchoGet("/v1/systemAdmins", getSystemAdmins, middleware.ApiKey)
-	//rest.EchoPut("/v1/systemAdmin/:id", updateSystemAdmin, middleware.ApiKey)
-	//rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
+	//rest.EchoPut("/v1/zoneEnter/:id", EnterZone, middleware.ApiKey)
+	//rest.EchoPut("/v1/zoneExit/:id", ExitZone, middleware.ApiKey)
 
 	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
-	rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
-	rest.EchoDelete("/v1/whitelist", deleteWhitelist, middleware.ApiKey)
+	//rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
+	//rest.EchoDelete("/v1/whitelist", deleteWhitelist, middleware.ApiKey)
 
 	rest.EchoPost("v1/carEnter", carEnter, middleware.ApiKey)
 	rest.EchoPut("v1/carExit", carExit, middleware.ApiKey)

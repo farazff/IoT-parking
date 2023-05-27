@@ -6,8 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
-
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
 	"github.com/lib/pq"
@@ -17,13 +15,12 @@ import (
 const (
 	createZoneQuery = `INSERT INTO Zones(parking_id, capacity, remained_capacity, enabled, created_at, updated_at) 
 							VALUES($1, $2, $3, $4, now(), now()) RETURNING id`
-	getZonesQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
-							FROM Zones WHERE deleted_at is NULL AND parking_id = $1`
-	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled, created_at, updated_at, deleted_at 
-							FROM Zones WHERE deleted_at is NULL AND id = $1`
+	getZonesQuery    = `SELECT id, parking_id, capacity, remained_capacity, enabled FROM Zones WHERE deleted_at is NULL AND parking_id = $1`
+	getZoneByIdQuery = `SELECT id, parking_id, capacity, remained_capacity, enabled 
+							FROM Zones WHERE deleted_at is NULL AND id = $1 AND parking_id = $2`
 	updateZoneQuery = `UPDATE Zones SET (capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, now()) 
-                			WHERE id = $1 and deleted_at is NULL`
-	deleteZoneQuery = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL`
+                			WHERE id = $1 and deleted_at is NULL AND parking_id = $5`
+	deleteZoneQuery = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL AND parking_id = $2`
 
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
 
@@ -32,14 +29,11 @@ const (
 	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1 where id = $1`
 )
 
-func (s *service) CreateZone(ctx context.Context, zone entity.Zone, PUuid uuid.UUID) (int, error) {
+func (s *service) CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error) {
 	var id int
 	err := db.WQueryRow(ctx, createZoneQuery,
-		PUuid, zone.Capacity(), zone.RemainedCapacity(), zone.Enabled()).Scan(&id)
+		parkingID, zone.Capacity(), zone.RemainedCapacity(), zone.Enabled()).Scan(&id)
 	if err != nil {
-		if err.(*pq.Error).Code == uniqueViolation {
-			return -1, fmt.Errorf("Zone already exist: %w", repository.ErrDuplicateEntity)
-		}
 		if err.(*pq.Error).Code == foreignKeyViolation {
 			return -1, repository.ErrParkingForeignKeyConstraint
 		}
@@ -48,9 +42,9 @@ func (s *service) CreateZone(ctx context.Context, zone entity.Zone, PUuid uuid.U
 	return id, nil
 }
 
-func (s *service) GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error) {
+func (s *service) GetZones(ctx context.Context, parkingID int) ([]entity.Zone, error) {
 	var ps []Zone
-	err := db.Select(ctx, &ps, getZonesQuery, parkingUUID)
+	err := db.Select(ctx, &ps, getZonesQuery, parkingID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound
@@ -65,9 +59,9 @@ func (s *service) GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity
 	return res, nil
 }
 
-func (s *service) UpdateZone(ctx context.Context, zone entity.Zone) error {
+func (s *service) UpdateZone(ctx context.Context, zone entity.Zone, parkingID int) error {
 	ans, err := db.Exec(ctx, updateZoneQuery,
-		zone.Id(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled())
+		zone.ID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled(), parkingID)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("system_admin already exist: %w", repository.ErrDuplicateEntity)
@@ -84,8 +78,8 @@ func (s *service) UpdateZone(ctx context.Context, zone entity.Zone) error {
 	return nil
 }
 
-func (s *service) DeleteZone(ctx context.Context, id int) error {
-	ans, err := db.Exec(ctx, deleteZoneQuery, id)
+func (s *service) DeleteZone(ctx context.Context, id int, parkingID int) error {
+	ans, err := db.Exec(ctx, deleteZoneQuery, id, parkingID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return repository.ErrNotFound
@@ -111,9 +105,9 @@ func (s *service) GetCapacitySum(ctx context.Context, id int) (int, error) {
 	return capacity, nil
 }
 
-func (s *service) GetZone(ctx context.Context, id int) (entity.Zone, error) {
+func (s *service) GetZone(ctx context.Context, id int, parkingId int) (entity.Zone, error) {
 	t := Zone{}
-	err := db.Get(ctx, &t, getZoneByIdQuery, id)
+	err := db.Get(ctx, &t, getZoneByIdQuery, id, parkingId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound

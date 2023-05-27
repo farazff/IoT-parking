@@ -26,6 +26,7 @@ const (
 	getParkingUUIDQuery            = `select parking_id from parking_admins where uuid = $1`
 	getParkingIdQueryByUuid        = `select parking_id from parking_admins where uuid = $1`
 	getParkingAdminPasswordByPhone = `SELECT password FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
+	getParkingAdminParkingByPhone  = `SELECT parking_id FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
 )
 
 func (s *service) CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin, uuid uuid.UUID) (int, error) {
@@ -143,4 +144,16 @@ func (s *service) GetParkingIdByUuid(ctx context.Context, AdminId uuid.UUID) (uu
 		return uuid.UUID{}, err
 	}
 	return parkingId, nil
+}
+
+func (s *service) GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error) {
+	var parkingID int
+	err := db.Get(ctx, &parkingID, getParkingAdminParkingByPhone, phone)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return -1, repository.ErrNotFound
+		}
+		return -1, err
+	}
+	return parkingID, nil
 }

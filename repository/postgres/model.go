@@ -151,26 +151,19 @@ func (pa ParkingAdmin) DeletedAt() *time.Time {
 }
 
 type Zone struct {
-	DBId               int        `db:"id"`
-	DBPID              uuid.UUID  `db:"parking_id"`
-	DBCapacity         int        `db:"capacity"`
-	DBRemainedCapacity int        `db:"remained_capacity"`
-	DBEnabled          bool       `db:"enabled"`
-	DBCreatedAt        time.Time  `db:"created_at"`
-	DBUpdatedAt        time.Time  `db:"updated_at"`
-	DBDeletedAt        *time.Time `db:"deleted_at"`
+	DBId               int  `db:"id"`
+	DBParkingID        int  `db:"parking_id"`
+	DBCapacity         int  `db:"capacity"`
+	DBRemainedCapacity int  `db:"remained_capacity"`
+	DBEnabled          bool `db:"enabled"`
 }
 
-func (z Zone) AdminUuid() uuid.UUID {
-	return uuid.UUID{}
+func (z Zone) ParkingID() int {
+	return z.DBParkingID
 }
 
-func (z Zone) Id() int {
+func (z Zone) ID() int {
 	return z.DBId
-}
-
-func (z Zone) PID() uuid.UUID {
-	return z.DBPID
 }
 
 func (z Zone) Capacity() int {
@@ -183,18 +176,6 @@ func (z Zone) RemainedCapacity() int {
 
 func (z Zone) Enabled() bool {
 	return z.DBEnabled
-}
-
-func (z Zone) CreatedAt() time.Time {
-	return z.DBCreatedAt
-}
-
-func (z Zone) UpdatedAt() time.Time {
-	return z.DBUpdatedAt
-}
-
-func (z Zone) DeletedAt() *time.Time {
-	return z.DBDeletedAt
 }
 
 type Whitelist struct {

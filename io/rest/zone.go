@@ -6,13 +6,25 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
 )
 
 func createZone(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	z := new(Zone)
 	if err := c.Bind(z); err != nil {
 		lg.Error(err)
@@ -28,7 +40,7 @@ func createZone(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateZone(c.Request().Context(), z)
+	id, parkingID, err := manager.CreateZone(c.Request().Context(), z, phone)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -39,12 +51,12 @@ func createZone(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toZoneRes(z, id))
+	z.FParkingID = parkingID
+	return c.JSON(http.StatusCreated, echo.Map{"zone": toZoneRes(z, id)})
 }
 
 func getZones(c echo.Context) error {
-
-	_, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
@@ -57,23 +69,59 @@ func getZones(c echo.Context) error {
 		Expires: time.Now().Add(120 * time.Second),
 	})
 
-	AC := new(entity.WhitelistGetReq)
-	if err := c.Bind(AC); err != nil {
-		lg.Error(err)
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-	Zones, err := manager.GetZones(c.Request().Context(), AC.AdminCode)
+	zones, err := manager.GetZones(c.Request().Context(), phone)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toZoneResSlice(Zones))
+	return c.JSON(http.StatusOK, echo.Map{"zones": toZoneResSlice(zones)})
+}
+
+func getZone(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
+	zoneID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	zone, err := manager.GetZone(c.Request().Context(), int(zoneID), phone)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"zone": toZoneRes(zone, -1)})
 }
 
 func updateZone(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	z := new(Zone)
 	if err := c.Bind(z); err != nil {
 		lg.Error(err)
@@ -82,15 +130,15 @@ func updateZone(c echo.Context) error {
 		})
 	}
 
-	pid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	zoneID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	z.FId = int(pid)
+	z.FID = int(zoneID)
 
-	err = manager.UpdateZone(c.Request().Context(), z)
+	err = manager.UpdateZone(c.Request().Context(), z, phone)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -107,10 +155,23 @@ func updateZone(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toZoneRes(z, -1))
+	return c.JSON(http.StatusCreated, echo.Map{"zone": toZoneRes(z, -1)})
 }
 
 func deleteZone(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	ZoneID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -118,15 +179,7 @@ func deleteZone(c echo.Context) error {
 		})
 	}
 
-	zD := new(entity.ZoneDelete)
-	if err := c.Bind(zD); err != nil {
-		lg.Error(err)
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	err = manager.DeleteZone(c.Request().Context(), ZoneID, zD.AdminUUID)
+	err = manager.DeleteZone(c.Request().Context(), ZoneID, phone)
 	if err != nil {
 		lg.Error(err)
 		if errors.Is(err, manager.ErrNotFound) {
@@ -143,38 +196,38 @@ func deleteZone(c echo.Context) error {
 	})
 }
 
-func EnterZone(c echo.Context) error {
-	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	err = manager.EnterZone(c.Request().Context(), int(zid))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
-}
-
-func ExitZone(c echo.Context) error {
-	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	err = manager.ExitZone(c.Request().Context(), int(zid))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
-}
+//func EnterZone(c echo.Context) error {
+//	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+//	if err != nil {
+//		return c.JSON(http.StatusBadRequest, echo.Map{
+//			"message": err.Error(),
+//		})
+//	}
+//
+//	err = manager.EnterZone(c.Request().Context(), int(zid))
+//	if err != nil {
+//		return c.JSON(http.StatusInternalServerError, echo.Map{
+//			"message": err.Error(),
+//		})
+//	}
+//
+//	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
+//}
+//
+//func ExitZone(c echo.Context) error {
+//	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
+//	if err != nil {
+//		return c.JSON(http.StatusBadRequest, echo.Map{
+//			"message": err.Error(),
+//		})
+//	}
+//
+//	err = manager.ExitZone(c.Request().Context(), int(zid))
+//	if err != nil {
+//		return c.JSON(http.StatusInternalServerError, echo.Map{
+//			"message": err.Error(),
+//		})
+//	}
+//
+//	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
+//}

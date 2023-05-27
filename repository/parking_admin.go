@@ -48,3 +48,7 @@ func GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error)
 func GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error) {
 	return ParkingAdminR.GetParkingIdByUuid(ctx, adminId)
 }
+
+func GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error) {
+	return ParkingAdminR.GetParkingAdminParkingByPhone(ctx, phone)
+}

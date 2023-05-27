@@ -31,14 +31,15 @@ type ParkingAdminRepository interface {
 	DeleteParkingAdmin(ctx context.Context, id int) error
 	GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error)
 	GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error)
+	GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error)
 }
 
 type ZoneRepository interface {
-	CreateZone(ctx context.Context, zone entity.Zone, pUuid uuid.UUID) (int, error)
-	GetZones(ctx context.Context, parkingUUID uuid.UUID) ([]entity.Zone, error)
-	GetZone(ctx context.Context, id int) (entity.Zone, error)
-	UpdateZone(ctx context.Context, zone entity.Zone) error
-	DeleteZone(ctx context.Context, id int) error
+	CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error)
+	GetZones(ctx context.Context, parkingID int) ([]entity.Zone, error)
+	GetZone(ctx context.Context, id int, parkingID int) (entity.Zone, error)
+	UpdateZone(ctx context.Context, zone entity.Zone, parkingID int) error
+	DeleteZone(ctx context.Context, id int, parkingID int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
 	ZoneCarEnter(ctx context.Context, zoneID int) error
 	ZoneCarExit(ctx context.Context, zoneID int) error
