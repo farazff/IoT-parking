@@ -33,8 +33,8 @@ func init() {
 	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
-	//rest.EchoPut("/v1/zoneEnter/:id", EnterZone, middleware.ApiKey)
-	//rest.EchoPut("/v1/zoneExit/:id", ExitZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneEnter/:id/:uuid", EnterZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneExit/:id/:uuid", ExitZone, middleware.ApiKey)
 
 	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
 	//rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)

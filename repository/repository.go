@@ -41,8 +41,8 @@ type ZoneRepository interface {
 	UpdateZone(ctx context.Context, zone entity.Zone, parkingID int) error
 	DeleteZone(ctx context.Context, id int, parkingID int) error
 	GetCapacitySum(ctx context.Context, id int) (int, error)
-	ZoneCarEnter(ctx context.Context, zoneID int) error
-	ZoneCarExit(ctx context.Context, zoneID int) error
+	ZoneCarEnter(ctx context.Context, zoneID int, parkingUUID string) error
+	ZoneCarExit(ctx context.Context, zoneID int, parkingUUID string) error
 }
 
 type WhitelistRepository interface {

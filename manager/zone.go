@@ -87,18 +87,25 @@ func DeleteZone(ctx context.Context, id int, phone string) error {
 	return nil
 }
 
-//func EnterZone(ctx context.Context, zoneID int) error {
-//	err := repository.ZoneCarEnter(ctx, zoneID)
-//	if err != nil {
-//		return ErrInternalServer
-//	}
-//	return nil
-//}
-//
-//func ExitZone(ctx context.Context, zoneID int) error {
-//	err := repository.ZoneCarExit(ctx, zoneID)
-//	if err != nil {
-//		return ErrInternalServer
-//	}
-//	return nil
-//}
+func EnterZone(ctx context.Context, zoneID int, parkingUUID string) error {
+
+	err := repository.ZoneCarEnter(ctx, zoneID, parkingUUID)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return ErrNotFound
+		}
+		return ErrInternalServer
+	}
+	return nil
+}
+
+func ExitZone(ctx context.Context, zoneID int, parkingUUID string) error {
+	err := repository.ZoneCarExit(ctx, zoneID, parkingUUID)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return ErrNotFound
+		}
+		return ErrInternalServer
+	}
+	return nil
+}

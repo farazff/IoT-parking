@@ -20,13 +20,12 @@ const (
 							FROM Zones WHERE deleted_at is NULL AND id = $1 AND parking_id = $2`
 	updateZoneQuery = `UPDATE Zones SET (capacity, remained_capacity, enabled, updated_at) = ($2, $3, $4, now()) 
                 			WHERE id = $1 and deleted_at is NULL AND parking_id = $5`
-	deleteZoneQuery = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL AND parking_id = $2`
-
+	deleteZoneQuery     = `UPDATE Zones SET deleted_at = now() WHERE id = $1 and deleted_at is NULL AND parking_id = $2`
 	getCapacitySumQuery = `select sum(capacity) FROM zones WHERE parking_id = $1 and enabled = true`
-
-	carEnterToZoneQuery = `update zones set remained_capacity = remained_capacity - 1 where id = $1`
-
-	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1 where id = $1`
+	carEnterToZoneQuery = `update zones set remained_capacity = remained_capacity - 1
+             where id = $1 AND $1 in (select zones.id from zones inner join parkings p on p.id = zones.parking_id where uuid = $2)`
+	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1
+             where id = $1 AND $1 in (select zones.id from zones inner join parkings p on p.id = zones.parking_id where uuid = $2)`
 )
 
 func (s *service) CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error) {
@@ -118,18 +117,26 @@ func (s *service) GetZone(ctx context.Context, id int, parkingId int) (entity.Zo
 	return t, nil
 }
 
-func (s *service) ZoneCarEnter(ctx context.Context, zoneID int) error {
-	_, err := db.Exec(ctx, carEnterToZoneQuery, zoneID)
+func (s *service) ZoneCarEnter(ctx context.Context, zoneID int, parkingUUID string) error {
+	ans, err := db.Exec(ctx, carEnterToZoneQuery, zoneID, parkingUUID)
 	if err != nil {
 		return err
+	}
+	affected, err := ans.RowsAffected()
+	if int(affected) < 1 {
+		return repository.ErrNotFound
 	}
 	return nil
 }
 
-func (s *service) ZoneCarExit(ctx context.Context, zoneID int) error {
-	_, err := db.Exec(ctx, carExitFromZoneQuery, zoneID)
+func (s *service) ZoneCarExit(ctx context.Context, zoneID int, parkingUUID string) error {
+	ans, err := db.Exec(ctx, carExitFromZoneQuery, zoneID, parkingUUID)
 	if err != nil {
 		return err
+	}
+	affected, err := ans.RowsAffected()
+	if int(affected) < 1 {
+		return repository.ErrNotFound
 	}
 	return nil
 }

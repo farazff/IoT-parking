@@ -40,10 +40,10 @@ func GetZone(ctx context.Context, id int, parkingID int) (entity.Zone, error) {
 	return ZoneR.GetZone(ctx, id, parkingID)
 }
 
-func ZoneCarEnter(ctx context.Context, ZoneID int) error {
-	return ZoneR.ZoneCarEnter(ctx, ZoneID)
+func ZoneCarEnter(ctx context.Context, ZoneID int, parkingUUID string) error {
+	return ZoneR.ZoneCarEnter(ctx, ZoneID, parkingUUID)
 }
 
-func ZoneCarExit(ctx context.Context, ZoneID int) error {
-	return ZoneR.ZoneCarExit(ctx, ZoneID)
+func ZoneCarExit(ctx context.Context, ZoneID int, parkingUUID string) error {
+	return ZoneR.ZoneCarExit(ctx, ZoneID, parkingUUID)
 }
