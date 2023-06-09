@@ -8,7 +8,7 @@ So, for staring the database container, we need to run the following command:
 ```code
 docker run --rm --name parking-db -e POSTGRES_PASSWORD=admin -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data  postgres
 ```
-After that we need to start the redis container whit the following command:
+After that we need to start the redis container with the following command:
 ```code
 docker run --rm --name parking-redis -d -p 6379:6379 redis
 ```
