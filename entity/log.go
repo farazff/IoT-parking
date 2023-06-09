@@ -10,7 +10,7 @@ type Log interface {
 	CarTag() string
 	EnterTime() time.Time
 	ExitTime() *time.Time
-	PID() uuid.UUID
+	ParkingUUID() uuid.UUID
 }
 
 type CarExit struct {

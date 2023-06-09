@@ -1,9 +1,7 @@
 package entity
 
-import "github.com/google/uuid"
-
 type Whitelist interface {
-	Id() int
-	PID() uuid.UUID
+	ID() int
+	ParkingID() int
 	CarTag() string
 }

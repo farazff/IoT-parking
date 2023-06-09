@@ -4,21 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/google/uuid"
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode uuid.UUID) (int, error) {
-	parkingUUID, err := GetParkingUUID(ctx, adminCode)
+func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, phone string) (int, error) {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
 	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return 0, ErrNotFound
-		}
-		return 0, fmt.Errorf("error in finding parking admin with given id, %w", err)
+		return -1, err
 	}
-	id, err := repository.CreateWhitelist(ctx, Whitelist, parkingUUID)
+
+	id, err := repository.CreateWhitelist(ctx, Whitelist, parkingID)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
 			return id, ErrDuplicateEntity
@@ -29,36 +27,31 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, adminCode 
 	return id, nil
 }
 
-//func GetWhitelists(ctx context.Context, req entity.WhitelistGetReq) ([]entity.Whitelist, error) {
-//	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
-//	if err != nil {
-//		if errors.Is(err, repository.ErrNotFound) {
-//			return make([]entity.Whitelist, 0), ErrNotFound
-//		}
-//		return make([]entity.Whitelist, 0), fmt.Errorf("error in finding parking admin with given id, %w", err)
-//	}
-//	Whitelists, err := repository.GetWhitelists(ctx, parkingId)
-//	if err != nil {
-//		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
-//	}
-//	return Whitelists, nil
-//}
+func GetWhitelists(ctx context.Context, phone string) ([]entity.Whitelist, error) {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	if err != nil {
+		return nil, err
+	}
 
-//func DeleteWhitelist(ctx context.Context, req entity.WhitelistDeleteReq) error {
-//	parkingId, err := GetParkingUUID(ctx, req.AdminCode)
-//	if err != nil {
-//		if errors.Is(err, repository.ErrNotFound) {
-//			return ErrNotFound
-//		}
-//		return fmt.Errorf("error in finding parking admin with given id, %w", err)
-//	}
-//
-//	err = repository.DeleteWhitelist(ctx, parkingId, req.CarTag)
-//	if err != nil {
-//		if errors.Is(err, repository.ErrNotFound) {
-//			return ErrNotFound
-//		}
-//		return fmt.Errorf("error in finding Whitelist with given id, %w", err)
-//	}
-//	return nil
-//}
+	Whitelists, err := repository.GetWhitelists(ctx, parkingID)
+	if err != nil {
+		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+	}
+	return Whitelists, nil
+}
+
+func DeleteWhitelist(ctx context.Context, whiteListID int, phone string) error {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	if err != nil {
+		return err
+	}
+
+	err = repository.DeleteWhitelist(ctx, parkingID, whiteListID)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return ErrNotFound
+		}
+		return fmt.Errorf("error in finding Whitelist with given id, %w", err)
+	}
+	return nil
+}

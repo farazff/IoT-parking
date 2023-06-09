@@ -16,13 +16,13 @@ import (
 const (
 	createWhitelistQuery = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
 	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE parking_id = $1`
-	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND car_tag = $2`
+	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
 	isCarWhiteListQuery  = `SELECT count(*) from whitelists where parking_id = $1 and car_tag = $2`
 )
 
-func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingUUID uuid.UUID) (int, error) {
+func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingID int) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createWhitelistQuery, parkingUUID, Whitelist.CarTag()).Scan(&id)
+	err := db.WQueryRow(ctx, createWhitelistQuery, parkingID, Whitelist.CarTag()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Whitelist already exist: %w", repository.ErrDuplicateEntity)
@@ -32,9 +32,9 @@ func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelis
 	return id, nil
 }
 
-func (s *service) GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]entity.Whitelist, error) {
+func (s *service) GetWhitelists(ctx context.Context, parkingID int) ([]entity.Whitelist, error) {
 	var ps []Whitelist
-	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingId)
+	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound
@@ -49,8 +49,8 @@ func (s *service) GetWhitelists(ctx context.Context, parkingId uuid.UUID) ([]ent
 	return res, nil
 }
 
-func (s *service) DeleteWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) error {
-	ans, err := db.Exec(ctx, deleteWhitelistQuery, parkingId, carTag)
+func (s *service) DeleteWhitelist(ctx context.Context, parkingID int, whiteListID int) error {
+	ans, err := db.Exec(ctx, deleteWhitelistQuery, parkingID, whiteListID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return repository.ErrNotFound

@@ -314,22 +314,17 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 }
 
 type Whitelist struct {
-	FId     int       `json:"id"`
-	FPID    uuid.UUID `json:"parking_id"`
-	FCarTag string    `json:"car_tag" validate:"required"`
+	FID        int    `json:"id"`
+	FParkingID int    `json:"parking_id validate:"required"`
+	FCarTag    string `json:"car_tag" validate:"required"`
 }
 
-type WhitelistCreateReq struct {
-	Whitelist
-	AdminCode uuid.UUID `json:"admin_code" validate:"required"`
+func (w Whitelist) ID() int {
+	return w.FID
 }
 
-func (w Whitelist) Id() int {
-	return w.FId
-}
-
-func (w Whitelist) PID() uuid.UUID {
-	return w.FPID
+func (w Whitelist) ParkingID() int {
+	return w.FParkingID
 }
 
 func (w Whitelist) CarTag() string {
@@ -337,19 +332,19 @@ func (w Whitelist) CarTag() string {
 }
 
 type WhitelistRes struct {
-	Id     int       `json:"id"`
-	PID    uuid.UUID `json:"parking_id"`
-	CarTag string    `json:"car_tag"`
+	ID        int    `json:"id"`
+	ParkingID int    `json:"parking_id"`
+	CarTag    string `json:"car_tag"`
 }
 
 func toWhitelistRes(whitelist entity.Whitelist, id int) WhitelistRes {
 	response := WhitelistRes{
-		Id:     whitelist.Id(),
-		PID:    whitelist.PID(),
-		CarTag: whitelist.CarTag(),
+		ID:        whitelist.ID(),
+		ParkingID: whitelist.ParkingID(),
+		CarTag:    whitelist.CarTag(),
 	}
 	if id != -1 {
-		response.Id = id
+		response.ID = id
 	}
 	return response
 }
@@ -386,7 +381,7 @@ func (l Log) ExitTime() *time.Time {
 	return l.FExitTime
 }
 
-func (l Log) PID() uuid.UUID {
+func (l Log) ParkingUUID() uuid.UUID {
 	return l.FPID
 }
 
@@ -404,7 +399,7 @@ func toLogRes(log entity.Log, id int) LogRes {
 		CarTag:    log.CarTag(),
 		EnterTime: log.EnterTime(),
 		ExitTime:  log.ExitTime(),
-		PID:       log.PID(),
+		PID:       log.ParkingUUID(),
 	}
 	if id != -1 {
 		response.Id = id

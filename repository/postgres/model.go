@@ -179,17 +179,17 @@ func (z Zone) Enabled() bool {
 }
 
 type Whitelist struct {
-	DBId     int       `db:"id"`
-	DBPID    uuid.UUID `db:"parking_id"`
-	DBCarTag string    `db:"car_tag"`
+	DBID        int    `db:"id"`
+	DBParkingID int    `db:"parking_id"`
+	DBCarTag    string `db:"car_tag"`
 }
 
-func (w Whitelist) Id() int {
-	return w.DBId
+func (w Whitelist) ID() int {
+	return w.DBID
 }
 
-func (w Whitelist) PID() uuid.UUID {
-	return w.DBPID
+func (w Whitelist) ParkingID() int {
+	return w.DBParkingID
 }
 
 func (w Whitelist) CarTag() string {
@@ -220,6 +220,6 @@ func (l Log) ExitTime() *time.Time {
 	return l.DBExitTime
 }
 
-func (l Log) PID() uuid.UUID {
+func (l Log) ParkingUUID() uuid.UUID {
 	return l.DBPID
 }
