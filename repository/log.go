@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/farazff/IoT-parking/entity"
+	"github.com/google/uuid"
 )
 
 var logR LogRepository
@@ -16,10 +17,10 @@ func RegisterLog(p LogRepository) error {
 	return nil
 }
 
-func CarEnter(ctx context.Context, log entity.Log) (int, error) {
-	return logR.CarEnter(ctx, log)
+func CarEnter(ctx context.Context, log entity.Log, parkingUUID uuid.UUID) (int, error) {
+	return logR.CarEnter(ctx, log, parkingUUID)
 }
 
-func CarExit(ctx context.Context, pId int, carTag string) error {
-	return logR.CarExit(ctx, pId, carTag)
+func CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error {
+	return logR.CarExit(ctx, parkingUUID, carTag)
 }

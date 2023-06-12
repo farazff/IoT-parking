@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
@@ -16,7 +17,8 @@ const (
 	createWhitelistQuery = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
 	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE parking_id = $1`
 	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
-	isCarWhiteListQuery  = `SELECT count(*) from whitelists where parking_id = $1 and car_tag = $2`
+	isCarWhiteListQuery  = `SELECT count(*) from whitelists where 
+                            	parking_id = (SELECT id from parkings where uuid = $1) and car_tag = $2`
 )
 
 func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingID int) (int, error) {
@@ -63,9 +65,9 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingID int, whiteListI
 	return nil
 }
 
-func (s *service) IsCarWhitelist(ctx context.Context, parkingID int, carTag string) (bool, error) {
+func (s *service) IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, carTag string) (bool, error) {
 	var count int
-	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingID, carTag)
+	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingUUID, carTag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, fmt.Errorf("log not found: %w", repository.ErrNotFound)

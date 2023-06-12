@@ -11,8 +11,3 @@ type Log interface {
 	ExitTime() *time.Time
 	ParkingID() int
 }
-
-type CarExit struct {
-	ParkingId int    `json:"parking_id"`
-	CarTag    string `json:"car_tag"`
-}

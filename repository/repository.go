@@ -50,10 +50,10 @@ type WhitelistRepository interface {
 	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist, parkingID int) (int, error)
 	GetWhitelists(ctx context.Context, parkingID int) ([]entity.Whitelist, error)
 	DeleteWhitelist(ctx context.Context, parkingID int, whiteListID int) error
-	IsCarWhitelist(ct context.Context, parkingID int, carTag string) (bool, error)
+	IsCarWhitelist(ct context.Context, parkingUUID uuid.UUID, carTag string) (bool, error)
 }
 
 type LogRepository interface {
-	CarEnter(ctx context.Context, log entity.Log) (int, error)
-	CarExit(ctx context.Context, pId int, carTag string) error
+	CarEnter(ctx context.Context, log entity.Log, parkingUUID uuid.UUID) (int, error)
+	CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error
 }

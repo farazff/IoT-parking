@@ -315,7 +315,7 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 
 type Whitelist struct {
 	FID        int    `json:"id"`
-	FParkingID int    `json:"parking_id validate:"required"`
+	FParkingID int    `json:"parking_id`
 	FCarTag    string `json:"car_tag" validate:"required"`
 }
 
@@ -359,7 +359,7 @@ func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
 
 type Log struct {
 	FID        int        `json:"id"`
-	FCarTag    string     `json:"car_tag validate:required"`
+	FCarTag    string     `json:"car_tag, validate:required"`
 	FEnterTime time.Time  `json:"enter_time"`
 	FExitTime  *time.Time `json:"exit_time,omitempty"`
 	FParkingID int        `json:"parking_id"`

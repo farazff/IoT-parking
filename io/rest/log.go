@@ -2,9 +2,9 @@ package rest
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"net/http"
 
-	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
@@ -19,7 +19,15 @@ func carEnter(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CarEnter(c.Request().Context(), l)
+	parkingUUIDStr := c.Param("uuid")
+	parkingUUID, err := uuid.Parse(parkingUUIDStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	id, err := manager.CarEnter(c.Request().Context(), l, parkingUUID)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -39,7 +47,7 @@ func carEnter(c echo.Context) error {
 }
 
 func carExit(c echo.Context) error {
-	ce := new(entity.CarExit)
+	ce := new(Log)
 	err := c.Bind(ce)
 	if err != nil {
 		lg.Error(err)
@@ -47,7 +55,16 @@ func carExit(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	err = manager.CarExit(c.Request().Context(), ce.ParkingId, ce.CarTag)
+
+	parkingUUIDStr := c.Param("uuid")
+	parkingUUID, err := uuid.Parse(parkingUUIDStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err = manager.CarExit(c.Request().Context(), parkingUUID, ce.CarTag())
 	if err != nil {
 		lg.Error(err)
 		if errors.Is(err, manager.ErrNotFound) {

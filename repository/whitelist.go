@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
 
 	"github.com/farazff/IoT-parking/entity"
 )
@@ -29,6 +30,6 @@ func DeleteWhitelist(ctx context.Context, parkingID int, whitelistID int) error 
 	return WhitelistR.DeleteWhitelist(ctx, parkingID, whitelistID)
 }
 
-func IsCarWhitelist(ctx context.Context, parkingID int, carTag string) (bool, error) {
-	return WhitelistR.IsCarWhitelist(ctx, parkingID, carTag)
+func IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, carTag string) (bool, error) {
+	return WhitelistR.IsCarWhitelist(ctx, parkingUUID, carTag)
 }
