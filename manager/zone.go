@@ -88,7 +88,6 @@ func DeleteZone(ctx context.Context, id int, phone string) error {
 }
 
 func EnterZone(ctx context.Context, zoneID int, parkingUUID string) error {
-
 	err := repository.ZoneCarEnter(ctx, zoneID, parkingUUID)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {

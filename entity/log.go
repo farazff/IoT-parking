@@ -1,16 +1,15 @@
 package entity
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Log interface {
-	Id() int
+	ID() int
 	CarTag() string
 	EnterTime() time.Time
 	ExitTime() *time.Time
-	ParkingUUID() uuid.UUID
+	ParkingID() int
 }
 
 type CarExit struct {

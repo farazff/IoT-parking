@@ -11,13 +11,14 @@ import (
 )
 
 const (
-	carEnterQuery = `INSERT INTO logs(car_tag, enter_time, parking_id) VALUES($1, NOW(), $2) RETURNING id`
-	carExitQuery  = `UPDATE logs SET (exit_time) = (now()) WHERE parking_id = $1 AND car_tag = $2`
+	carEnterQuery = `INSERT INTO logs(car_tag, enter_time, parking_id) VALUES($1, 
+                                            NOW(), (SELECT id FROM parkings WHERE uuid = $2)) RETURNING id`
+	carExitQuery = `UPDATE logs SET (exit_time) = (NOW()) WHERE parking_id = $1 AND car_tag = $2`
 )
 
 func (s *service) CarEnter(ctx context.Context, log entity.Log) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), log.ParkingUUID()).Scan(&id)
+	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), log.ParkingID()).Scan(&id)
 	if err != nil {
 		return -1, err
 	}

@@ -8,7 +8,6 @@ import (
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/okian/servo/v2/db"
 )
@@ -64,9 +63,9 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingID int, whiteListI
 	return nil
 }
 
-func (s *service) IsCarWhitelist(ctx context.Context, parkingId uuid.UUID, carTag string) (bool, error) {
+func (s *service) IsCarWhitelist(ctx context.Context, parkingID int, carTag string) (bool, error) {
 	var count int
-	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingId, carTag)
+	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingID, carTag)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, fmt.Errorf("log not found: %w", repository.ErrNotFound)

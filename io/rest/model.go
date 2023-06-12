@@ -358,15 +358,15 @@ func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
 }
 
 type Log struct {
-	FId        int        `json:"id"`
-	FCarTag    string     `json:"car_tag"`
+	FID        int        `json:"id"`
+	FCarTag    string     `json:"car_tag validate:required"`
 	FEnterTime time.Time  `json:"enter_time"`
 	FExitTime  *time.Time `json:"exit_time,omitempty"`
-	FPID       uuid.UUID  `json:"parking_id"`
+	FParkingID int        `json:"parking_id"`
 }
 
-func (l Log) Id() int {
-	return l.FId
+func (l Log) ID() int {
+	return l.FID
 }
 
 func (l Log) CarTag() string {
@@ -381,28 +381,28 @@ func (l Log) ExitTime() *time.Time {
 	return l.FExitTime
 }
 
-func (l Log) ParkingUUID() uuid.UUID {
-	return l.FPID
+func (l Log) ParkingID() int {
+	return l.FParkingID
 }
 
 type LogRes struct {
-	Id        int        `json:"id"`
+	ID        int        `json:"id"`
 	CarTag    string     `json:"car_tag"`
 	EnterTime time.Time  `json:"enter_time"`
 	ExitTime  *time.Time `json:"exit_time,omitempty"`
-	PID       uuid.UUID  `json:"parking_id"`
+	ParkingID int        `json:"parking_id"`
 }
 
 func toLogRes(log entity.Log, id int) LogRes {
 	response := LogRes{
-		Id:        log.Id(),
+		ID:        log.ID(),
 		CarTag:    log.CarTag(),
 		EnterTime: log.EnterTime(),
 		ExitTime:  log.ExitTime(),
-		PID:       log.ParkingUUID(),
+		ParkingID: log.ParkingID(),
 	}
 	if id != -1 {
-		response.Id = id
+		response.ID = id
 	}
 	return response
 }

@@ -2,11 +2,12 @@ package rest
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
-	"net/http"
 )
 
 func carEnter(c echo.Context) error {
