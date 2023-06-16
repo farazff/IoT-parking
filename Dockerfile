@@ -2,23 +2,19 @@ FROM golang:latest AS build
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
 RUN go mod download
 
 COPY . ./
 
-RUN go build -o /docker-gs-ping
+RUN go build -o /binary
 
 ## Deploy
-FROM gcr.io/distroless/base-debian10
+FROM golang:latest
 
 WORKDIR /
 
-COPY --from=build /docker-gs-ping /docker-gs-ping
+COPY --from=build /binary /binary
 
 EXPOSE 8080
 
-USER nonroot:nonroot
-
-ENTRYPOINT ["/docker-gs-ping", "serve"]
+ENTRYPOINT ["/binary", "serve"]
