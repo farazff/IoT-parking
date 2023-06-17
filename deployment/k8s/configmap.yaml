@@ -32,3 +32,6 @@ data:
   DEBUG: 'true'
   API_KEY: 'user'
   ADMIN_API_KEY: 'admin'
+  REDIS_HOST: 'redis'
+  REDIS_PORT: '6379'
+

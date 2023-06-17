@@ -27,11 +27,13 @@ data:
   REST_MIDDLEWARE_GZIP: 'false'
   REST_MIDDLEWARE_RECOVER: 'true'
   REST_MIDDLEWARE_REMOVE_TRAILING_SLASH: 'true'
-  REST_PORT: '8080'
+  REST_PORT: '65432'
   REST_VALIDATOR: 'true'
   DEBUG: 'true'
   API_KEY: 'user'
   ADMIN_API_KEY: 'admin'
+  REDIS_HOST: 'redis'
+  REDIS_PORT: '6379'
 
 ---
 
@@ -55,7 +57,7 @@ spec:
         app: parking
     spec:
       containers:
-        - image: farazff/parking:1.2
+        - image: farazff/parking:1.3
           name: parking
           imagePullPolicy: IfNotPresent
           resources:

@@ -2,8 +2,6 @@ FROM golang:latest AS build
 
 WORKDIR /app
 
-RUN go mod download
-
 COPY . ./
 
 RUN go build -o /binary
