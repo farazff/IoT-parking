@@ -72,7 +72,7 @@ func (s *service) GetParkings(ctx context.Context) ([]entity.Parking, error) {
 
 func (s *service) UpdateParking(ctx context.Context, parking entity.Parking) error {
 	ans, err := db.Exec(ctx, updateParkingQuery,
-		parking.Id(), parking.Name(), parking.Address(), parking.Phone(), parking.Enabled())
+		parking.ID(), parking.Name(), parking.Address(), parking.Phone(), parking.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("parking already exist: %w", repository.ErrDuplicateEntity)

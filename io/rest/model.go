@@ -8,19 +8,19 @@ import (
 )
 
 type Parking struct {
-	FId        int        `json:"id"`
+	FID        int        `json:"id"`
 	FName      string     `json:"name"`
 	FAddress   string     `json:"address"`
 	FPhone     string     `json:"phone"`
 	FEnabled   bool       `json:"enabled"`
 	FCreatedAt time.Time  `json:"createdAt"`
 	FUpdatedAt time.Time  `json:"updatedAt"`
-	FDeletedAt *time.Time `json:"deletedAt,omitempty"`
+	FDeletedAt *time.Time `json:"deletedAt"`
 	FUuid      uuid.UUID  `json:"uuid"`
 }
 
-func (p Parking) Id() int {
-	return p.FId
+func (p Parking) ID() int {
+	return p.FID
 }
 
 func (p Parking) Name() string {
@@ -67,7 +67,7 @@ type ParkingRes struct {
 
 func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) ParkingRes {
 	response := ParkingRes{
-		Id:       parking.Id(),
+		Id:       parking.ID(),
 		Name:     parking.Name(),
 		Address:  parking.Address(),
 		Phone:    parking.Phone(),

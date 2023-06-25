@@ -8,6 +8,7 @@ import (
 	"github.com/okian/servo/v2/lg"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func healthCheck(c echo.Context) error {
@@ -15,6 +16,19 @@ func healthCheck(c echo.Context) error {
 }
 
 func createParking(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	p := new(Parking)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -22,7 +36,7 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	id, uuid, err := manager.CreateParking(c.Request().Context(), p)
+	id, Puuid, err := manager.CreateParking(c.Request().Context(), p)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -33,11 +47,23 @@ func createParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	p.FId = id
-	return c.JSON(http.StatusCreated, toParkingRes(p, 0, uuid))
+	p.FID = id
+	return c.JSON(http.StatusCreated, echo.Map{"parking": toParkingRes(p, 0, Puuid)})
 }
 
 func getParking(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
 	parkingID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -51,10 +77,22 @@ func getParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingRes(parking, capacity, uuid.UUID{}))
+	return c.JSON(http.StatusOK, echo.Map{"parkings": toParkingRes(parking, capacity, uuid.UUID{})})
 }
 
 func getParkings(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
 	parkings, err := manager.GetParkings(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -65,6 +103,19 @@ func getParkings(c echo.Context) error {
 }
 
 func updateParking(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	p := new(Parking)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -79,7 +130,7 @@ func updateParking(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	p.FId = int(pid)
+	p.FID = int(pid)
 
 	err = manager.UpdateParking(c.Request().Context(), p)
 	if err != nil {
@@ -98,10 +149,23 @@ func updateParking(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toParkingRes(p, 0, uuid.UUID{}))
+	return c.JSON(http.StatusCreated, echo.Map{"parking": toParkingRes(p, 0, uuid.UUID{})})
 }
 
 func deleteParking(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	parkingID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{

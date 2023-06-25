@@ -18,7 +18,7 @@ type Parking struct {
 	DBUuid      uuid.UUID  `db:"uuid"`
 }
 
-func (p Parking) Id() int {
+func (p Parking) ID() int {
 	return p.DBId
 }
 

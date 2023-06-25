@@ -6,7 +6,7 @@ import (
 )
 
 type Parking interface {
-	Id() int
+	ID() int
 	Name() string
 	Address() string
 	Phone() string
