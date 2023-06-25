@@ -7,7 +7,7 @@ import (
 )
 
 type Parking struct {
-	DBId        int        `db:"id"`
+	DBID        int        `db:"id"`
 	DBName      string     `db:"name"`
 	DBAddress   string     `db:"address"`
 	DBPhone     string     `db:"phone"`
@@ -19,7 +19,7 @@ type Parking struct {
 }
 
 func (p Parking) ID() int {
-	return p.DBId
+	return p.DBID
 }
 
 func (p Parking) Name() string {
