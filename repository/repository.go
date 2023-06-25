@@ -25,13 +25,12 @@ type SystemAdminRepository interface {
 }
 
 type ParkingAdminRepository interface {
-	CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin, uuid uuid.UUID) (int, error)
+	CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, error)
 	GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAdmin, error)
 	GetParkingAdminPasswordByPhone(ctx context.Context, phone string) (string, error)
 	GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error)
 	UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error
 	DeleteParkingAdmin(ctx context.Context, id int) error
-	GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error)
 	GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error)
 }
 

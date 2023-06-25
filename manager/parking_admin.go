@@ -6,24 +6,22 @@ import (
 	"fmt"
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/google/uuid"
 	"github.com/okian/servo/v2/lg"
 )
 
-func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, uuid.UUID, error) {
-	PAUuid := uuid.New()
-	id, err := repository.CreateParkingAdmin(ctx, ParkingAdmin, PAUuid)
+func CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) (int, error) {
+	id, err := repository.CreateParkingAdmin(ctx, ParkingAdmin)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
-			return id, uuid.UUID{}, ErrDuplicateEntity
+			return id, ErrDuplicateEntity
 		}
 		if errors.Is(err, repository.ErrParkingForeignKeyConstraint) {
-			return id, uuid.UUID{}, ErrParkingNotFound
+			return id, ErrParkingNotFound
 		}
 		lg.Error("error during creating ParkingAdmin: %v", err)
-		return id, uuid.UUID{}, ErrInternalServer
+		return id, ErrInternalServer
 	}
-	return id, PAUuid, nil
+	return id, nil
 }
 
 func GetParkingAdmin(ctx context.Context, id int) (entity.ParkingAdmin, error) {
@@ -69,15 +67,4 @@ func DeleteParkingAdmin(ctx context.Context, id int) error {
 		return fmt.Errorf("error in finding ParkingAdmin with given id, %w", err)
 	}
 	return nil
-}
-
-func GetParkingUUID(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error) {
-	parkingId, err := repository.GetParkingUUID(ctx, adminId)
-	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
-			return uuid.UUID{}, ErrNotFound
-		}
-		return uuid.UUID{}, fmt.Errorf("error in finding ParkingAdmin with given id, %w", err)
-	}
-	return parkingId, nil
 }

@@ -167,24 +167,17 @@ func toSystemAdminResSlice(parkings []entity.SystemAdmin) []SystemAdminRes {
 }
 
 type ParkingAdmin struct {
-	FId        int        `json:"id"`
-	FFirstName string     `json:"first_name"`
-	FLastName  string     `json:"last_name"`
-	FPhone     string     `json:"phone"`
-	FPID       uuid.UUID  `json:"parking_id"`
-	FEnabled   bool       `json:"enabled"`
-	FCreatedAt time.Time  `json:"createdAt"`
-	FUpdatedAt time.Time  `json:"updatedAt"`
-	FDeletedAt *time.Time `json:"deletedAt"`
-	FUuid      uuid.UUID  `json:"FUuid"`
+	FID        int    `json:"id"`
+	FFirstName string `json:"first_name"`
+	FLastName  string `json:"last_name"`
+	FPhone     string `json:"phone"`
+	FEnabled   bool   `json:"enabled"`
+	FPassword  string `json:"password"`
+	FParkingID int    `json:"parking_id"`
 }
 
-func (pa ParkingAdmin) Uuid() uuid.UUID {
-	return pa.FUuid
-}
-
-func (pa ParkingAdmin) Id() int {
-	return pa.FId
+func (pa ParkingAdmin) ID() int {
+	return pa.FID
 }
 
 func (pa ParkingAdmin) FirstName() string {
@@ -199,50 +192,39 @@ func (pa ParkingAdmin) Phone() string {
 	return pa.FPhone
 }
 
-func (pa ParkingAdmin) PID() uuid.UUID {
-	return pa.FPID
-}
-
 func (pa ParkingAdmin) Enabled() bool {
 	return pa.FEnabled
 }
 
-func (pa ParkingAdmin) CreatedAt() time.Time {
-	return pa.FCreatedAt
+func (pa ParkingAdmin) Password() string {
+	return pa.FPassword
 }
 
-func (pa ParkingAdmin) UpdatedAt() time.Time {
-	return pa.FUpdatedAt
-}
-
-func (pa ParkingAdmin) DeletedAt() *time.Time {
-	return pa.FDeletedAt
+func (pa ParkingAdmin) ParkingID() int {
+	return pa.FParkingID
 }
 
 type ParkingAdminRes struct {
-	Id        int       `json:"id"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
-	Phone     string    `json:"phone"`
-	PID       uuid.UUID `json:"parking_id"`
-	Enabled   bool      `json:"enabled"`
-	Uuid      string    `json:"uuid,omitempty"`
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Enabled   bool   `json:"enabled"`
+	Password  string `json:"password"`
+	ParkingID int    `json:"parking_id"`
 }
 
 func toParkingAdminRes(parkingAdmin entity.ParkingAdmin, id int) ParkingAdminRes {
 	response := ParkingAdminRes{
-		Id:        parkingAdmin.Id(),
+		ID:        parkingAdmin.ID(),
 		FirstName: parkingAdmin.FirstName(),
 		LastName:  parkingAdmin.LastName(),
 		Phone:     parkingAdmin.Phone(),
-		PID:       parkingAdmin.PID(),
+		ParkingID: parkingAdmin.ParkingID(),
 		Enabled:   parkingAdmin.Enabled(),
 	}
 	if id != -1 {
-		response.Id = id
-	}
-	if parkingAdmin.Uuid() != uuid.Nil {
-		response.Uuid = parkingAdmin.Uuid().String()
+		response.ID = id
 	}
 	return response
 }

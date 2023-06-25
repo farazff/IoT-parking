@@ -8,31 +8,28 @@ import (
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/okian/servo/v2/db"
 )
 
 const (
-	createParkingAdminQuery = `INSERT INTO parking_admins(first_name, last_name, phone, parking_id, enabled, created_at, updated_at, uuid) 
-							VALUES($1, $2, $3, $4, $5, now(), now(), $6) RETURNING id`
-	getParkingAdminsQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled 
+	createParkingAdminQuery = `INSERT INTO parking_admins(first_name, last_name, phone, enabled, created_at, updated_at, password, parking_id) 
+							VALUES($1, $2, $3, $4, now(), now(), $5, $6) RETURNING id`
+	getParkingAdminsQuery = `SELECT id, first_name, last_name, phone, enabled, password, parking_id 
 							FROM parking_admins WHERE deleted_at is NULL`
-	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, parking_id, enabled 
+	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, enabled, password, parking_id 
 							FROM parking_admins WHERE deleted_at is NULL AND id = $1`
-	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, parking_id, enabled, updated_at)= ($2, $3, $4, $5, $6, now()) 
-                			WHERE id = $1 and deleted_at is null`
+	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, enabled, updated_at, password, parking_id) = 
+    									($2, $3, $4, $5, now(), $6, $7) WHERE id = $1 and deleted_at is null`
 	deleteParkingAdminQuery        = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
-	getParkingUUIDQuery            = `select parking_id from parking_admins where uuid = $1`
-	getParkingIdQueryByUuid        = `select parking_id from parking_admins where uuid = $1`
 	getParkingAdminPasswordByPhone = `SELECT password FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
 	getParkingAdminParkingByPhone  = `SELECT parking_id FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
 )
 
-func (s *service) CreateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin, uuid uuid.UUID) (int, error) {
+func (s *service) CreateParkingAdmin(ctx context.Context, parkingAdmin entity.ParkingAdmin) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createParkingAdminQuery, ParkingAdmin.FirstName(), ParkingAdmin.LastName(),
-		ParkingAdmin.Phone(), ParkingAdmin.PID(), ParkingAdmin.Enabled(), uuid).Scan(&id)
+	err := db.WQueryRow(ctx, createParkingAdminQuery, parkingAdmin.FirstName(), parkingAdmin.LastName(),
+		parkingAdmin.Phone(), parkingAdmin.Enabled(), parkingAdmin.Password(), parkingAdmin.ParkingID()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("ParkingAdmin already exist: %w", repository.ErrDuplicateEntity)
@@ -90,7 +87,7 @@ func (s *service) GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, 
 
 func (s *service) UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error {
 	ans, err := db.Exec(ctx, updateParkingAdminQuery,
-		ParkingAdmin.Id(), ParkingAdmin.FirstName(), ParkingAdmin.LastName(), ParkingAdmin.Phone(), ParkingAdmin.PID(), ParkingAdmin.Enabled())
+		ParkingAdmin.ID(), ParkingAdmin.FirstName(), ParkingAdmin.LastName(), ParkingAdmin.Phone(), ParkingAdmin.ParkingID(), ParkingAdmin.Enabled())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("parking_admin already exist: %w", repository.ErrDuplicateEntity)
@@ -120,18 +117,6 @@ func (s *service) DeleteParkingAdmin(ctx context.Context, id int) error {
 		return fmt.Errorf("parking_admin doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
-}
-
-func (s *service) GetParkingUUID(ctx context.Context, AdminUUID uuid.UUID) (uuid.UUID, error) {
-	var parkingUUID uuid.UUID
-	err := db.Get(ctx, &parkingUUID, getParkingUUIDQuery, AdminUUID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return uuid.UUID{}, fmt.Errorf("parking admin not found: %w", repository.ErrNotFound)
-		}
-		return uuid.UUID{}, err
-	}
-	return parkingUUID, nil
 }
 
 func (s *service) GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error) {

@@ -7,9 +7,23 @@ import (
 	"github.com/okian/servo/v2/lg"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func createParkingAdmin(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	p := new(ParkingAdmin)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -18,7 +32,7 @@ func createParkingAdmin(c echo.Context) error {
 		})
 	}
 
-	id, uuid, err := manager.CreateParkingAdmin(c.Request().Context(), p)
+	id, err := manager.CreateParkingAdmin(c.Request().Context(), p)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -29,7 +43,6 @@ func createParkingAdmin(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	p.FUuid = uuid
 	return c.JSON(http.StatusCreated, toParkingAdminRes(p, id))
 }
 
@@ -51,6 +64,19 @@ func getParkingAdmin(c echo.Context) error {
 }
 
 func getParkingAdmins(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	ParkingAdmins, err := manager.GetParkingAdmins(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -61,6 +87,19 @@ func getParkingAdmins(c echo.Context) error {
 }
 
 func updateParkingAdmin(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	p := new(ParkingAdmin)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -75,7 +114,7 @@ func updateParkingAdmin(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	p.FId = int(pid)
+	p.FID = int(pid)
 
 	err = manager.UpdateParkingAdmin(c.Request().Context(), p)
 	if err != nil {
@@ -98,6 +137,19 @@ func updateParkingAdmin(c echo.Context) error {
 }
 
 func deleteParkingAdmin(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	ParkingAdminID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{

@@ -98,24 +98,25 @@ func (sa SystemAdmin) DeletedAt() *time.Time {
 }
 
 type ParkingAdmin struct {
-	DBId        int        `db:"id"`
-	DBFirstName string     `db:"first_name"`
-	DBLastName  string     `db:"last_name"`
-	DBPhone     string     `db:"phone"`
-	DBPID       uuid.UUID  `db:"parking_id"`
-	DBEnabled   bool       `db:"enabled"`
-	DBCreatedAt time.Time  `db:"createdAt"`
-	DBUpdatedAt time.Time  `db:"updatedAt"`
-	DBDeletedAt *time.Time `db:"deletedAt"`
-	DBUuid      uuid.UUID  `db:"uuid"`
+	DBID        int    `db:"id"`
+	DBFirstName string `db:"first_name"`
+	DBLastName  string `db:"last_name"`
+	DBPhone     string `db:"phone"`
+	DBEnabled   bool   `db:"enabled"`
+	DBPassword  string `db:"password"`
+	DBParkingID int    `db:"parking_id"`
 }
 
-func (pa ParkingAdmin) Uuid() uuid.UUID {
-	return pa.DBUuid
+func (pa ParkingAdmin) Password() string {
+	return pa.DBPassword
 }
 
-func (pa ParkingAdmin) Id() int {
-	return pa.DBId
+func (pa ParkingAdmin) ParkingID() int {
+	return pa.DBParkingID
+}
+
+func (pa ParkingAdmin) ID() int {
+	return pa.DBID
 }
 
 func (pa ParkingAdmin) FirstName() string {
@@ -130,24 +131,8 @@ func (pa ParkingAdmin) Phone() string {
 	return pa.DBPhone
 }
 
-func (pa ParkingAdmin) PID() uuid.UUID {
-	return pa.DBPID
-}
-
 func (pa ParkingAdmin) Enabled() bool {
 	return pa.DBEnabled
-}
-
-func (pa ParkingAdmin) CreatedAt() time.Time {
-	return pa.DBCreatedAt
-}
-
-func (pa ParkingAdmin) UpdatedAt() time.Time {
-	return pa.DBUpdatedAt
-}
-
-func (pa ParkingAdmin) DeletedAt() *time.Time {
-	return pa.DBDeletedAt
 }
 
 type Zone struct {
