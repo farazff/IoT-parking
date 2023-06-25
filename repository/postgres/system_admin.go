@@ -21,6 +21,8 @@ const (
 	updateSystemAdminQuery = `UPDATE SystemAdmins SET (first_name, last_name, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1`
 	deleteSystemAdminQuery = `UPDATE SystemAdmins SET deleted_at = now() where id = $1`
+
+	getSystemAdminPasswordByPhone = `SELECT password FROM system_admins WHERE deleted_at is NULL AND phone = $1`
 )
 
 func (s *service) CreateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) (int, error) {
@@ -98,4 +100,17 @@ func (s *service) DeleteSystemAdmin(ctx context.Context, id int) error {
 		return fmt.Errorf("system_admin doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
+}
+
+func (s *service) GetSystemAdminPasswordByPhone(ctx context.Context, phone string) (string, error) {
+	var password string
+	err := db.Get(ctx, &password, getSystemAdminPasswordByPhone, phone)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", repository.ErrNotFound
+		}
+		return "", err
+	}
+
+	return password, nil
 }

@@ -21,6 +21,7 @@ type SystemAdminRepository interface {
 	GetSystemAdmins(ctx context.Context) ([]entity.SystemAdmin, error)
 	UpdateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) error
 	DeleteSystemAdmin(ctx context.Context, id int) error
+	GetSystemAdminPasswordByPhone(ctx context.Context, phone string) (string, error)
 }
 
 type ParkingAdminRepository interface {
@@ -31,7 +32,6 @@ type ParkingAdminRepository interface {
 	UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error
 	DeleteParkingAdmin(ctx context.Context, id int) error
 	GetParkingUUID(ctx context.Context, adminUUID uuid.UUID) (uuid.UUID, error)
-	GetParkingIdByUuid(ctx context.Context, adminId uuid.UUID) (uuid.UUID, error)
 	GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error)
 }
 

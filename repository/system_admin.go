@@ -35,3 +35,7 @@ func UpdateSystemAdmin(ctx context.Context, SystemAdmin entity.SystemAdmin) erro
 func DeleteSystemAdmin(ctx context.Context, id int) error {
 	return SystemAdminR.DeleteSystemAdmin(ctx, id)
 }
+
+func GetSystemAdminPasswordByPhone(ctx context.Context, phone string) (string, error) {
+	return SystemAdminR.GetSystemAdminPasswordByPhone(ctx, phone)
+}

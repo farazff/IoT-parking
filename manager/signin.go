@@ -31,3 +31,22 @@ func GetParkingAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) 
 	kv.Set(ctx, sessionToken, fmt.Sprintf("pAdmin_%s", cr.Phone), time.Second*12000)
 	return sessionToken, nil
 }
+
+func GetSystemAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (string, error) {
+	systemAdminPassword, err := repository.GetSystemAdminPasswordByPhone(ctx, cr.Phone)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return "", ErrNotFound
+		}
+		return "", fmt.Errorf("error in retrieving SystemAdmin, %w", err)
+	}
+
+	if systemAdminPassword != cr.Password {
+		return "", ErrUnauthorized
+	}
+
+	sessionToken := uuid.NewString()
+	lg.Debug(sessionToken)
+	kv.Set(ctx, sessionToken, fmt.Sprintf("sAdmin_%s", cr.Phone), time.Second*12000)
+	return sessionToken, nil
+}

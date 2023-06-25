@@ -14,6 +14,8 @@ func init() {
 	//rest.EchoPut("/v1/systemAdmin/:id", updateSystemAdmin, middleware.ApiKey)
 	//rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
 
+	rest.EchoPost("/v1/SystemAdmin/signIn", parkingAdminSignIn)
+
 	rest.EchoPost("/v1/parking", createParking, middleware.AdminApiKey)
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.AdminApiKey)
 	rest.EchoGet("/v1/parkings", getParkings, middleware.AdminApiKey)

@@ -35,3 +35,26 @@ func authenticateParkingAdmin(ctx context.Context, sessionToken string) (string,
 		return "", "", unauthorized
 	}
 }
+
+func authenticateSystemAdmin(ctx context.Context, sessionToken string) (string, string, error) {
+	if len(sessionToken) == 0 {
+		return "", "", unauthorized
+	}
+	var data string
+	err := kv.Get(ctx, sessionToken, &data)
+	if err != nil {
+		return "", "", err
+	}
+	dataParts := strings.Split(data, "_")
+	if len(dataParts) < 2 {
+		return "", "", unauthorized
+	}
+	if dataParts[0] == "sAdmin" {
+		sessionToken := uuid.NewString()
+		lg.Debug(sessionToken)
+		kv.Set(ctx, sessionToken, fmt.Sprintf("sAdmin_%s", dataParts[1]), time.Second*120)
+		return dataParts[1], sessionToken, nil
+	} else {
+		return "", "", unauthorized
+	}
+}

@@ -134,18 +134,6 @@ func (s *service) GetParkingUUID(ctx context.Context, AdminUUID uuid.UUID) (uuid
 	return parkingUUID, nil
 }
 
-func (s *service) GetParkingIdByUuid(ctx context.Context, AdminId uuid.UUID) (uuid.UUID, error) {
-	var parkingId uuid.UUID
-	err := db.Get(ctx, &parkingId, getParkingIdQueryByUuid, AdminId)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return uuid.UUID{}, fmt.Errorf("parking admin not found: %w", repository.ErrNotFound)
-		}
-		return uuid.UUID{}, err
-	}
-	return parkingId, nil
-}
-
 func (s *service) GetParkingAdminParkingByPhone(ctx context.Context, phone string) (int, error) {
 	var parkingID int
 	err := db.Get(ctx, &parkingID, getParkingAdminParkingByPhone, phone)
