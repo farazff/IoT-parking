@@ -367,8 +367,8 @@ func (l Log) ID() int {
 	return l.FID
 }
 
-func (l Log) CarTag() string {
-	return l.FCarTag
+func (l Log) UserID() int {
+	return 0
 }
 
 func (l Log) EnterTime() time.Time {
@@ -391,26 +391,23 @@ type LogRes struct {
 	ParkingID int        `json:"parking_id"`
 }
 
-func toLogRes(log entity.Log, id int) LogRes {
-	response := LogRes{
-		ID:        log.ID(),
-		CarTag:    log.CarTag(),
-		EnterTime: log.EnterTime(),
-		ExitTime:  log.ExitTime(),
-		ParkingID: log.ParkingID(),
-	}
-	if id != -1 {
-		response.ID = id
+func toUserLogsRes(whitelist entity.UserLog) entity.UserLog {
+	response := entity.UserLog{
+		ID:             whitelist.ID,
+		EnterTime:      whitelist.EnterTime,
+		ExitTime:       whitelist.ExitTime,
+		ParkingName:    whitelist.ParkingName,
+		ParkingAddress: whitelist.ParkingAddress,
 	}
 	return response
 }
 
-func toLogResSlice(logs []entity.Log) []LogRes {
-	logResSlice := make([]LogRes, 0)
-	for _, log := range logs {
-		logResSlice = append(logResSlice, toLogRes(log, -1))
+func toUserLogsResSlice(whitelists []entity.UserLog) []entity.UserLog {
+	userLogsResSlice := make([]entity.UserLog, 0)
+	for _, whitelist := range whitelists {
+		userLogsResSlice = append(userLogsResSlice, toUserLogsRes(whitelist))
 	}
-	return logResSlice
+	return userLogsResSlice
 }
 
 type User struct {

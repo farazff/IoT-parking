@@ -44,8 +44,8 @@ func init() {
 	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey)
 
 	//Raspberry PI requests
-	rest.EchoPost("v1/carEnter/:uuid", carEnter, middleware.HardwareApiKey)
-	rest.EchoPut("v1/carExit/:uuid", carExit, middleware.HardwareApiKey)
+	rest.EchoPost("v1/carEnter/:uuid/:tag", carEnter, middleware.HardwareApiKey)
+	rest.EchoPut("v1/carExit/:uuid/:tag", carExit, middleware.HardwareApiKey)
 
 	rest.EchoPut("/v1/zoneEnter/:id/:uuid", enterZone, middleware.HardwareApiKey)
 	rest.EchoPut("/v1/zoneExit/:id/:uuid", exitZone, middleware.HardwareApiKey)
@@ -55,4 +55,6 @@ func init() {
 
 	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
 	rest.EchoGet("/v1/user/whitelists/approved", getUserWhitelists, middleware.UserApiKey)
+
+	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey)
 }

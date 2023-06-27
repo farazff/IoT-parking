@@ -17,10 +17,14 @@ func RegisterLog(p LogRepository) error {
 	return nil
 }
 
-func CarEnter(ctx context.Context, log entity.Log, parkingUUID uuid.UUID) (int, error) {
-	return logR.CarEnter(ctx, log, parkingUUID)
+func CarEnter(ctx context.Context, userID int, parkingUUID uuid.UUID) (int, error) {
+	return logR.CarEnter(ctx, userID, parkingUUID)
 }
 
-func CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error {
-	return logR.CarExit(ctx, parkingUUID, carTag)
+func CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int) error {
+	return logR.CarExit(ctx, parkingUUID, userID)
+}
+
+func GetUserLogs(ctx context.Context, userID int) ([]entity.UserLog, error) {
+	return logR.GetUserLogs(ctx, userID)
 }

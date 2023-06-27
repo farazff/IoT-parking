@@ -21,7 +21,7 @@ const (
     								as w join users as u on w.user_id = u.id WHERE parking_id = $1 AND approved = $2`
 	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
 	isCarWhiteListQuery  = `SELECT count(*) from whitelists where 
-                            	parking_id = (SELECT id from parkings where uuid = $1) and car_tag = $2`
+                            	parking_id = (SELECT id from parkings where uuid = $1) and user_id = $2`
 	getUserWhitelistsQuery = `SELECT w.id as id, p.name as parking_name, p.address as parking_address, 
        								w.approved as approved FROM whitelists 
     										as w join parkings as p on w.parking_id = p.id WHERE w.user_id = $1`
@@ -86,9 +86,9 @@ func (s *service) DeleteWhitelist(ctx context.Context, parkingID int, whiteListI
 	return nil
 }
 
-func (s *service) IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, carTag string) (bool, error) {
+func (s *service) IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, userID int) (bool, error) {
 	var count int
-	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingUUID, carTag)
+	err := db.Get(ctx, &count, isCarWhiteListQuery, parkingUUID, userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, fmt.Errorf("log not found: %w", repository.ErrNotFound)

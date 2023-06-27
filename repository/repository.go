@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/google/uuid"
 )
@@ -50,16 +49,18 @@ type WhitelistRepository interface {
 	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist, userID int) (int, error)
 	GetWhitelists(ctx context.Context, parkingID int, approved bool) ([]entity.WhitelistOfficeData, error)
 	DeleteWhitelist(ctx context.Context, parkingID int, whiteListID int) error
-	IsCarWhitelist(ct context.Context, parkingUUID uuid.UUID, carTag string) (bool, error)
+	IsCarWhitelist(ct context.Context, parkingUUID uuid.UUID, userID int) (bool, error)
 	GetUserWhitelists(ctx context.Context, userID int) ([]entity.WhitelistUserData, error)
 }
 
 type LogRepository interface {
-	CarEnter(ctx context.Context, log entity.Log, parkingUUID uuid.UUID) (int, error)
-	CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error
+	CarEnter(ctx context.Context, userID int, parkingUUID uuid.UUID) (int, error)
+	CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int) error
+	GetUserLogs(ctx context.Context, userID int) ([]entity.UserLog, error)
 }
 
 type UserRepository interface {
 	GetUserPasswordByPhone(ctx context.Context, phone string) (string, error)
 	GetUserIDByPhone(ctx context.Context, phone string) (int, error)
+	GetUserIDByCarTag(ctx context.Context, carTag string) (int, error)
 }

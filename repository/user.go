@@ -22,3 +22,7 @@ func GetUserPasswordByPhone(ctx context.Context, phone string) (string, error) {
 func GetUserIDByPhone(ctx context.Context, phone string) (int, error) {
 	return userR.GetUserIDByPhone(ctx, phone)
 }
+
+func GetUserIDByCarTag(ctx context.Context, carTag string) (int, error) {
+	return userR.GetUserIDByCarTag(ctx, carTag)
+}

@@ -34,8 +34,8 @@ func DeleteWhitelist(ctx context.Context, parkingID int, whitelistID int) error 
 	return WhitelistR.DeleteWhitelist(ctx, parkingID, whitelistID)
 }
 
-func IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, carTag string) (bool, error) {
-	return WhitelistR.IsCarWhitelist(ctx, parkingUUID, carTag)
+func IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, userID int) (bool, error) {
+	return WhitelistR.IsCarWhitelist(ctx, parkingUUID, userID)
 }
 
 func GetUserWhitelists(ctx context.Context, userID int) ([]entity.WhitelistUserData, error) {

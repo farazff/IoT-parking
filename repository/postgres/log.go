@@ -12,23 +12,25 @@ import (
 )
 
 const (
-	carEnterQuery = `INSERT INTO logs(car_tag, enter_time, parking_id) VALUES($1, 
+	carEnterQuery = `INSERT INTO logs(user_id, enter_time, parking_id) VALUES($1, 
                                             NOW(), (SELECT id FROM parkings WHERE uuid = $2)) RETURNING id`
 	carExitQuery = `UPDATE logs SET exit_time = NOW() WHERE 
-                                          parking_id = (SELECT id FROM parkings WHERE uuid = $1 limit 1) AND car_tag = $2`
+                                          parking_id = (SELECT id FROM parkings WHERE uuid = $1 limit 1) AND user_id = $2`
+	GetUserLogsQuery = `SELECT l.id as id l.enter_time as enter_time, l.exit_time as exit_time, p.name as parking_name,
+					p.address as parking_address FROM logs as l join parkings as p on l.parking_id = p.id WHERE l.user_id = $1`
 )
 
-func (s *service) CarEnter(ctx context.Context, log entity.Log, parkingUUID uuid.UUID) (int, error) {
+func (s *service) CarEnter(ctx context.Context, userID int, parkingUUID uuid.UUID) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, carEnterQuery, log.CarTag(), parkingUUID).Scan(&id)
+	err := db.WQueryRow(ctx, carEnterQuery, userID, parkingUUID).Scan(&id)
 	if err != nil {
 		return -1, err
 	}
 	return id, nil
 }
 
-func (s *service) CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error {
-	ans, err := db.Exec(ctx, carExitQuery, parkingUUID, carTag)
+func (s *service) CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int) error {
+	ans, err := db.Exec(ctx, carExitQuery, parkingUUID, userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return repository.ErrNotFound
@@ -40,4 +42,21 @@ func (s *service) CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag str
 		return fmt.Errorf("parking doesn't exist: %w", repository.ErrNotFound)
 	}
 	return nil
+}
+
+func (s *service) GetUserLogs(ctx context.Context, userID int) ([]entity.UserLog, error) {
+	var wls []entity.UserLog
+	err := db.Select(ctx, &wls, GetUserLogsQuery, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, repository.ErrNotFound
+		}
+		return nil, err
+	}
+
+	res := make([]entity.UserLog, 0)
+	for i := range wls {
+		res = append(res, wls[i])
+	}
+	return res, nil
 }
