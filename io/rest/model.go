@@ -298,7 +298,7 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 type Whitelist struct {
 	FID        int  `json:"id"`
 	FUserID    int  `json:"user_id"`
-	FParkingID int  `json:"parking_id,validate:required""`
+	FParkingID int  `json:"parking_id,validate:required"`
 	FApproved  bool `json:"approved"`
 }
 
