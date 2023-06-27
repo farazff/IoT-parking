@@ -164,21 +164,26 @@ func (z Zone) Enabled() bool {
 }
 
 type Whitelist struct {
-	DBID        int    `db:"id"`
-	DBParkingID int    `db:"parking_id"`
-	DBCarTag    string `db:"car_tag"`
+	DBID        int  `db:"id"`
+	DBUserID    int  `db:"user_id"`
+	DBParkingID int  `db:"parking_id"`
+	DBApproved  bool `db:"approved"`
 }
 
 func (w Whitelist) ID() int {
 	return w.DBID
 }
 
+func (w Whitelist) UserID() int {
+	return w.DBUserID
+}
+
 func (w Whitelist) ParkingID() int {
 	return w.DBParkingID
 }
 
-func (w Whitelist) CarTag() string {
-	return w.DBCarTag
+func (w Whitelist) Approved() bool {
+	return w.DBApproved
 }
 
 type Log struct {
@@ -207,4 +212,37 @@ func (l Log) ExitTime() *time.Time {
 
 func (l Log) ParkingUUID() uuid.UUID {
 	return l.DBPID
+}
+
+type User struct {
+	DBID        int    `db:"ID"`
+	DBFirstName string `db:"first_name"`
+	DBLastName  string `db:"last_name"`
+	DBCarTag    string `db:"car_tag"`
+	DBPhone     string `db:"phone"`
+	DBPassword  string `db:"password"`
+}
+
+func (u User) ID() int {
+	return u.DBID
+}
+
+func (u User) FirstName() string {
+	return u.DBFirstName
+}
+
+func (u User) LastName() string {
+	return u.DBLastName
+}
+
+func (u User) CarTag() string {
+	return u.DBCarTag
+}
+
+func (u User) Phone() string {
+	return u.DBPhone
+}
+
+func (u User) Password() string {
+	return u.DBPassword
 }

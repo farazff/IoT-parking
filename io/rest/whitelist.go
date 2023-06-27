@@ -11,8 +11,46 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
-func createWhitelist(c echo.Context) error {
+func approveWhitelist(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
+	whiteListID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "",
+		})
+	}
+
+	err = manager.ApproveWhitelist(c.Request().Context(), whiteListID, phone)
+	if err != nil {
+		lg.Error(err)
+		if errors.Is(err, manager.ErrNotFound) {
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "Whitelist approved successfully",
+	})
+}
+
+func requestWhitelist(c echo.Context) error {
+	_, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
@@ -40,7 +78,7 @@ func createWhitelist(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateWhitelist(c.Request().Context(), w, phone)
+	id, err := manager.CreateWhitelist(c.Request().Context(), w)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) || errors.Is(err, manager.ErrNoAccess) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -57,7 +95,7 @@ func createWhitelist(c echo.Context) error {
 	})
 }
 
-func getWhitelists(c echo.Context) error {
+func getWhitelistsApproved(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -71,13 +109,36 @@ func getWhitelists(c echo.Context) error {
 		Expires: time.Now().Add(120 * time.Second),
 	})
 
-	Whitelists, err := manager.GetWhitelists(c.Request().Context(), phone)
+	Whitelists, err := manager.GetWhitelists(c.Request().Context(), phone, true)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistResSlice(Whitelists)})
+	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistOfficeResSlice(Whitelists)})
+}
+
+func getWhitelistsToApprove(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
+	Whitelists, err := manager.GetWhitelists(c.Request().Context(), phone, false)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistOfficeResSlice(Whitelists)})
 }
 
 func deleteWhitelist(c echo.Context) error {

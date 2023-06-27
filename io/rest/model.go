@@ -296,34 +296,41 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 }
 
 type Whitelist struct {
-	FID        int    `json:"id"`
-	FParkingID int    `json:"parking_id`
-	FCarTag    string `json:"car_tag" validate:"required"`
+	FID        int  `json:"id"`
+	FUserID    int  `json:"user_id"`
+	FParkingID int  `json:"parking_id"`
+	FApproved  bool `json:"approved"`
 }
 
 func (w Whitelist) ID() int {
 	return w.FID
 }
 
+func (w Whitelist) UserID() int {
+	return w.FUserID
+}
+
 func (w Whitelist) ParkingID() int {
 	return w.FParkingID
 }
 
-func (w Whitelist) CarTag() string {
-	return w.FCarTag
+func (w Whitelist) Approved() bool {
+	return w.FApproved
 }
 
 type WhitelistRes struct {
-	ID        int    `json:"id"`
-	ParkingID int    `json:"parking_id"`
-	CarTag    string `json:"car_tag"`
+	ID        int  `json:"id"`
+	UserID    int  `json:"user_id"`
+	ParkingID int  `json:"parking_id"`
+	Approved  bool `json:"approved"`
 }
 
 func toWhitelistRes(whitelist entity.Whitelist, id int) WhitelistRes {
 	response := WhitelistRes{
 		ID:        whitelist.ID(),
+		UserID:    whitelist.UserID(),
 		ParkingID: whitelist.ParkingID(),
-		CarTag:    whitelist.CarTag(),
+		Approved:  whitelist.Approved(),
 	}
 	if id != -1 {
 		response.ID = id
@@ -339,9 +346,28 @@ func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
 	return whitelistResSlice
 }
 
+func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData, id int) entity.WhitelistOfficeData {
+	response := entity.WhitelistOfficeData{
+		ID:        whitelist.ID,
+		FirstName: whitelist.FirstName,
+		LastName:  whitelist.LastName,
+		CarTag:    whitelist.CarTag,
+		ParkingID: whitelist.ParkingID,
+	}
+	return response
+}
+
+func toWhitelistOfficeResSlice(whitelists []entity.WhitelistOfficeData) []entity.WhitelistOfficeData {
+	whitelistResSlice := make([]entity.WhitelistOfficeData, 0)
+	for _, whitelist := range whitelists {
+		whitelistResSlice = append(whitelistResSlice, toWhitelistOfficeRes(whitelist, -1))
+	}
+	return whitelistResSlice
+}
+
 type Log struct {
 	FID        int        `json:"id"`
-	FCarTag    string     `json:"car_tag, validate:required"`
+	FCarTag    string     `json:"car_tag,validate:required"`
 	FEnterTime time.Time  `json:"enter_time"`
 	FExitTime  *time.Time `json:"exit_time,omitempty"`
 	FParkingID int        `json:"parking_id"`
@@ -395,4 +421,37 @@ func toLogResSlice(logs []entity.Log) []LogRes {
 		logResSlice = append(logResSlice, toLogRes(log, -1))
 	}
 	return logResSlice
+}
+
+type User struct {
+	FID        int    `json:"ID"`
+	FFirstName string `json:"first_name"`
+	FLastName  string `json:"last_name"`
+	FCarTag    string `json:"car_tag"`
+	FPhone     string `json:"phone"`
+	FPassword  string `json:"password"`
+}
+
+func (u User) ID() int {
+	return u.FID
+}
+
+func (u User) FirstName() string {
+	return u.FFirstName
+}
+
+func (u User) LastName() string {
+	return u.FLastName
+}
+
+func (u User) CarTag() string {
+	return u.FCarTag
+}
+
+func (u User) Phone() string {
+	return u.FPhone
+}
+
+func (u User) Password() string {
+	return u.FPassword
 }

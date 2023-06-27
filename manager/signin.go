@@ -50,3 +50,22 @@ func GetSystemAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (
 	kv.Set(ctx, sessionToken, fmt.Sprintf("sAdmin_%s", cr.Phone), time.Second*12000)
 	return sessionToken, nil
 }
+
+func GetUserPasswordByPhone(ctx context.Context, cr entity.Credentials) (string, error) {
+	userPassword, err := repository.GetUserPasswordByPhone(ctx, cr.Phone)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return "", ErrNotFound
+		}
+		return "", fmt.Errorf("error in retrieving user, %w", err)
+	}
+
+	if userPassword != cr.Password {
+		return "", ErrUnauthorized
+	}
+
+	sessionToken := uuid.NewString()
+	lg.Debug(sessionToken)
+	kv.Set(ctx, sessionToken, fmt.Sprintf("user_%s", cr.Phone), time.Second*12000)
+	return sessionToken, nil
+}

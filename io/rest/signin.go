@@ -52,3 +52,25 @@ func systemAdminSignIn(c echo.Context) error {
 	})
 	return c.NoContent(200)
 }
+
+func userSignIn(c echo.Context) error {
+	cr := new(entity.Credentials)
+	if err := c.Bind(cr); err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	sessionToken, err := manager.GetUserPasswordByPhone(c.Request().Context(), *cr)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+	return c.NoContent(200)
+}

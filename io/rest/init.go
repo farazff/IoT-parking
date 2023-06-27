@@ -14,7 +14,8 @@ func init() {
 	//rest.EchoPut("/v1/systemAdmin/:id", updateSystemAdmin, middleware.ApiKey)
 	//rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
 
-	rest.EchoPost("/v1/SystemAdmin/signIn", parkingAdminSignIn)
+	//System admin requests
+	rest.EchoPost("/v1/systemAdmin/signIn", systemAdminSignIn)
 
 	rest.EchoPost("/v1/parking", createParking, middleware.AdminApiKey)
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.AdminApiKey)
@@ -28,20 +29,30 @@ func init() {
 	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.AdminApiKey)
 	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.AdminApiKey)
 
-	rest.EchoPost("/v1/ParkingAdmin/signIn", parkingAdminSignIn)
+	//Parking admin requests
+	rest.EchoPost("/v1/parkingAdmin/signIn", parkingAdminSignIn)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
 	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
 	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
 	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zoneEnter/:id/:uuid", EnterZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zoneExit/:id/:uuid", ExitZone, middleware.ApiKey)
 
-	rest.EchoPost("/v1/whitelist", createWhitelist, middleware.ApiKey)
-	rest.EchoGet("/v1/whitelists", getWhitelists, middleware.ApiKey)
+	rest.EchoPut("/v1/whitelist/approve/:id", approveWhitelist, middleware.ApiKey)
+	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ApiKey)
+	rest.EchoGet("/v1/whitelists/toApprove", getWhitelistsToApprove, middleware.ApiKey)
 	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ApiKey)
 
+	//Raspberry PI requests
 	rest.EchoPost("v1/carEnter/:uuid", carEnter, middleware.ApiKey)
 	rest.EchoPut("v1/carExit/:uuid", carExit, middleware.ApiKey)
+
+	rest.EchoPut("/v1/zoneEnter/:id/:uuid", enterZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneExit/:id/:uuid", exitZone, middleware.ApiKey)
+
+	//User requests
+	rest.EchoPost("/v1/user/signIn", userSignIn)
+
+	rest.EchoPost("/v1/white/request", requestWhitelist)
+
 }

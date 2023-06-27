@@ -14,12 +14,31 @@ import (
 )
 
 const (
-	createWhitelistQuery = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
-	getWhitelistsQuery   = `SELECT id, parking_id, car_tag FROM whitelists WHERE parking_id = $1`
+	approveWhiteListQuery = `UPDATE whitelists SET approved = TRUE WHERE id = $1 AND parking_id = $2`
+	createWhitelistQuery  = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
+
+	getWhitelistsQuery = `SELECT w.id, u.first_name, u.last_name, u.car_tag, w.parking_id FROM whitelists 
+    								as w join users as u on w.user_id = u.id WHERE parking_id = $1 AND approved = $2`
+
 	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
 	isCarWhiteListQuery  = `SELECT count(*) from whitelists where 
                             	parking_id = (SELECT id from parkings where uuid = $1) and car_tag = $2`
 )
+
+func (s *service) ApproveWhitelist(ctx context.Context, whiteListID int, parkingID int) error {
+	ans, err := db.Exec(ctx, approveWhiteListQuery, whiteListID, parkingID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return err
+	}
+	affected, err := ans.RowsAffected()
+	if int(affected) < 1 {
+		return fmt.Errorf("whitelist doesn't exist: %w", repository.ErrNotFound)
+	}
+	return nil
+}
 
 func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingID int) (int, error) {
 	var id int
@@ -33,9 +52,9 @@ func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelis
 	return id, nil
 }
 
-func (s *service) GetWhitelists(ctx context.Context, parkingID int) ([]entity.Whitelist, error) {
-	var ps []Whitelist
-	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingID)
+func (s *service) GetWhitelists(ctx context.Context, parkingID int, approved bool) ([]entity.WhitelistOfficeData, error) {
+	var ps []entity.WhitelistOfficeData
+	err := db.Select(ctx, &ps, getWhitelistsQuery, parkingID, approved)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound
@@ -43,7 +62,7 @@ func (s *service) GetWhitelists(ctx context.Context, parkingID int) ([]entity.Wh
 		return nil, err
 	}
 
-	res := make([]entity.Whitelist, 0)
+	res := make([]entity.WhitelistOfficeData, 0)
 	for i := range ps {
 		res = append(res, ps[i])
 	}

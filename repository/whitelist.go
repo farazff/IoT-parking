@@ -18,12 +18,16 @@ func RegisterWhitelist(p WhitelistRepository) error {
 	return nil
 }
 
+func ApproveWhitelist(ctx context.Context, whitelistID int, parkingID int) error {
+	return WhitelistR.ApproveWhitelist(ctx, whitelistID, parkingID)
+}
+
 func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingID int) (int, error) {
 	return WhitelistR.CreateWhitelist(ctx, Whitelist, parkingID)
 }
 
-func GetWhitelists(ctx context.Context, parkingID int) ([]entity.Whitelist, error) {
-	return WhitelistR.GetWhitelists(ctx, parkingID)
+func GetWhitelists(ctx context.Context, parkingID int, approved bool) ([]entity.WhitelistOfficeData, error) {
+	return WhitelistR.GetWhitelists(ctx, parkingID, approved)
 }
 
 func DeleteWhitelist(ctx context.Context, parkingID int, whitelistID int) error {

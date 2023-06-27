@@ -10,6 +10,22 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
+func ApproveWhitelist(ctx context.Context, whiteListID int, phone string) error {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	if err != nil {
+		return err
+	}
+
+	err = repository.ApproveWhitelist(ctx, whiteListID, parkingID)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return ErrNotFound
+		}
+		return fmt.Errorf("error in finding Whitelist with given id, %w", err)
+	}
+	return nil
+}
+
 func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, phone string) (int, error) {
 	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
 	if err != nil {
@@ -27,17 +43,17 @@ func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, phone stri
 	return id, nil
 }
 
-func GetWhitelists(ctx context.Context, phone string) ([]entity.Whitelist, error) {
+func GetWhitelists(ctx context.Context, phone string, approved bool) ([]entity.WhitelistOfficeData, error) {
 	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
 	if err != nil {
 		return nil, err
 	}
 
-	Whitelists, err := repository.GetWhitelists(ctx, parkingID)
+	whitelistsOfficeData, err := repository.GetWhitelists(ctx, parkingID, approved)
 	if err != nil {
 		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
 	}
-	return Whitelists, nil
+	return whitelistsOfficeData, nil
 }
 
 func DeleteWhitelist(ctx context.Context, whiteListID int, phone string) error {

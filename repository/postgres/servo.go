@@ -38,6 +38,10 @@ func (s *service) Initialize(_ context.Context) error {
 		return fmt.Errorf("error while registring log repository: %w", err)
 	}
 
+	if err := repository.RegisterUser(s); err != nil {
+		return fmt.Errorf("error while registring user repository: %w", err)
+	}
+
 	return nil
 }
 
