@@ -298,7 +298,7 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 type Whitelist struct {
 	FID        int  `json:"id"`
 	FUserID    int  `json:"user_id"`
-	FParkingID int  `json:"parking_id"`
+	FParkingID int  `json:"parking_id,validate:required""`
 	FApproved  bool `json:"approved"`
 }
 
@@ -318,35 +318,7 @@ func (w Whitelist) Approved() bool {
 	return w.FApproved
 }
 
-type WhitelistRes struct {
-	ID        int  `json:"id"`
-	UserID    int  `json:"user_id"`
-	ParkingID int  `json:"parking_id"`
-	Approved  bool `json:"approved"`
-}
-
-func toWhitelistRes(whitelist entity.Whitelist, id int) WhitelistRes {
-	response := WhitelistRes{
-		ID:        whitelist.ID(),
-		UserID:    whitelist.UserID(),
-		ParkingID: whitelist.ParkingID(),
-		Approved:  whitelist.Approved(),
-	}
-	if id != -1 {
-		response.ID = id
-	}
-	return response
-}
-
-func toWhitelistResSlice(whitelists []entity.Whitelist) []WhitelistRes {
-	whitelistResSlice := make([]WhitelistRes, 0)
-	for _, whitelist := range whitelists {
-		whitelistResSlice = append(whitelistResSlice, toWhitelistRes(whitelist, -1))
-	}
-	return whitelistResSlice
-}
-
-func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData, id int) entity.WhitelistOfficeData {
+func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData) entity.WhitelistOfficeData {
 	response := entity.WhitelistOfficeData{
 		ID:        whitelist.ID,
 		FirstName: whitelist.FirstName,
@@ -360,7 +332,25 @@ func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData, id int) entity.W
 func toWhitelistOfficeResSlice(whitelists []entity.WhitelistOfficeData) []entity.WhitelistOfficeData {
 	whitelistResSlice := make([]entity.WhitelistOfficeData, 0)
 	for _, whitelist := range whitelists {
-		whitelistResSlice = append(whitelistResSlice, toWhitelistOfficeRes(whitelist, -1))
+		whitelistResSlice = append(whitelistResSlice, toWhitelistOfficeRes(whitelist))
+	}
+	return whitelistResSlice
+}
+
+func toWhitelistUserRes(whitelist entity.WhitelistUserData) entity.WhitelistUserData {
+	response := entity.WhitelistUserData{
+		ID:             whitelist.ID,
+		ParkingName:    whitelist.ParkingName,
+		ParkingAddress: whitelist.ParkingAddress,
+		Approved:       whitelist.Approved,
+	}
+	return response
+}
+
+func toWhitelistUserResSlice(whitelists []entity.WhitelistUserData) []entity.WhitelistUserData {
+	whitelistResSlice := make([]entity.WhitelistUserData, 0)
+	for _, whitelist := range whitelists {
+		whitelistResSlice = append(whitelistResSlice, toWhitelistUserRes(whitelist))
 	}
 	return whitelistResSlice
 }

@@ -71,3 +71,16 @@ func DeleteWhitelist(ctx context.Context, whiteListID int, phone string) error {
 	}
 	return nil
 }
+
+func GetUserWhitelists(ctx context.Context, phone string) ([]entity.WhitelistUserData, error) {
+	userID, err := repository.GetUserIDByPhone(ctx, phone)
+	if err != nil {
+		return nil, err
+	}
+
+	whitelistsUserData, err := repository.GetUserWhitelists(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+	}
+	return whitelistsUserData, nil
+}

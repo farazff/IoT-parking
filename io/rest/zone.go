@@ -197,7 +197,7 @@ func deleteZone(c echo.Context) error {
 	})
 }
 
-func EnterZone(c echo.Context) error {
+func enterZone(c echo.Context) error {
 	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -228,7 +228,7 @@ func EnterZone(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"message": "Updated successfully"})
 }
 
-func ExitZone(c echo.Context) error {
+func exitZone(c echo.Context) error {
 	zid, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{

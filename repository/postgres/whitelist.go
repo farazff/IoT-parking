@@ -15,14 +15,16 @@ import (
 
 const (
 	approveWhiteListQuery = `UPDATE whitelists SET approved = TRUE WHERE id = $1 AND parking_id = $2`
-	createWhitelistQuery  = `INSERT INTO whitelists(parking_id, car_tag) VALUES($1, $2) RETURNING id`
-
-	getWhitelistsQuery = `SELECT w.id, u.first_name, u.last_name, u.car_tag, w.parking_id FROM whitelists 
+	createWhitelistQuery  = `INSERT INTO whitelists(user_id, parking_id) VALUES($1, $2) RETURNING id`
+	getWhitelistsQuery    = `SELECT w.id as id, u.first_name as first_name, u.last_name as last_name, 
+       									u.car_tag as car_tag, w.parking_id as parking-id FROM whitelists 
     								as w join users as u on w.user_id = u.id WHERE parking_id = $1 AND approved = $2`
-
 	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
 	isCarWhiteListQuery  = `SELECT count(*) from whitelists where 
                             	parking_id = (SELECT id from parkings where uuid = $1) and car_tag = $2`
+	getUserWhitelistsQuery = `SELECT w.id as id, p.name as parking_name, p.address as parking_address, 
+       								w.approved as approved FROM whitelists 
+    										as w join parkings as p on w.parking_id = p.id WHERE w.user_id = $1`
 )
 
 func (s *service) ApproveWhitelist(ctx context.Context, whiteListID int, parkingID int) error {
@@ -40,9 +42,9 @@ func (s *service) ApproveWhitelist(ctx context.Context, whiteListID int, parking
 	return nil
 }
 
-func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, parkingID int) (int, error) {
+func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, userID int) (int, error) {
 	var id int
-	err := db.WQueryRow(ctx, createWhitelistQuery, parkingID, Whitelist.CarTag()).Scan(&id)
+	err := db.WQueryRow(ctx, createWhitelistQuery, userID, Whitelist.ParkingID()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return -1, fmt.Errorf("Whitelist already exist: %w", repository.ErrDuplicateEntity)
@@ -97,4 +99,21 @@ func (s *service) IsCarWhitelist(ctx context.Context, parkingUUID uuid.UUID, car
 		return true, nil
 	}
 	return false, nil
+}
+
+func (s *service) GetUserWhitelists(ctx context.Context, userID int) ([]entity.WhitelistUserData, error) {
+	var ps []entity.WhitelistUserData
+	err := db.Select(ctx, &ps, getUserWhitelistsQuery, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, repository.ErrNotFound
+		}
+		return nil, err
+	}
+
+	res := make([]entity.WhitelistUserData, 0)
+	for i := range ps {
+		res = append(res, ps[i])
+	}
+	return res, nil
 }

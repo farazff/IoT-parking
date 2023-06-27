@@ -18,3 +18,7 @@ func RegisterUser(p UserRepository) error {
 func GetUserPasswordByPhone(ctx context.Context, phone string) (string, error) {
 	return userR.GetUserPasswordByPhone(ctx, phone)
 }
+
+func GetUserIDByPhone(ctx context.Context, phone string) (int, error) {
+	return userR.GetUserIDByPhone(ctx, phone)
+}

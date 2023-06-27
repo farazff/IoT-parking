@@ -47,10 +47,11 @@ type ZoneRepository interface {
 
 type WhitelistRepository interface {
 	ApproveWhitelist(ctx context.Context, whiteListID int, parkingID int) error
-	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist, parkingID int) (int, error)
+	CreateWhitelist(ctx context.Context, whitelist entity.Whitelist, userID int) (int, error)
 	GetWhitelists(ctx context.Context, parkingID int, approved bool) ([]entity.WhitelistOfficeData, error)
 	DeleteWhitelist(ctx context.Context, parkingID int, whiteListID int) error
 	IsCarWhitelist(ct context.Context, parkingUUID uuid.UUID, carTag string) (bool, error)
+	GetUserWhitelists(ctx context.Context, userID int) ([]entity.WhitelistUserData, error)
 }
 
 type LogRepository interface {
@@ -60,4 +61,5 @@ type LogRepository interface {
 
 type UserRepository interface {
 	GetUserPasswordByPhone(ctx context.Context, phone string) (string, error)
+	GetUserIDByPhone(ctx context.Context, phone string) (int, error)
 }

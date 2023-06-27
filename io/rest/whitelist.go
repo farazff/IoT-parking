@@ -50,7 +50,7 @@ func approveWhitelist(c echo.Context) error {
 }
 
 func requestWhitelist(c echo.Context) error {
-	_, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
+	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": err.Error(),
@@ -78,7 +78,7 @@ func requestWhitelist(c echo.Context) error {
 		})
 	}
 
-	id, err := manager.CreateWhitelist(c.Request().Context(), w)
+	id, err := manager.CreateWhitelist(c.Request().Context(), w, phone)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) || errors.Is(err, manager.ErrNoAccess) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -177,4 +177,27 @@ func deleteWhitelist(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "Whitelist deleted successfully",
 	})
+}
+
+func getUserWhitelists(c echo.Context) error {
+	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
+	Whitelists, err := manager.GetUserWhitelists(c.Request().Context(), phone)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistUserResSlice(Whitelists)})
 }
