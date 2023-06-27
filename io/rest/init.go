@@ -17,42 +17,42 @@ func init() {
 	//System admin requests
 	rest.EchoPost("/v1/systemAdmin/signIn", systemAdminSignIn)
 
-	rest.EchoPost("/v1/parking", createParking, middleware.AdminApiKey)
-	rest.EchoGet("/v1/parking/:id", getParking, middleware.AdminApiKey)
-	rest.EchoGet("/v1/parkings", getParkings, middleware.AdminApiKey)
-	rest.EchoPut("/v1/parking/:id", updateParking, middleware.AdminApiKey)
-	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.AdminApiKey)
+	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey)
+	rest.EchoGet("/v1/parking/:id", getParking, middleware.SystemAdminApiKey)
+	rest.EchoGet("/v1/parkings", getParkings, middleware.SystemAdminApiKey)
+	rest.EchoPut("/v1/parking/:id", updateParking, middleware.SystemAdminApiKey)
+	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.SystemAdminApiKey)
 
-	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.AdminApiKey)
-	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.AdminApiKey)
-	rest.EchoGet("/v1/parkingAdmins", getParkingAdmins, middleware.AdminApiKey)
-	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.AdminApiKey)
-	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.AdminApiKey)
+	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.SystemAdminApiKey)
+	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.SystemAdminApiKey)
+	rest.EchoGet("/v1/parkingAdmins", getParkingAdmins, middleware.SystemAdminApiKey)
+	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.SystemAdminApiKey)
+	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.SystemAdminApiKey)
 
 	//Parking admin requests
 	rest.EchoPost("/v1/parkingAdmin/signIn", parkingAdminSignIn)
 
-	rest.EchoPost("/v1/zone", createZone, middleware.ApiKey)
-	rest.EchoGet("/v1/zones", getZones, middleware.ApiKey)
-	rest.EchoGet("/v1/zone/:id", getZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ApiKey)
-	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ApiKey)
+	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey)
+	rest.EchoGet("/v1/zones", getZones, middleware.ParkingAdminApiKey)
+	rest.EchoGet("/v1/zone/:id", getZone, middleware.ParkingAdminApiKey)
+	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ParkingAdminApiKey)
+	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ParkingAdminApiKey)
 
-	rest.EchoPut("/v1/whitelist/approve/:id", approveWhitelist, middleware.ApiKey)
-	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ApiKey)
-	rest.EchoGet("/v1/whitelists/toApprove", getWhitelistsToApprove, middleware.ApiKey)
-	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ApiKey)
+	rest.EchoPut("/v1/whitelist/approve/:id", approveWhitelist, middleware.ParkingAdminApiKey)
+	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ParkingAdminApiKey)
+	rest.EchoGet("/v1/whitelists/toApprove", getWhitelistsToApprove, middleware.ParkingAdminApiKey)
+	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey)
 
 	//Raspberry PI requests
-	rest.EchoPost("v1/carEnter/:uuid", carEnter, middleware.ApiKey)
-	rest.EchoPut("v1/carExit/:uuid", carExit, middleware.ApiKey)
+	rest.EchoPost("v1/carEnter/:uuid", carEnter, middleware.HardwareApiKey)
+	rest.EchoPut("v1/carExit/:uuid", carExit, middleware.HardwareApiKey)
 
-	rest.EchoPut("/v1/zoneEnter/:id/:uuid", enterZone, middleware.ApiKey)
-	rest.EchoPut("/v1/zoneExit/:id/:uuid", exitZone, middleware.ApiKey)
+	rest.EchoPut("/v1/zoneEnter/:id/:uuid", enterZone, middleware.HardwareApiKey)
+	rest.EchoPut("/v1/zoneExit/:id/:uuid", exitZone, middleware.HardwareApiKey)
 
 	//User requests
 	rest.EchoPost("/v1/user/signIn", userSignIn)
 
-	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.ApiKey)
-	rest.EchoGet("/v1/user/whitelists/approved", getUserWhitelists, middleware.ApiKey)
+	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
+	rest.EchoGet("/v1/user/whitelists/approved", getUserWhitelists, middleware.UserApiKey)
 }

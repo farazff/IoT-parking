@@ -30,8 +30,10 @@ data:
   REST_PORT: '8080'
   REST_VALIDATOR: 'true'
   DEBUG: 'true'
-  API_KEY: 'user'
-  ADMIN_API_KEY: 'admin'
   REDIS_HOST: 'redis'
   REDIS_PORT: '6379'
+  SYSTEM_ADMIN_API_KEY: 'system'
+  PARKING_ADMIN_API_KEY: 'parking'
+  HARDWARE_API_KEY: 'hardware'
+  USER_API_KEY: 'user'
 
