@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"github.com/farazff/IoT-parking/entity"
 )
 
 var userR UserRepository
@@ -25,4 +26,8 @@ func GetUserIDByPhone(ctx context.Context, phone string) (int, error) {
 
 func GetUserIDByCarTag(ctx context.Context, carTag string) (int, error) {
 	return userR.GetUserIDByCarTag(ctx, carTag)
+}
+
+func CreateUser(ctx context.Context, user entity.User) error {
+	return userR.CreateUser(ctx, user)
 }

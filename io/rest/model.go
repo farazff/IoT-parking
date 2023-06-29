@@ -397,11 +397,11 @@ func toUserLogsResSlice(whitelists []entity.UserLog) []entity.UserLog {
 
 type User struct {
 	FID        int    `json:"ID"`
-	FFirstName string `json:"first_name,validate:required"`
-	FLastName  string `json:"last_name,validate:required"`
-	FCarTag    string `json:"car_tag,validate:required"`
-	FPhone     string `json:"phone,validate:required"`
-	FPassword  string `json:"password,validate:required"`
+	FFirstName string `json:"first_name" validate:"required"`
+	FLastName  string `json:"last_name" validate:"required"`
+	FCarTag    string `json:"car_tag" validate:"required"`
+	FPhone     string `json:"phone" validate:"required"`
+	FPassword  string `json:"password" validate:"required"`
 }
 
 func (u User) ID() int {

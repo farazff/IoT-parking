@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	getUserPasswordByPhone = `SELECT password FROM users WHERE deleted_at is NULL AND phone = $1`
-	getUserIDByPhone       = `SELECT id FROM users WHERE deleted_at is NULL AND phone = $1`
+	getUserPasswordByPhone = `SELECT password FROM users WHERE phone = $1`
+	getUserIDByPhone       = `SELECT id FROM users WHERE phone = $1`
 	getUserIDByCarTag      = `SELECT id FROM users WHERE car_tag = $1`
 	createUserQuery        = `INSERT INTO users (first_name, last_name, car_tag, phone, password) VALUES ($1, $2, $3, $4, $5)`
 )
@@ -54,15 +54,13 @@ func (s *service) GetUserIDByCarTag(ctx context.Context, carTag string) (int, er
 	return id, nil
 }
 
-func (s *service) CreateUser(ctx context.Context, parking entity.Parking, uuid string) (int, error) {
-	var id int
-	err := db.WQueryRow(ctx, createParkingQuery, parking.Name(), parking.Address(), parking.Phone(), parking.Enabled(),
-		uuid).Scan(&id)
+func (s *service) CreateUser(ctx context.Context, user entity.User) error {
+	_, err := db.Exec(ctx, createUserQuery, user.FirstName(), user.LastName(), user.CarTag(), user.Phone(), user.Password())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
-			return -1, fmt.Errorf("user already exist: %w", repository.ErrDuplicateEntity)
+			return fmt.Errorf("user already exist: %w", repository.ErrDuplicateEntity)
 		}
-		return -1, err
+		return err
 	}
-	return id, nil
+	return nil
 }
