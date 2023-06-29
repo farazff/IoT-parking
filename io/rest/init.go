@@ -53,8 +53,12 @@ func init() {
 	//User requests
 	rest.EchoPost("/v1/user/signIn", userSignIn)
 
+	rest.EchoPost("v1/user/signUp", userSignUp)
+
 	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
 	rest.EchoGet("/v1/user/whitelists/approved", getUserWhitelists, middleware.UserApiKey)
 
 	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey)
+
+	rest.EchoGet("/v1/user/parkings", getUserParkings, middleware.UserApiKey)
 }

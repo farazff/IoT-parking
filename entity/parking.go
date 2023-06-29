@@ -2,7 +2,6 @@ package entity
 
 import (
 	"github.com/google/uuid"
-	"time"
 )
 
 type Parking interface {
@@ -11,8 +10,5 @@ type Parking interface {
 	Address() string
 	Phone() string
 	Enabled() bool
-	CreatedAt() time.Time
-	UpdatedAt() time.Time
-	DeletedAt() *time.Time
 	Uuid() uuid.UUID
 }

@@ -8,15 +8,12 @@ import (
 )
 
 type Parking struct {
-	FID        int        `json:"id"`
-	FName      string     `json:"name"`
-	FAddress   string     `json:"address"`
-	FPhone     string     `json:"phone"`
-	FEnabled   bool       `json:"enabled"`
-	FCreatedAt time.Time  `json:"createdAt"`
-	FUpdatedAt time.Time  `json:"updatedAt"`
-	FDeletedAt *time.Time `json:"deletedAt"`
-	FUuid      uuid.UUID  `json:"uuid"`
+	FID      int       `json:"id"`
+	FName    string    `json:"name"`
+	FAddress string    `json:"address"`
+	FPhone   string    `json:"phone"`
+	FEnabled bool      `json:"enabled"`
+	FUuid    uuid.UUID `json:"uuid"`
 }
 
 func (p Parking) ID() int {
@@ -37,18 +34,6 @@ func (p Parking) Phone() string {
 
 func (p Parking) Enabled() bool {
 	return p.FEnabled
-}
-
-func (p Parking) CreatedAt() time.Time {
-	return p.FCreatedAt
-}
-
-func (p Parking) UpdatedAt() time.Time {
-	return p.FUpdatedAt
-}
-
-func (p Parking) DeletedAt() *time.Time {
-	return p.FDeletedAt
 }
 
 func (p Parking) Uuid() uuid.UUID {
@@ -412,11 +397,11 @@ func toUserLogsResSlice(whitelists []entity.UserLog) []entity.UserLog {
 
 type User struct {
 	FID        int    `json:"ID"`
-	FFirstName string `json:"first_name"`
-	FLastName  string `json:"last_name"`
-	FCarTag    string `json:"car_tag"`
-	FPhone     string `json:"phone"`
-	FPassword  string `json:"password"`
+	FFirstName string `json:"first_name,validate:required"`
+	FLastName  string `json:"last_name,validate:required"`
+	FCarTag    string `json:"car_tag,validate:required"`
+	FPhone     string `json:"phone,validate:required"`
+	FPassword  string `json:"password,validate:required"`
 }
 
 func (u User) ID() int {

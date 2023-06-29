@@ -7,15 +7,12 @@ import (
 )
 
 type Parking struct {
-	DBID        int        `db:"id"`
-	DBName      string     `db:"name"`
-	DBAddress   string     `db:"address"`
-	DBPhone     string     `db:"phone"`
-	DBEnabled   bool       `db:"enabled"`
-	DBCreatedAt time.Time  `db:"created_at"`
-	DBUpdatedAt time.Time  `db:"updated_at"`
-	DBDeletedAt *time.Time `db:"deleted_at"`
-	DBUuid      uuid.UUID  `db:"uuid"`
+	DBID      int       `db:"id"`
+	DBName    string    `db:"name"`
+	DBAddress string    `db:"address"`
+	DBPhone   string    `db:"phone"`
+	DBEnabled bool      `db:"enabled"`
+	DBUuid    uuid.UUID `db:"uuid"`
 }
 
 func (p Parking) ID() int {
@@ -36,18 +33,6 @@ func (p Parking) Phone() string {
 
 func (p Parking) Enabled() bool {
 	return p.DBEnabled
-}
-
-func (p Parking) CreatedAt() time.Time {
-	return p.DBCreatedAt
-}
-
-func (p Parking) UpdatedAt() time.Time {
-	return p.DBUpdatedAt
-}
-
-func (p Parking) DeletedAt() *time.Time {
-	return p.DBDeletedAt
 }
 
 func (p Parking) Uuid() uuid.UUID {

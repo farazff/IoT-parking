@@ -17,6 +17,14 @@ func parkingAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+
+	if err := c.Validate(cr); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	sessionToken, err := manager.GetParkingAdminPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -39,6 +47,14 @@ func systemAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+
+	if err := c.Validate(cr); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	sessionToken, err := manager.GetSystemAdminPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -61,6 +77,14 @@ func userSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+
+	if err := c.Validate(cr); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	sessionToken, err := manager.GetUserPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -72,5 +96,24 @@ func userSignIn(c echo.Context) error {
 		Value:   sessionToken,
 		Expires: time.Now().Add(120 * time.Second),
 	})
+	return c.NoContent(200)
+}
+
+func userSignUp(c echo.Context) error {
+	cr := new(User)
+	if err := c.Bind(cr); err != nil {
+		lg.Error(err)
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if err := c.Validate(cr); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	return c.NoContent(200)
 }

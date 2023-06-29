@@ -28,6 +28,10 @@ func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return parkingR.GetParkings(ctx)
 }
 
+func GetUserParkings(ctx context.Context) ([]entity.Parking, error) {
+	return parkingR.GetUserParkings(ctx)
+}
+
 func UpdateParking(ctx context.Context, parking entity.Parking) error {
 	return parkingR.UpdateParking(ctx, parking)
 }

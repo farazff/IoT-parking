@@ -43,6 +43,14 @@ func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return parkings, nil
 }
 
+func GetUserParkings(ctx context.Context) ([]entity.Parking, error) {
+	parkings, err := repository.GetUserParkings(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error in retrieving parkings, %w", err)
+	}
+	return parkings, nil
+}
+
 func UpdateParking(ctx context.Context, rule entity.Parking) error {
 	err := repository.UpdateParking(ctx, rule)
 	if err != nil {

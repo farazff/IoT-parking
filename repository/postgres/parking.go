@@ -15,9 +15,11 @@ import (
 const (
 	createParkingQuery = `INSERT INTO parkings(name, address, phone, enabled, created_at, updated_at, uuid) 
 							VALUES($1, $2, $3, $4, now(), now(), $5) RETURNING id`
-	getParkingsQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at, uuid 
+	getParkingsQuery = `SELECT id, name, address, phone, enabled, uuid 
 							FROM parkings WHERE deleted_at is NULL`
-	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, created_at, updated_at, deleted_at, uuid 
+	getUserParkingsQuery = `SELECT id, name, address, phone, enabled, uuid 
+							FROM parkings WHERE deleted_at is NULL AND enabled = true`
+	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, uuid 
 							FROM parkings WHERE deleted_at is NULL AND id = $1`
 	updateParkingQuery = `UPDATE parkings SET (name, address, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1 and deleted_at is null`
@@ -56,6 +58,23 @@ func (s *service) GetParking(ctx context.Context, id int) (entity.Parking, error
 func (s *service) GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	var ps []Parking
 	err := db.Select(ctx, &ps, getParkingsQuery)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, repository.ErrNotFound
+		}
+		return nil, err
+	}
+
+	res := make([]entity.Parking, 0)
+	for i := range ps {
+		res = append(res, ps[i])
+	}
+	return res, nil
+}
+
+func (s *service) GetUserParkings(ctx context.Context) ([]entity.Parking, error) {
+	var ps []Parking
+	err := db.Select(ctx, &ps, getUserParkingsQuery)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound
