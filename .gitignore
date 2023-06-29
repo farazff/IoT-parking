@@ -2,4 +2,3 @@ __debug_*
 .env
 *.tmpl
 IoT-parking
-swagger.yaml
