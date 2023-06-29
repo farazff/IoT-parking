@@ -9,9 +9,9 @@ import (
 
 type Parking struct {
 	FID      int       `json:"id"`
-	FName    string    `json:"name"`
-	FAddress string    `json:"address"`
-	FPhone   string    `json:"phone"`
+	FName    string    `json:"name" validate:"required"`
+	FAddress string    `json:"address" validate:"required"`
+	FPhone   string    `json:"phone" validate:"required"`
 	FEnabled bool      `json:"enabled"`
 	FUuid    uuid.UUID `json:"uuid"`
 }
@@ -41,7 +41,7 @@ func (p Parking) Uuid() uuid.UUID {
 }
 
 type ParkingRes struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Address  string `json:"address"`
 	Phone    string `json:"phone"`
@@ -52,7 +52,7 @@ type ParkingRes struct {
 
 func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) ParkingRes {
 	response := ParkingRes{
-		Id:       parking.ID(),
+		ID:       parking.ID(),
 		Name:     parking.Name(),
 		Address:  parking.Address(),
 		Phone:    parking.Phone(),

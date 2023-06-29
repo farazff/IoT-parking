@@ -14,9 +14,6 @@ func CreateParking(ctx context.Context, parking entity.Parking) (int, uuid.UUID,
 	Puuid := uuid.New()
 	id, err := repository.CreateParking(ctx, parking, Puuid.String())
 	if err != nil {
-		if errors.Is(err, repository.ErrDuplicateEntity) {
-			return -1, uuid.UUID{}, ErrDuplicateEntity
-		}
 		lg.Error("error during creating parking: %v", err)
 		return -1, uuid.UUID{}, ErrInternalServer
 	}

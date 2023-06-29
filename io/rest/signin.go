@@ -36,8 +36,8 @@ func docs() error {
 // responses:
 //
 //	204: NoContent
-//	401: ErrorMessage
-//	500: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
 func systemAdminSignIn(c echo.Context) error {
 	cr := new(entity.Credentials)
 	if err := c.Bind(cr); err != nil {
@@ -80,8 +80,8 @@ func systemAdminSignIn(c echo.Context) error {
 // responses:
 //
 //	204: NoContent
-//	401: ErrorMessage
-//	500: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
 func parkingAdminSignIn(c echo.Context) error {
 	cr := new(entity.Credentials)
 	if err := c.Bind(cr); err != nil {
@@ -124,7 +124,7 @@ func parkingAdminSignIn(c echo.Context) error {
 // responses:
 //
 //	204: NoContent
-//	401: ErrorMessage
+//	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func userSignIn(c echo.Context) error {
 	cr := new(entity.Credentials)
@@ -168,8 +168,8 @@ func userSignIn(c echo.Context) error {
 // responses:
 //
 //	204: NoContent
-//	404: ErrorMessage
-//	500: ErrorMessage
+//	400: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
 func userSignUp(c echo.Context) error {
 	user := new(User)
 	if err := c.Bind(user); err != nil {

@@ -34,9 +34,6 @@ func (s *service) CreateParking(ctx context.Context, parking entity.Parking, uui
 	err := db.WQueryRow(ctx, createParkingQuery, parking.Name(), parking.Address(), parking.Phone(), parking.Enabled(),
 		uuid).Scan(&id)
 	if err != nil {
-		if err.(*pq.Error).Code == uniqueViolation {
-			return -1, fmt.Errorf("parking already exist: %w", repository.ErrDuplicateEntity)
-		}
 		return -1, err
 	}
 	return id, nil
