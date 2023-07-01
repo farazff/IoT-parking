@@ -252,3 +252,9 @@ type deleteWhitelist struct {
 	// in: path
 	ID int
 }
+
+// swagger:parameters userSignOut ParkingAdminSignOut SystemAdminSignOut
+type signOut struct {
+	apiKey
+	sessionToken
+}

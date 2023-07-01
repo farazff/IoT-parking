@@ -421,57 +421,33 @@ info:
 paths:
     /parkingAdmin/signIn:
         post:
-            operationId: parkingAdminSingIn
-            parameters:
-                - description: api key for APIs
-                  in: header
-                  name: api-key
-                  required: true
-                  type: string
-                  x-go-name: ApiKey
-                - in: body
-                  name: Credentials
-                  required: true
-                  schema:
-                    $ref: '#/definitions/Credentials'
+            operationId: parkingAdminSignOut
             responses:
-                "204":
-                    $ref: '#/responses/NoContent'
+                "200":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
                 "401":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
                 "500":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
-            summary: This route is used by parking admin to sign in.
+            summary: This route is used by system admin to sign out.
             tags:
                 - Parking_Admin
     /systemAdmin/signIn:
         post:
-            operationId: systemAdminSignIn
-            parameters:
-                - description: api key for APIs
-                  in: header
-                  name: api-key
-                  required: true
-                  type: string
-                  x-go-name: ApiKey
-                - in: body
-                  name: Credentials
-                  required: true
-                  schema:
-                    $ref: '#/definitions/Credentials'
+            operationId: systemAdminSignOut
             responses:
-                "204":
-                    $ref: '#/responses/NoContent'
+                "200":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
                 "401":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
                 "500":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
-            summary: This route is used by system admin to sign in.
+            summary: This route is used by system admin to sign out.
             tags:
                 - System_Admin
     /user/signIn:
         post:
-            operationId: userSingIn
+            operationId: userSignOut
             parameters:
                 - description: api key for APIs
                   in: header
@@ -479,19 +455,20 @@ paths:
                   required: true
                   type: string
                   x-go-name: ApiKey
-                - in: body
-                  name: Credentials
+                - description: Session token
+                  in: header
+                  name: session_token
                   required: true
-                  schema:
-                    $ref: '#/definitions/Credentials'
+                  type: string
+                  x-go-name: SessionToken
             responses:
-                "204":
-                    $ref: '#/responses/NoContent'
+                "200":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
                 "401":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
                 "500":
-                    $ref: '#/responses/ErrorMessage'
-            summary: This route is used by user to sign in.
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+            summary: This route is used by system user to sign out.
             tags:
                 - User
     /user/signUp:

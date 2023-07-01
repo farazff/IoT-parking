@@ -17,6 +17,7 @@ func init() {
 
 	//System admin requests
 	rest.EchoPost("/systemAdmin/signIn", systemAdminSignIn, middleware.SystemAdminApiKey)
+	rest.EchoPost("/systemAdmin/signOut", systemAdminSignOut, middleware.SystemAdminApiKey)
 
 	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey)
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.SystemAdminApiKey)
@@ -32,6 +33,7 @@ func init() {
 
 	//Parking admin requests
 	rest.EchoPost("/parkingAdmin/signIn", parkingAdminSignIn, middleware.ParkingAdminApiKey)
+	rest.EchoPost("/parkingAdmin/signOut", parkingAdminSignOut, middleware.ParkingAdminApiKey)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ParkingAdminApiKey)
@@ -48,11 +50,10 @@ func init() {
 
 	//User requests
 	rest.EchoPost("/user/signUp", userSignUp, middleware.UserApiKey)
-
 	rest.EchoPost("/user/signIn", userSignIn, middleware.UserApiKey)
+	rest.EchoPost("/user/signOut", userSignOut, middleware.UserApiKey)
 
 	rest.EchoGet("/v1/user/parkings", getUserParkings, middleware.UserApiKey)
-
 	rest.EchoGet("/v1/user/whitelists/requested", getUserWhitelists, middleware.UserApiKey)
 	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
 

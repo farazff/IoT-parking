@@ -7,6 +7,7 @@ import (
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/okian/servo/v2/kv"
 	"github.com/okian/servo/v2/lg"
 	"github.com/okian/servo/v2/rest"
 	"net/http"
@@ -73,6 +74,31 @@ func systemAdminSignIn(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// swagger:route POST /systemAdmin/signIn System_Admin systemAdminSignOut
+//
+// This route is used by system admin to sign out.
+//
+// responses:
+//
+//	200: ErrorUnauthorizedMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
+func systemAdminSignOut(c echo.Context) error {
+	_, _, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.NoContent(http.StatusOK)
+}
+
 // swagger:route POST /parkingAdmin/signIn Parking_Admin parkingAdminSingIn
 //
 // This route is used by parking admin to sign in.
@@ -117,6 +143,31 @@ func parkingAdminSignIn(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// swagger:route POST /parkingAdmin/signIn Parking_Admin parkingAdminSignOut
+//
+// This route is used by system admin to sign out.
+//
+// responses:
+//
+//	200: ErrorUnauthorizedMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
+func parkingAdminSignOut(c echo.Context) error {
+	_, _, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.NoContent(http.StatusOK)
+}
+
 // swagger:route POST /user/signIn User userSingIn
 //
 // This route is used by user to sign in.
@@ -159,6 +210,31 @@ func userSignIn(c echo.Context) error {
 		Expires: time.Now().Add(120 * time.Second),
 	})
 	return c.NoContent(http.StatusNoContent)
+}
+
+// swagger:route POST /user/signIn User userSignOut
+//
+// This route is used by system user to sign out.
+//
+// responses:
+//
+//	200: ErrorUnauthorizedMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorUnauthorizedMessage
+func userSignOut(c echo.Context) error {
+	_, _, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.NoContent(http.StatusOK)
 }
 
 // swagger:route POST /user/signUp User userSingUp
