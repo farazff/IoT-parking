@@ -2,6 +2,8 @@ FROM golang:latest AS build
 
 WORKDIR /app
 
+make swagger
+
 COPY . ./
 
 RUN go build -o /binary

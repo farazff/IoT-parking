@@ -321,7 +321,6 @@ func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData) entity.Whitelist
 		FirstName: whitelist.FirstName,
 		LastName:  whitelist.LastName,
 		CarTag:    whitelist.CarTag,
-		ParkingID: whitelist.ParkingID,
 	}
 	return response
 }

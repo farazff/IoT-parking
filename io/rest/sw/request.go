@@ -236,3 +236,19 @@ type accessRequest struct {
 	// in: body
 	accessRequestCreator accessRequestCreator
 }
+
+// swagger:parameters getWhitelistsToApprove getApprovedWhitelists
+type getWhitelistsToApprove struct {
+	apiKey
+	sessionToken
+}
+
+// swagger:parameters deleteWhitelist approveWhitelist
+type deleteWhitelist struct {
+	apiKey
+	sessionToken
+	// whitelist id
+	// required: true
+	// in: path
+	ID int
+}

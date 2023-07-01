@@ -236,9 +236,14 @@ definitions:
         x-go-package: github.com/farazff/IoT-parking/io/rest/sw
     UserLogsGet:
         properties:
-            approved:
+            enter_time:
+                format: date-time
                 type: string
-                x-go-name: Approved
+                x-go-name: EnterTime
+            exit_time:
+                format: date-time
+                type: string
+                x-go-name: ExitTime
             id:
                 format: int64
                 type: integer
@@ -289,6 +294,23 @@ definitions:
             parking_name:
                 type: string
                 x-go-name: ParkingName
+        type: object
+        x-go-package: github.com/farazff/IoT-parking/io/rest/sw
+    WhitelistsToApproveGet:
+        properties:
+            car_tag:
+                type: string
+                x-go-name: CarTag
+            first_name:
+                type: string
+                x-go-name: FirstName
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            last_name:
+                type: string
+                x-go-name: LastName
         type: object
         x-go-package: github.com/farazff/IoT-parking/io/rest/sw
     ZoneCreate:
@@ -868,7 +890,7 @@ paths:
                     $ref: '#/responses/ErrorUnauthorizedMessage'
                 "500":
                     $ref: '#/responses/ErrorMessage'
-            summary: This route is used to get user logs
+            summary: This route is used by user to get their logs
             tags:
                 - User
     /v1/user/parkings:
@@ -917,7 +939,7 @@ paths:
                   x-go-name: SessionToken
             responses:
                 "201":
-                    $ref: '#/responses/JustMessage'
+                    $ref: '#/responses/ErrorMessage'
                 "400":
                     $ref: '#/responses/ErrorMessage'
                 "401":
@@ -957,6 +979,130 @@ paths:
             summary: This route is used to by user to see their requests
             tags:
                 - User
+    /v1/whitelist/{id}:
+        delete:
+            operationId: deleteWhitelist
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - description: whitelist id
+                  format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/ErrorMessage'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to delete a whitelist by ID
+            tags:
+                - Parking_Admin
+    /v1/whitelist/approve/{id}:
+        put:
+            operationId: approveWhitelist
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - description: whitelist id
+                  format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/ErrorMessage'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to approve a whitelist by ID
+            tags:
+                - Parking_Admin
+    /v1/whitelists/approved:
+        get:
+            operationId: getApprovedWhitelists
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+            responses:
+                "200":
+                    $ref: '#/responses/ApprovedWhitelistsGetRes'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used by parking admin to get approved whitelists
+            tags:
+                - Parking_Admin
+    /v1/whitelists/toApprove:
+        get:
+            operationId: getWhitelistsToApprove
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+            responses:
+                "200":
+                    $ref: '#/responses/WhitelistsToApproveGetRes'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used by parking admin to get access requests
+            tags:
+                - Parking_Admin
     /v1/zone:
         post:
             operationId: createZone
@@ -1106,6 +1252,34 @@ paths:
 produces:
     - application/json
 responses:
+    ApprovedWhitelistsGetRes:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                whitelists:
+                    description: parking res
+                    items:
+                        $ref: '#/definitions/WhitelistsToApproveGet'
+                    type: array
+                    x-go-name: WhitelistsToApprove
+            type: object
+    ErrorMessage:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                message:
+                    description: Error message
+                    type: string
+                    x-go-name: Message
+            type: object
     ErrorUnauthorizedMessage:
         description: ""
         schema:
@@ -1263,6 +1437,21 @@ responses:
                         $ref: '#/definitions/UserRequestsGet'
                     type: array
                     x-go-name: UserRequestsGet
+            type: object
+    WhitelistsToApproveGetRes:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                whitelists:
+                    description: parking res
+                    items:
+                        $ref: '#/definitions/WhitelistsToApproveGet'
+                    type: array
+                    x-go-name: WhitelistsToApprove
             type: object
     ZoneCreateRes:
         description: ""

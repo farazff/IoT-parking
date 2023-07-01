@@ -14,10 +14,10 @@ import (
 )
 
 const (
-	approveWhiteListQuery = `UPDATE whitelists SET approved = TRUE WHERE id = $1 AND parking_id = $2`
+	approveWhiteListQuery = `UPDATE whitelists SET approved = TRUE WHERE id = $1 AND parking_id = $2 AND approved = false`
 	createWhitelistQuery  = `INSERT INTO whitelists(user_id, parking_id) VALUES($1, $2) RETURNING id`
 	getWhitelistsQuery    = `SELECT w.id as id, u.first_name as first_name, u.last_name as last_name, 
-       									u.car_tag as car_tag, w.parking_id as parking-id FROM whitelists 
+       									u.car_tag as car_tag FROM whitelists 
     								as w join users as u on w.user_id = u.id WHERE parking_id = $1 AND approved = $2`
 	deleteWhitelistQuery = `DELETE FROM whitelists where parking_id = $1 AND id = $2`
 	isCarWhiteListQuery  = `SELECT count(*) from whitelists where 

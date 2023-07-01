@@ -11,6 +11,17 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
+// swagger:route PUT /v1/whitelist/approve/{id} Parking_Admin approveWhitelist
+//
+// # This route is used to approve a whitelist by ID
+//
+// responses:
+//
+//	200: ErrorMessage
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func approveWhitelist(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -55,7 +66,7 @@ func approveWhitelist(c echo.Context) error {
 //
 // responses:
 //
-//	201: JustMessage
+//	201: ErrorMessage
 //	400: ErrorMessage
 //	401: ErrorUnauthorizedMessage
 //	404: ErrorMessage
@@ -111,6 +122,15 @@ func requestWhitelist(c echo.Context) error {
 	})
 }
 
+// swagger:route GET /v1/whitelists/approved Parking_Admin getApprovedWhitelists
+//
+// # This route is used by parking admin to get approved whitelists
+//
+// responses:
+//
+//	200: ApprovedWhitelistsGetRes
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getWhitelistsApproved(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -134,10 +154,19 @@ func getWhitelistsApproved(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistOfficeResSlice(Whitelists)})
 }
 
+// swagger:route GET /v1/whitelists/toApprove Parking_Admin getWhitelistsToApprove
+//
+// # This route is used by parking admin to get access requests
+//
+// responses:
+//
+//	200: WhitelistsToApproveGetRes
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getWhitelistsToApprove(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -157,6 +186,17 @@ func getWhitelistsToApprove(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"whitelists": toWhitelistOfficeResSlice(Whitelists)})
 }
 
+// swagger:route DELETE /v1/whitelist/{id} Parking_Admin deleteWhitelist
+//
+// # This route is used to delete a whitelist by ID
+//
+// responses:
+//
+//	200: ErrorMessage
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func deleteWhitelist(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {

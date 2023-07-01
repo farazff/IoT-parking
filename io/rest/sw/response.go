@@ -36,7 +36,7 @@ type ErrorUnauthorizedMessage struct {
 	}
 }
 
-// swagger:response ErrorMessage JustMessage
+// swagger:response ErrorMessage
 type ErrorMessage struct {
 	// in: body
 	Body struct {
@@ -291,6 +291,36 @@ type UserLogsRes struct {
 	Body struct {
 		// parking res
 		UserLogsGet []UserLogsGet `json:"logs"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type WhitelistsToApproveGet struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	CarTag    string `json:"car_tag"`
+}
+
+// swagger:response WhitelistsToApproveGetRes
+type WhitelistsToApproveRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		WhitelistsToApprove []WhitelistsToApproveGet `json:"whitelists"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:response ApprovedWhitelistsGetRes
+type WhitelistsApprovedRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		WhitelistsToApprove []WhitelistsToApproveGet `json:"whitelists"`
 	}
 	//in: cookie
 	SessionToken string `json:"session_token"`
