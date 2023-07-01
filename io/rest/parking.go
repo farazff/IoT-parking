@@ -12,7 +12,7 @@ import (
 )
 
 func healthCheck(c echo.Context) error {
-	return c.String(http.StatusOK, "Running")
+	return c.String(http.StatusOK, "Running...")
 }
 
 // swagger:route POST /v1/parking System_Admin createParking
