@@ -245,8 +245,18 @@ func deleteParking(c echo.Context) error {
 	})
 }
 
+// swagger:route GET /v1/user/parkings User getUserParkings
+//
+// # This route is used to get all user parkings which user can request access to them
+//
+// responses:
+//
+//	200: UserParkingsGetRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getUserParkings(c echo.Context) error {
-	_, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
+	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
@@ -258,11 +268,11 @@ func getUserParkings(c echo.Context) error {
 		Value:   sessionToken,
 		Expires: time.Now().Add(120 * time.Second),
 	})
-	parkings, err := manager.GetUserParkings(c.Request().Context())
+	parkings, err := manager.GetUserParkings(c.Request().Context(), phone)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingResSlice(parkings))
+	return c.JSON(http.StatusOK, echo.Map{"parkings": toParkingResSlice(parkings)})
 }

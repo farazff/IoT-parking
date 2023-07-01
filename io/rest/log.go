@@ -69,10 +69,20 @@ func carExit(c echo.Context) error {
 	})
 }
 
+// swagger:route GET /v1/user/logs/{:page} User getUserLogs
+//
+// # This route is used by user to get their logs
+//
+// responses:
+//
+//	200: UserLogsRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getUserLogs(c echo.Context) error {
 	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}

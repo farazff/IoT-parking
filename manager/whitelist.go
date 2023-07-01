@@ -27,15 +27,18 @@ func ApproveWhitelist(ctx context.Context, whiteListID int, phone string) error 
 }
 
 func CreateWhitelist(ctx context.Context, Whitelist entity.Whitelist, phone string) (int, error) {
-	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	userID, err := repository.GetUserIDByPhone(ctx, phone)
 	if err != nil {
 		return -1, err
 	}
 
-	id, err := repository.CreateWhitelist(ctx, Whitelist, parkingID)
+	id, err := repository.CreateWhitelist(ctx, Whitelist, userID)
 	if err != nil {
 		if errors.Is(err, repository.ErrDuplicateEntity) {
 			return id, ErrDuplicateEntity
+		}
+		if errors.Is(err, repository.ErrParkingForeignKeyConstraint) {
+			return id, ErrParkingNotFound
 		}
 		lg.Error("error during creating Whitelist: %v", err)
 		return id, ErrInternalServer

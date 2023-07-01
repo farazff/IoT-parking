@@ -215,3 +215,24 @@ type updateZone struct {
 	// in: body
 	ZoneCreator ZoneCreator `json:"zoneUpdater"`
 }
+
+// swagger:parameters getUserParkings getUserRequests getUserLogs
+type getUserParkings struct {
+	apiKey
+	sessionToken
+}
+
+// swagger:model
+type accessRequestCreator struct {
+	// required: true
+	ParkingID string `json:"parking_id"`
+}
+
+// swagger:parameters accessRequest
+type accessRequest struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: body
+	accessRequestCreator accessRequestCreator
+}

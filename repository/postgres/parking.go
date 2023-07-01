@@ -17,8 +17,9 @@ const (
 							VALUES($1, $2, $3, $4, now(), now(), $5) RETURNING id`
 	getParkingsQuery = `SELECT id, name, address, phone, enabled, uuid 
 							FROM parkings WHERE deleted_at is NULL`
-	getUserParkingsQuery = `SELECT id, name, address, phone, enabled, uuid 
-							FROM parkings WHERE deleted_at is NULL AND enabled = true`
+	getUserParkingsQuery = `SELECT p.id, p.name, p.address, p.phone, p.enabled, p.uuid, 
+       (SELECT COUNT(*) from whitelists as w WHERE user_id = $1 AND w.parking_id = p.id) as access
+							FROM parkings as p WHERE deleted_at is NULL AND enabled = true`
 	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, uuid 
 							FROM parkings WHERE deleted_at is NULL AND id = $1`
 	updateParkingQuery = `UPDATE parkings SET (name, address, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
@@ -69,9 +70,9 @@ func (s *service) GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return res, nil
 }
 
-func (s *service) GetUserParkings(ctx context.Context) ([]entity.Parking, error) {
-	var ps []Parking
-	err := db.Select(ctx, &ps, getUserParkingsQuery)
+func (s *service) GetUserParkings(ctx context.Context, userID int) ([]entity.Parking, error) {
+	var ps []UserParking
+	err := db.Select(ctx, &ps, getUserParkingsQuery, userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound

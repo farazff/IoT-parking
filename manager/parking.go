@@ -40,8 +40,12 @@ func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return parkings, nil
 }
 
-func GetUserParkings(ctx context.Context) ([]entity.Parking, error) {
-	parkings, err := repository.GetUserParkings(ctx)
+func GetUserParkings(ctx context.Context, phone string) ([]entity.Parking, error) {
+	userID, err := repository.GetUserIDByPhone(ctx, phone)
+	if err != nil {
+		return nil, err
+	}
+	parkings, err := repository.GetUserParkings(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("error in retrieving parkings, %w", err)
 	}

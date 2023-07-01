@@ -17,6 +17,8 @@
 // swagger:meta
 package sw
 
+import "time"
+
 // swagger:response NoContent
 type NoContent struct {
 	// in: body
@@ -34,7 +36,7 @@ type ErrorUnauthorizedMessage struct {
 	}
 }
 
-// swagger:response ErrorMessage
+// swagger:response ErrorMessage JustMessage
 type ErrorMessage struct {
 	// in: body
 	Body struct {
@@ -229,6 +231,66 @@ type ZonesGetRes struct {
 	Body struct {
 		// parking res
 		ZonesGet []ZoneGet `json:"zones"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type UserParkingsGet struct {
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	Address    string `json:"address"`
+	Phone      string `json:"phone"`
+	Enabled    bool   `json:"enabled"`
+	HaveAccess bool   `json:"have_access"`
+}
+
+// swagger:response UserParkingsGetRes
+type UserParkingsGetRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		UserParkingsGet []UserParkingsGet `json:"parkings"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type UserRequestsGet struct {
+	ID             int    `json:"id"`
+	ParkingName    string `json:"parking_name"`
+	ParkingAddress string `json:"parking_address"`
+	Approved       string `json:"approved"`
+}
+
+// swagger:response UserRequestsRes
+type UserRequestsRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		UserRequestsGet []UserRequestsGet `json:"whitelists"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type UserLogsGet struct {
+	ID             int       `json:"id"`
+	EnterTime      time.Time `json:"enter_time"`
+	ExitTime       time.Time `json:"exit_time"`
+	ParkingName    string    `json:"parking_name"`
+	ParkingAddress string    `json:"parking_address"`
+}
+
+// swagger:response UserLogsRes
+type UserLogsRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		UserLogsGet []UserLogsGet `json:"logs"`
 	}
 	//in: cookie
 	SessionToken string `json:"session_token"`

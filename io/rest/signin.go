@@ -29,7 +29,7 @@ func docs() error {
 	return nil
 }
 
-// swagger:route POST /v1/systemAdmin/signIn System_Admin systemAdminSignIn
+// swagger:route POST /systemAdmin/signIn System_Admin systemAdminSignIn
 //
 // This route is used by system admin to sign in.
 //
@@ -73,7 +73,7 @@ func systemAdminSignIn(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-// swagger:route POST /v1/parkingAdmin/signIn Parking_Admin parkingAdminSingIn
+// swagger:route POST /parkingAdmin/signIn Parking_Admin parkingAdminSingIn
 //
 // This route is used by parking admin to sign in.
 //
@@ -117,7 +117,7 @@ func parkingAdminSignIn(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-// swagger:route POST /v1/user/signIn User userSingIn
+// swagger:route POST /user/signIn User userSingIn
 //
 // This route is used by user to sign in.
 //
@@ -161,7 +161,7 @@ func userSignIn(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-// swagger:route POST /v1/user/signUp User userSingUp
+// swagger:route POST /user/signUp User userSingUp
 //
 // This route is used by user to sign up.
 //

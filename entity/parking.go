@@ -12,3 +12,8 @@ type Parking interface {
 	Enabled() bool
 	Uuid() uuid.UUID
 }
+
+type UserParking interface {
+	Parking
+	Access() int
+}

@@ -47,7 +47,10 @@ func (s *service) CreateWhitelist(ctx context.Context, Whitelist entity.Whitelis
 	err := db.WQueryRow(ctx, createWhitelistQuery, userID, Whitelist.ParkingID()).Scan(&id)
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
-			return -1, fmt.Errorf("Whitelist already exist: %w", repository.ErrDuplicateEntity)
+			return -1, repository.ErrDuplicateEntity
+		}
+		if err.(*pq.Error).Code == foreignKeyViolation {
+			return -1, repository.ErrParkingForeignKeyConstraint
 		}
 		return -1, err
 	}

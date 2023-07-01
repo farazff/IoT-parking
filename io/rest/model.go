@@ -41,13 +41,14 @@ func (p Parking) Uuid() uuid.UUID {
 }
 
 type ParkingRes struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Enabled  bool   `json:"enabled"`
-	Capacity int    `json:"capacity,omitempty"`
-	Uuid     string `json:"uuid,omitempty"`
+	ID         int    `json:"id"`
+	Name       string `json:"name"`
+	Address    string `json:"address"`
+	Phone      string `json:"phone"`
+	Enabled    bool   `json:"enabled"`
+	Capacity   int    `json:"capacity,omitempty"`
+	Uuid       string `json:"uuid,omitempty"`
+	HaveAccess *bool  `json:"have_access,omitempty"`
 }
 
 func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) ParkingRes {
@@ -59,9 +60,21 @@ func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) Parking
 		Enabled:  parking.Enabled(),
 		Capacity: capacity,
 	}
+	response.HaveAccess = nil
+
 	if Puuid != uuid.Nil {
 		response.Uuid = Puuid.String()
 	}
+
+	uP, ok := parking.(entity.UserParking)
+	if ok {
+		haveAccess := false
+		response.HaveAccess = &haveAccess
+		if uP.Access() > 0 {
+			haveAccess = true
+		}
+	}
+
 	return response
 }
 
@@ -282,7 +295,7 @@ func toZoneResSlice(zones []entity.Zone) []ZoneRes {
 type Whitelist struct {
 	FID        int  `json:"id"`
 	FUserID    int  `json:"user_id"`
-	FParkingID int  `json:"parking_id,validate:required"`
+	FParkingID int  `json:"parking_id" validate:"required"`
 	FApproved  bool `json:"approved"`
 }
 

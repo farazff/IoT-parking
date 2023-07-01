@@ -13,6 +13,12 @@ type Parking struct {
 	DBPhone   string    `db:"phone"`
 	DBEnabled bool      `db:"enabled"`
 	DBUuid    uuid.UUID `db:"uuid"`
+	DBAccess  int       `db:"access"`
+}
+
+type UserParking struct {
+	Parking
+	DBAccess int `db:"access"`
 }
 
 func (p Parking) ID() int {
@@ -37,6 +43,10 @@ func (p Parking) Enabled() bool {
 
 func (p Parking) Uuid() uuid.UUID {
 	return p.DBUuid
+}
+
+func (uP UserParking) Access() int {
+	return uP.DBAccess
 }
 
 type SystemAdmin struct {

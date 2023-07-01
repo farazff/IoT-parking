@@ -16,7 +16,7 @@ const (
                                             NOW(), (SELECT id FROM parkings WHERE uuid = $2)) RETURNING id`
 	carExitQuery = `UPDATE logs SET exit_time = NOW() WHERE 
                                           parking_id = (SELECT id FROM parkings WHERE uuid = $1 limit 1) AND user_id = $2`
-	GetUserLogsQuery = `SELECT l.id as id l.enter_time as enter_time, l.exit_time as exit_time, p.name as parking_name,
+	GetUserLogsQuery = `SELECT l.id as id, l.enter_time as enter_time, l.exit_time as exit_time, p.name as parking_name,
 					p.address as parking_address FROM logs as l join parkings as p on l.parking_id = p.id WHERE l.user_id = $1`
 )
 

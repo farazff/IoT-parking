@@ -49,10 +49,21 @@ func approveWhitelist(c echo.Context) error {
 	})
 }
 
+// swagger:route POST /v1/user/whitelist/request User accessRequest
+//
+// # This route is used by user to request access for a parking
+//
+// responses:
+//
+//	201: JustMessage
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func requestWhitelist(c echo.Context) error {
 	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -80,8 +91,13 @@ func requestWhitelist(c echo.Context) error {
 
 	id, err := manager.CreateWhitelist(c.Request().Context(), w, phone)
 	if err != nil {
-		if errors.Is(err, manager.ErrDuplicateEntity) || errors.Is(err, manager.ErrNoAccess) {
+		if errors.Is(err, manager.ErrDuplicateEntity) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		if errors.Is(err, manager.ErrParkingNotFound) {
+			return c.JSON(http.StatusNotFound, echo.Map{
 				"message": err.Error(),
 			})
 		}
@@ -179,10 +195,20 @@ func deleteWhitelist(c echo.Context) error {
 	})
 }
 
+// swagger:route GET /v1/user/whitelists/requested User getUserRequests
+//
+// # This route is used to by user to see their requests
+//
+// responses:
+//
+//	200: UserRequestsRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getUserWhitelists(c echo.Context) error {
 	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
