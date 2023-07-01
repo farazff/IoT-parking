@@ -70,10 +70,11 @@ func createParking(c echo.Context) error {
 //
 // responses:
 //
-//	200: ParkingGetRes
-//	400: ErrorMessage
-//	401: ErrorUnauthorizedMessage
-//	500: ErrorMessage
+//		200: ParkingGetRes
+//		400: ErrorMessage
+//		401: ErrorUnauthorizedMessage
+//	 404: ErrorMessage
+//		500: ErrorMessage
 func getParking(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {

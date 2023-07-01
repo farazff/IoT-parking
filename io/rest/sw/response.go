@@ -181,3 +181,55 @@ type ParkingAdminUpdateRes struct {
 	//in: cookie
 	SessionToken string `json:"session_token"`
 }
+
+// swagger:model
+type ZoneCreate struct {
+	ID               int  `json:"id"`
+	Capacity         int  `json:"capacity"`
+	Enabled          bool `json:"enabled"`
+	RemainedCapacity int  `json:"remained_capacity"`
+	ParkingID        int  `json:"parking_id"`
+}
+
+// swagger:response ZoneCreateRes
+type ZoneCreateRes struct {
+	//in: body
+	Body struct {
+		// zone res
+		ZoneCreate ZoneCreate `json:"zone"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type ZoneGet struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Enabled   bool   `json:"enabled"`
+	ParkingID int    `json:"parking_id"`
+}
+
+// swagger:response ParkingAdminGetRes
+type ZoneGetRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		ZoneGet ZoneGet `json:"zone"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:response ZonesGetRes
+type ZonesGetRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		ZonesGet []ZoneGet `json:"zones"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}

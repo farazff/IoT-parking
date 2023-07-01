@@ -169,3 +169,49 @@ type updateParkingAdmin struct {
 	// in: body
 	ParkingAdminUpdater ParkingAdminUpdater `json:"parkingUpdater"`
 }
+
+// swagger:model
+type ZoneCreator struct {
+	// required: true
+	Capacity string `json:"capacity"`
+	// required: true
+	Enabled string `json:"enabled"`
+	// required: true
+	RemainedCapacity string `json:"remained_capacity"`
+}
+
+// swagger:parameters createZone
+type createZone struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: body
+	ZoneCreator ZoneCreator
+}
+
+// swagger:parameters getZone deleteZone
+type getZone struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: path
+	ID int
+}
+
+// swagger:parameters getZones
+type getZones struct {
+	apiKey
+	sessionToken
+}
+
+// swagger:parameters updateParkingAdmin
+type updateZone struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: path
+	ID int
+	// required: true
+	// in: body
+	ZoneCreator ZoneCreator `json:"zoneUpdater"`
+}

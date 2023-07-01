@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// swagger:route POST /v1/parkingAdmin Parking_Admin createParkingAdmin
+// swagger:route POST /v1/parkingAdmin System_Admin createParkingAdmin
 //
 // # This route is used to create parking admin
 //
@@ -68,16 +68,17 @@ func createParkingAdmin(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"parking_admin": toParkingAdminRes(p, id)})
 }
 
-// swagger:route GET /v1/parkingAdmin/{id} Parking_Admin getParkingAdmin
+// swagger:route GET /v1/parkingAdmin/{id} System_Admin getParkingAdmin
 //
 // # This route is used to get a single parking admin by ID
 //
 // responses:
 //
-//	200: ParkingAdminGetRes
-//	400: ErrorMessage
-//	401: ErrorUnauthorizedMessage
-//	500: ErrorMessage
+//		200: ParkingAdminGetRes
+//		400: ErrorMessage
+//		401: ErrorUnauthorizedMessage
+//	 404: ErrorMessage
+//		500: ErrorMessage
 func getParkingAdmin(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -113,7 +114,7 @@ func getParkingAdmin(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"parking_admin": toParkingAdminRes(ParkingAdmin, -1)})
 }
 
-// swagger:route GET /v1/parkingAdmins Parking_Admin getParkingAdmins
+// swagger:route GET /v1/parkingAdmins System_Admin getParkingAdmins
 //
 // # This route is used to get all parking admins
 //
@@ -146,7 +147,7 @@ func getParkingAdmins(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"parking_admins": toParkingAdminResSlice(ParkingAdmins)})
 }
 
-// swagger:route PUT /v1/parkingAdmin/{id} Parking_Admin updateParkingAdmin
+// swagger:route PUT /v1/parkingAdmin/{id} System_Admin updateParkingAdmin
 //
 // # This route is used to update a parking admin
 //
@@ -212,7 +213,7 @@ func updateParkingAdmin(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"parking_admin": toParkingAdminRes(p, -1)})
 }
 
-// swagger:route DELETE /v1/parkingAdmin/{id} Parking_Admin deleteParkingAdmin
+// swagger:route DELETE /v1/parkingAdmin/{id} System_Admin deleteParkingAdmin
 //
 // # This route is used to delete a parking admin by ID
 //

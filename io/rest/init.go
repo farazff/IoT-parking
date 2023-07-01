@@ -16,7 +16,7 @@ func init() {
 	//rest.EchoDelete("/v1/systemAdmin/:id", deleteSystemAdmin, middleware.ApiKey)
 
 	//System admin requests
-	rest.EchoPost("/v1/systemAdmin/signIn", systemAdminSignIn, middleware.SystemAdminApiKey)
+	rest.EchoPost("/systemAdmin/signIn", systemAdminSignIn, middleware.SystemAdminApiKey)
 
 	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey)
 	rest.EchoGet("/v1/parking/:id", getParking, middleware.SystemAdminApiKey)
@@ -31,7 +31,7 @@ func init() {
 	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.SystemAdminApiKey)
 
 	//Parking admin requests
-	rest.EchoPost("/v1/parkingAdmin/signIn", parkingAdminSignIn, middleware.ParkingAdminApiKey)
+	rest.EchoPost("/parkingAdmin/signIn", parkingAdminSignIn, middleware.ParkingAdminApiKey)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey)
 	rest.EchoGet("/v1/zones", getZones, middleware.ParkingAdminApiKey)
@@ -52,9 +52,9 @@ func init() {
 	rest.EchoPut("/v1/zoneExit/:id/:uuid", exitZone, middleware.HardwareApiKey)
 
 	//User requests
-	rest.EchoPost("/v1/user/signIn", userSignIn, middleware.UserApiKey)
+	rest.EchoPost("/user/signIn", userSignIn, middleware.UserApiKey)
 
-	rest.EchoPost("/v1/user/signUp", userSignUp, middleware.UserApiKey)
+	rest.EchoPost("/user/signUp", userSignUp, middleware.UserApiKey)
 
 	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
 	rest.EchoGet("/v1/user/whitelists/approved", getUserWhitelists, middleware.UserApiKey)

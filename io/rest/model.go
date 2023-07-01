@@ -223,9 +223,9 @@ func toParkingAdminResSlice(parkingAdmins []entity.ParkingAdmin) []ParkingAdminR
 
 type Zone struct {
 	FID               int  `json:"id"`
-	FCapacity         int  `json:"capacity" validate:"gtefield=FRemainedCapacity"`
-	FEnabled          bool `json:"enabled"`
-	FRemainedCapacity int  `json:"remained_capacity"`
+	FCapacity         int  `json:"capacity" validate:"gtefield=FRemainedCapacity,required"`
+	FEnabled          bool `json:"enabled" validate:"required"`
+	FRemainedCapacity int  `json:"remained_capacity" validate:"required"`
 	FParkingID        int  `json:"parking_id"`
 }
 

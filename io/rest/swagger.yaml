@@ -234,6 +234,70 @@ definitions:
             - password
         type: object
         x-go-package: github.com/farazff/IoT-parking/io/rest/sw
+    ZoneCreate:
+        properties:
+            capacity:
+                format: int64
+                type: integer
+                x-go-name: Capacity
+            enabled:
+                type: boolean
+                x-go-name: Enabled
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            parking_id:
+                format: int64
+                type: integer
+                x-go-name: ParkingID
+            remained_capacity:
+                format: int64
+                type: integer
+                x-go-name: RemainedCapacity
+        type: object
+        x-go-package: github.com/farazff/IoT-parking/io/rest/sw
+    ZoneCreator:
+        properties:
+            capacity:
+                type: string
+                x-go-name: Capacity
+            enabled:
+                type: string
+                x-go-name: Enabled
+            remained_capacity:
+                type: string
+                x-go-name: RemainedCapacity
+        required:
+            - capacity
+            - enabled
+            - remained_capacity
+        type: object
+        x-go-package: github.com/farazff/IoT-parking/io/rest/sw
+    ZoneGet:
+        properties:
+            enabled:
+                type: boolean
+                x-go-name: Enabled
+            first_name:
+                type: string
+                x-go-name: FirstName
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            last_name:
+                type: string
+                x-go-name: LastName
+            parking_id:
+                format: int64
+                type: integer
+                x-go-name: ParkingID
+            phone:
+                type: string
+                x-go-name: Phone
+        type: object
+        x-go-package: github.com/farazff/IoT-parking/io/rest/sw
     apiKey:
         properties:
             api-key:
@@ -362,6 +426,8 @@ paths:
                     $ref: '#/responses/ErrorMessage'
                 "401":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
                 "500":
                     $ref: '#/responses/ErrorMessage'
             summary: This route is used to get a single parking by ID
@@ -439,8 +505,42 @@ paths:
                     $ref: '#/responses/ErrorMessage'
             summary: This route is used to create parking admin
             tags:
-                - Parking_Admin
+                - System_Admin
     /v1/parkingAdmin/{id}:
+        delete:
+            operationId: deleteParkingAdmin
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/ErrorMessage'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to delete a parking admin by ID
+            tags:
+                - System_Admin
         get:
             operationId: getParkingAdmin
             parameters:
@@ -468,14 +568,22 @@ paths:
                     $ref: '#/responses/ErrorMessage'
                 "401":
                     $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
                 "500":
                     $ref: '#/responses/ErrorMessage'
             summary: This route is used to get a single parking admin by ID
             tags:
-                - Parking_Admin
+                - System_Admin
         put:
             operationId: updateParkingAdmin
             parameters:
+                - in: body
+                  name: parkingUpdater
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ParkingAdminUpdater'
+                  x-go-name: ParkingAdminUpdater
                 - description: api key for APIs
                   in: header
                   name: api-key
@@ -494,11 +602,11 @@ paths:
                   required: true
                   type: integer
                 - in: body
-                  name: parkingUpdater
+                  name: zoneUpdater
                   required: true
                   schema:
-                    $ref: '#/definitions/ParkingAdminUpdater'
-                  x-go-name: ParkingAdminUpdater
+                    $ref: '#/definitions/ZoneCreator'
+                  x-go-name: ZoneCreator
             responses:
                 "201":
                     $ref: '#/responses/ParkingAdminUpdateRes'
@@ -512,7 +620,7 @@ paths:
                     $ref: '#/responses/ErrorMessage'
             summary: This route is used to update a parking admin
             tags:
-                - Parking_Admin
+                - System_Admin
     /v1/parkingAdmin/signIn:
         post:
             operationId: parkingAdminSingIn
@@ -565,42 +673,7 @@ paths:
                     $ref: '#/responses/ErrorMessage'
             summary: This route is used to get all parking admins
             tags:
-                - Parking_Admin
-    /v1/parkingAdmins/{id}:
-        delete:
-            operationId: deleteParkingAdmin
-            parameters:
-                - description: api key for APIs
-                  in: header
-                  name: api-key
-                  required: true
-                  type: string
-                  x-go-name: ApiKey
-                - description: Session token
-                  in: header
-                  name: session_token
-                  required: true
-                  type: string
-                  x-go-name: SessionToken
-                - format: int64
-                  in: path
-                  name: ID
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    $ref: '#/responses/ErrorMessage'
-                "400":
-                    $ref: '#/responses/ErrorMessage'
-                "401":
-                    $ref: '#/responses/ErrorUnauthorizedMessage'
-                "404":
-                    $ref: '#/responses/ErrorMessage'
-                "500":
-                    $ref: '#/responses/ErrorMessage'
-            summary: This route is used to delete a parking admin by ID
-            tags:
-                - Parking_Admin
+                - System_Admin
     /v1/parkings:
         get:
             operationId: getParkings
@@ -704,6 +777,152 @@ paths:
             summary: This route is used by user to sign up.
             tags:
                 - User
+    /v1/zone:
+        post:
+            operationId: createZone
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - in: body
+                  name: ZoneCreator
+                  required: true
+                  schema:
+                    $ref: '#/definitions/ZoneCreator'
+            responses:
+                "201":
+                    $ref: '#/responses/ZoneCreateRes'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to create zone
+            tags:
+                - Parking_Admin
+    /v1/zone/{id}:
+        delete:
+            operationId: deleteZone
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/ErrorMessage'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to delete a zone by ID
+            tags:
+                - Parking_Admin
+        get:
+            operationId: getZone
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+                - format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/ZoneGetRes'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to get a single zone by ID
+            tags:
+                - Parking_Admin
+        put:
+            operationId: updateZone
+            responses:
+                "201":
+                    $ref: '#/responses/ZoneUpdateRes'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "404":
+                    $ref: '#/responses/ErrorMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to update a zone
+            tags:
+                - Parking_Admin
+    /v1/zones:
+        get:
+            operationId: getZones
+            parameters:
+                - description: api key for APIs
+                  in: header
+                  name: api-key
+                  required: true
+                  type: string
+                  x-go-name: ApiKey
+                - description: Session token
+                  in: header
+                  name: session_token
+                  required: true
+                  type: string
+                  x-go-name: SessionToken
+            responses:
+                "200":
+                    $ref: '#/responses/ZonesGetRes'
+                "400":
+                    $ref: '#/responses/ErrorMessage'
+                "401":
+                    $ref: '#/responses/ErrorUnauthorizedMessage'
+                "500":
+                    $ref: '#/responses/ErrorMessage'
+            summary: This route is used to get all zones
+            tags:
+                - Parking_Admin
 produces:
     - application/json
 responses:
@@ -749,6 +968,17 @@ responses:
                     $ref: '#/definitions/ParkingAdminCreate'
             type: object
     ParkingAdminGetRes:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                zone:
+                    $ref: '#/definitions/ZoneGet'
+            type: object
+    ParkingAdminUpdateRes:
         description: ""
         headers:
             session_token:
@@ -805,11 +1035,7 @@ responses:
         schema:
             properties:
                 parking:
-                    description: parking res
-                    items:
-                        $ref: '#/definitions/ParkingsGet'
-                    type: array
-                    x-go-name: ParkingUpdate
+                    $ref: '#/definitions/ParkingGet'
             type: object
     ParkingsGetRes:
         description: ""
@@ -825,6 +1051,32 @@ responses:
                         $ref: '#/definitions/ParkingsGet'
                     type: array
                     x-go-name: ParkingsGet
+            type: object
+    ZoneCreateRes:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                zone:
+                    $ref: '#/definitions/ZoneCreate'
+            type: object
+    ZonesGetRes:
+        description: ""
+        headers:
+            session_token:
+                description: 'in: cookie'
+                type: string
+        schema:
+            properties:
+                zones:
+                    description: parking res
+                    items:
+                        $ref: '#/definitions/ZoneGet'
+                    type: array
+                    x-go-name: ZonesGet
             type: object
 schemes:
     - http

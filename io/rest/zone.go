@@ -12,10 +12,20 @@ import (
 	"github.com/okian/servo/v2/lg"
 )
 
+// swagger:route POST /v1/zone Parking_Admin createZone
+//
+// # This route is used to create zone
+//
+// responses:
+//
+//	201: ZoneCreateRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func createZone(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -56,10 +66,20 @@ func createZone(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"zone": toZoneRes(z, id)})
 }
 
+// swagger:route GET /v1/zones Parking_Admin getZones
+//
+// # This route is used to get all zones
+//
+// responses:
+//
+//	200: ZonesGetRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getZones(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -79,6 +99,17 @@ func getZones(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"zones": toZoneResSlice(zones)})
 }
 
+// swagger:route GET /v1/zone/{id} Parking_Admin getZone
+//
+// # This route is used to get a single zone by ID
+//
+// responses:
+//
+//	200: ZoneGetRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func getZone(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -102,6 +133,11 @@ func getZone(c echo.Context) error {
 
 	zone, err := manager.GetZone(c.Request().Context(), int(zoneID), phone)
 	if err != nil {
+		if errors.Is(err, manager.ErrNotFound) {
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": err.Error(),
+			})
+		}
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
@@ -109,6 +145,17 @@ func getZone(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"zone": toZoneRes(zone, -1)})
 }
 
+// swagger:route PUT /v1/zone/{id} Parking_Admin updateZone
+//
+// # This route is used to update a zone
+//
+// responses:
+//
+//	201: ZoneUpdateRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func updateZone(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -131,6 +178,13 @@ func updateZone(c echo.Context) error {
 		})
 	}
 
+	if err := c.Validate(z); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	zoneID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -147,7 +201,7 @@ func updateZone(c echo.Context) error {
 			})
 		}
 		if errors.Is(err, manager.ErrNotFound) {
-			return c.JSON(http.StatusBadRequest, echo.Map{
+			return c.JSON(http.StatusNotFound, echo.Map{
 				"message": err.Error(),
 			})
 		}
@@ -159,6 +213,17 @@ func updateZone(c echo.Context) error {
 	return c.JSON(http.StatusCreated, echo.Map{"zone": toZoneRes(z, -1)})
 }
 
+// swagger:route DELETE /v1/zone/{id} Parking_Admin deleteZone
+//
+// # This route is used to delete a zone by ID
+//
+// responses:
+//
+//	200: ErrorMessage
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func deleteZone(c echo.Context) error {
 	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {

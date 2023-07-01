@@ -47,6 +47,9 @@ func GetZone(ctx context.Context, zoneID int, phone string) (entity.Zone, error)
 	}
 	Zones, err := repository.GetZone(ctx, zoneID, parkingID)
 	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return nil, ErrNotFound
+		}
 		return nil, fmt.Errorf("error in retrieving Zones, %w", err)
 	}
 	return Zones, nil
