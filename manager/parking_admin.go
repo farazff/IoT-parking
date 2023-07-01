@@ -46,9 +46,12 @@ func GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, error) {
 func UpdateParkingAdmin(ctx context.Context, rule entity.ParkingAdmin) error {
 	err := repository.UpdateParkingAdmin(ctx, rule)
 	if err != nil {
-		lg.Error("error during updating rule: %v", err)
+		lg.Error("error during updating parking admin: %v", err)
 		if errors.Is(err, repository.ErrDuplicateEntity) {
 			return ErrDuplicateEntity
+		}
+		if errors.Is(err, repository.ErrParkingForeignKeyConstraint) {
+			return ErrParkingNotFound
 		}
 		if errors.Is(err, repository.ErrNotFound) {
 			return ErrNotFound

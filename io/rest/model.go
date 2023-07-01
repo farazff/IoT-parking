@@ -153,12 +153,12 @@ func toSystemAdminResSlice(parkings []entity.SystemAdmin) []SystemAdminRes {
 
 type ParkingAdmin struct {
 	FID        int    `json:"id"`
-	FFirstName string `json:"first_name"`
-	FLastName  string `json:"last_name"`
-	FPhone     string `json:"phone"`
+	FFirstName string `json:"first_name" validate:"required"`
+	FLastName  string `json:"last_name" validate:"required"`
+	FPhone     string `json:"phone" validate:"required"`
 	FEnabled   bool   `json:"enabled"`
-	FPassword  string `json:"password"`
-	FParkingID int    `json:"parking_id"`
+	FPassword  string `json:"password" validate:"required"`
+	FParkingID int    `json:"parking_id" validate:"required"`
 }
 
 func (pa ParkingAdmin) ID() int {
@@ -195,7 +195,6 @@ type ParkingAdminRes struct {
 	LastName  string `json:"last_name"`
 	Phone     string `json:"phone"`
 	Enabled   bool   `json:"enabled"`
-	Password  string `json:"password"`
 	ParkingID int    `json:"parking_id"`
 }
 

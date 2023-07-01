@@ -66,7 +66,7 @@ func createParking(c echo.Context) error {
 
 // swagger:route GET /v1/parking/{id} System_Admin getParking
 //
-// # This route is used to get a single parking by id
+// # This route is used to get a single parking by ID
 //
 // responses:
 //
@@ -202,7 +202,7 @@ func updateParking(c echo.Context) error {
 //
 // responses:
 //
-//	200: ErrorMessgae
+//	200: ErrorMessage
 //	400: ErrorMessage
 //	401: ErrorUnauthorizedMessage
 //	404: ErrorMessage

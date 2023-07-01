@@ -10,10 +10,20 @@ import (
 	"time"
 )
 
+// swagger:route POST /v1/parkingAdmin Parking_Admin createParkingAdmin
+//
+// # This route is used to create parking admin
+//
+// responses:
+//
+//	201: ParkingAdminCreateRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func createParkingAdmin(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -32,9 +42,21 @@ func createParkingAdmin(c echo.Context) error {
 		})
 	}
 
+	if err := c.Validate(p); err != nil {
+		lg.Error("body validation failed")
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "body validation failed",
+		})
+	}
+
 	id, err := manager.CreateParkingAdmin(c.Request().Context(), p)
 	if err != nil {
 		if errors.Is(err, manager.ErrDuplicateEntity) {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
+		if errors.Is(err, manager.ErrParkingNotFound) {
 			return c.JSON(http.StatusBadRequest, echo.Map{
 				"message": err.Error(),
 			})
@@ -43,10 +65,33 @@ func createParkingAdmin(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusCreated, toParkingAdminRes(p, id))
+	return c.JSON(http.StatusCreated, echo.Map{"parking_admin": toParkingAdminRes(p, id)})
 }
 
+// swagger:route GET /v1/parkingAdmin/{id} Parking_Admin getParkingAdmin
+//
+// # This route is used to get a single parking admin by ID
+//
+// responses:
+//
+//	200: ParkingAdminGetRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getParkingAdmin(c echo.Context) error {
+	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
 	ParkingAdminID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -56,17 +101,32 @@ func getParkingAdmin(c echo.Context) error {
 
 	ParkingAdmin, err := manager.GetParkingAdmin(c.Request().Context(), ParkingAdminID)
 	if err != nil {
+		if errors.Is(err, manager.ErrNotFound) {
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": err.Error(),
+			})
+		}
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingAdminRes(ParkingAdmin, -1))
+	return c.JSON(http.StatusOK, echo.Map{"parking_admin": toParkingAdminRes(ParkingAdmin, -1)})
 }
 
+// swagger:route GET /v1/parkingAdmins Parking_Admin getParkingAdmins
+//
+// # This route is used to get all parking admins
+//
+// responses:
+//
+//	200: ParkingAdminsGetRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
 func getParkingAdmins(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
+		return c.JSON(http.StatusUnauthorized, echo.Map{
 			"message": err.Error(),
 		})
 	}
@@ -83,9 +143,20 @@ func getParkingAdmins(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, toParkingAdminResSlice(ParkingAdmins))
+	return c.JSON(http.StatusOK, echo.Map{"parking_admins": toParkingAdminResSlice(ParkingAdmins)})
 }
 
+// swagger:route PUT /v1/parkingAdmin/{id} Parking_Admin updateParkingAdmin
+//
+// # This route is used to update a parking admin
+//
+// responses:
+//
+//	201: ParkingAdminUpdateRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func updateParkingAdmin(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {
@@ -128,14 +199,30 @@ func updateParkingAdmin(c echo.Context) error {
 				"message": err.Error(),
 			})
 		}
+		if errors.Is(err, manager.ErrParkingNotFound) {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": err.Error(),
+			})
+		}
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
 
-	return c.JSON(http.StatusCreated, toParkingAdminRes(p, -1))
+	return c.JSON(http.StatusCreated, echo.Map{"parking_admin": toParkingAdminRes(p, -1)})
 }
 
+// swagger:route DELETE /v1/parkingAdmin/{id} Parking_Admin deleteParkingAdmin
+//
+// # This route is used to delete a parking admin by ID
+//
+// responses:
+//
+//	200: ErrorMessage
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	404: ErrorMessage
+//	500: ErrorMessage
 func deleteParkingAdmin(c echo.Context) error {
 	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
 	if err != nil {

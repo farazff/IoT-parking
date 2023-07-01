@@ -22,7 +22,7 @@ type NoContent struct {
 	// in: body
 	Body struct{}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
 }
 
 // swagger:response ErrorUnauthorizedMessage
@@ -42,7 +42,7 @@ type ErrorMessage struct {
 		Message string `json:"message"`
 	}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
 }
 
 // swagger:model
@@ -63,7 +63,7 @@ type ParkingCreateRes struct {
 		ParkingCreate ParkingCreate `json:"parking"`
 	}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
 }
 
 // swagger:model
@@ -84,7 +84,7 @@ type ParkingGetRes struct {
 		ParkingGet ParkingGet `json:"parking"`
 	}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
 }
 
 // swagger:model
@@ -104,16 +104,80 @@ type ParkingsGetRes struct {
 		ParkingsGet []ParkingsGet `json:"parkings"`
 	}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
 }
 
 // swagger:response ParkingUpdateRes
-type ParkingsUpdateRes struct {
+type ParkingUpdateRes struct {
 	//in: body
 	Body struct {
 		// parking res
-		ParkingUpdate []ParkingsGet `json:"parking"`
+		ParkingUpdate ParkingGet `json:"parking"`
 	}
 	//in: cookie
-	SessionToken string
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type ParkingAdminCreate struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Enabled   bool   `json:"enabled"`
+	ParkingID int    `json:"parking_id"`
+}
+
+// swagger:response ParkingAdminCreateRes
+type ParkingAdminCreateRes struct {
+	//in: body
+	Body struct {
+		// parking admin res
+		ParkingAdminCreate ParkingAdminCreate `json:"parking_admin"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type ParkingAdminGet struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Enabled   bool   `json:"enabled"`
+	ParkingID int    `json:"parking_id"`
+}
+
+// swagger:response ParkingAdminGetRes
+type ParkingAdminGetRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		ParkingAdminGet ParkingAdminGet `json:"parking_admin"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:response ParkingAdminsGetRes
+type ParkingAdminsGetRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		ParkingAdminGet []ParkingAdminGet `json:"parking_admins"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:response ParkingAdminUpdateRes
+type ParkingAdminUpdateRes struct {
+	//in: body
+	Body struct {
+		// parking res
+		ParkingAdminGet ParkingAdminGet `json:"parking_admin"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
 }

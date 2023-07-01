@@ -103,3 +103,69 @@ type updateParking struct {
 	// in: body
 	ParkingCreator ParkingCreator `json:"parkingUpdater"`
 }
+
+// swagger:model
+type ParkingAdminCreator struct {
+	// required: true
+	FirstName string `json:"first_name"`
+	// required: true
+	LastName string `json:"last_name"`
+	// required: true
+	Phone string `json:"phone"`
+	// required: true
+	Enabled bool `json:"enabled"`
+	// required: true
+	Password string `json:"password"`
+	// required: true
+	ParkingID int `json:"parking_id"`
+}
+
+// swagger:parameters createParkingAdmin
+type createParkingAdmin struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: body
+	ParkingAdminCreator ParkingAdminCreator
+}
+
+// swagger:parameters getParkingAdmin deleteParkingAdmin
+type getParkingAdmin struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: path
+	ID int
+}
+
+// swagger:parameters getParkingAdmins
+type getParkingAdmins struct {
+	apiKey
+	sessionToken
+}
+
+// swagger:model
+type ParkingAdminUpdater struct {
+	// required: true
+	FirstName string `json:"first_name"`
+	// required: true
+	LastName string `json:"last_name"`
+	// required: true
+	Phone string `json:"phone"`
+	// required: true
+	Enabled bool `json:"enabled"`
+	// required: true
+	ParkingID int `json:"parking_id"`
+}
+
+// swagger:parameters updateParkingAdmin
+type updateParkingAdmin struct {
+	apiKey
+	sessionToken
+	// required: true
+	// in: path
+	ID int
+	// required: true
+	// in: body
+	ParkingAdminUpdater ParkingAdminUpdater `json:"parkingUpdater"`
+}

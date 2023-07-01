@@ -19,8 +19,8 @@ const (
 							FROM parking_admins WHERE deleted_at is NULL`
 	getParkingAdminByIdQuery = `SELECT id, first_name, last_name, phone, enabled, password, parking_id 
 							FROM parking_admins WHERE deleted_at is NULL AND id = $1`
-	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, enabled, updated_at, password, parking_id) = 
-    									($2, $3, $4, $5, now(), $6, $7) WHERE id = $1 and deleted_at is null`
+	updateParkingAdminQuery = `UPDATE parking_admins SET (first_name, last_name, phone, enabled, updated_at, parking_id) = 
+    									($2, $3, $4, $5, now(), $6) WHERE id = $1 and deleted_at is null`
 	deleteParkingAdminQuery        = `UPDATE parking_admins SET deleted_at = now() where id = $1 and deleted_at is null`
 	getParkingAdminPasswordByPhone = `SELECT password FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
 	getParkingAdminParkingByPhone  = `SELECT parking_id FROM parking_admins WHERE deleted_at is NULL AND phone = $1`
@@ -86,11 +86,14 @@ func (s *service) GetParkingAdmins(ctx context.Context) ([]entity.ParkingAdmin, 
 }
 
 func (s *service) UpdateParkingAdmin(ctx context.Context, ParkingAdmin entity.ParkingAdmin) error {
-	ans, err := db.Exec(ctx, updateParkingAdminQuery,
-		ParkingAdmin.ID(), ParkingAdmin.FirstName(), ParkingAdmin.LastName(), ParkingAdmin.Phone(), ParkingAdmin.ParkingID(), ParkingAdmin.Enabled())
+	ans, err := db.Exec(ctx, updateParkingAdminQuery, ParkingAdmin.ID(), ParkingAdmin.FirstName(), ParkingAdmin.LastName(),
+		ParkingAdmin.Phone(), ParkingAdmin.Enabled(), ParkingAdmin.ParkingID())
 	if err != nil {
 		if err.(*pq.Error).Code == uniqueViolation {
 			return fmt.Errorf("parking_admin already exist: %w", repository.ErrDuplicateEntity)
+		}
+		if err.(*pq.Error).Code == foreignKeyViolation {
+			return repository.ErrParkingForeignKeyConstraint
 		}
 		return err
 	}
