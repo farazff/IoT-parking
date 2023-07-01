@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/farazff/IoT-parking/manager"
@@ -93,11 +94,66 @@ func getUserLogs(c echo.Context) error {
 		Expires: time.Now().Add(120 * time.Second),
 	})
 
-	userLogs, err := manager.GetUserLogs(c.Request().Context(), phone)
+	page, err := strconv.Atoi(c.Param("page"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if page < 1 {
+		page = 1
+	}
+
+	userLogs, err := manager.GetUserLogs(c.Request().Context(), phone, page)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
 	return c.JSON(http.StatusOK, echo.Map{"logs": toUserLogsResSlice(userLogs)})
+}
+
+// swagger:route GET /v1/logs/{:page} Parking_Admin getLogs
+//
+// # This route is used by parking admin to get parking logs
+//
+// responses:
+//
+//	200: AdminLogsRes
+//	400: ErrorMessage
+//	401: ErrorUnauthorizedMessage
+//	500: ErrorMessage
+func getLogs(c echo.Context) error {
+	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
+
+	page, err := strconv.Atoi(c.Param("page"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if page < 1 {
+		page = 1
+	}
+
+	adminLogs, err := manager.GetLogs(c.Request().Context(), phone, page)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"logs": toAdminLogsResSlice(adminLogs)})
 }

@@ -302,6 +302,7 @@ type WhitelistsToApproveGet struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	CarTag    string `json:"car_tag"`
+	Phone     string `json:"phone"`
 }
 
 // swagger:response WhitelistsToApproveGetRes
@@ -321,6 +322,27 @@ type WhitelistsApprovedRes struct {
 	Body struct {
 		// parking res
 		WhitelistsToApprove []WhitelistsToApproveGet `json:"whitelists"`
+	}
+	//in: cookie
+	SessionToken string `json:"session_token"`
+}
+
+// swagger:model
+type AdminLogsGet struct {
+	ID        int        `json:"id"`
+	EnterTime time.Time  `json:"enter_time"`
+	ExitTime  *time.Time `json:"exit_time"`
+	FirstName string     `json:"first_name"`
+	LastName  string     `json:"last_name"`
+	CarTag    string     `json:"car_tage"`
+	Phone     string     `json:"phone"`
+}
+
+// swagger:response AdminLogsRes
+type AdminLogsRes struct {
+	//in: body
+	Body struct {
+		AdminLogsGet []AdminLogsGet `json:"logs"`
 	}
 	//in: cookie
 	SessionToken string `json:"session_token"`

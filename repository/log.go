@@ -25,6 +25,10 @@ func CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int) error {
 	return logR.CarExit(ctx, parkingUUID, userID)
 }
 
-func GetUserLogs(ctx context.Context, userID int) ([]entity.UserLog, error) {
-	return logR.GetUserLogs(ctx, userID)
+func GetUserLogs(ctx context.Context, userID int, page int, pagination int) ([]entity.UserLog, error) {
+	return logR.GetUserLogs(ctx, userID, page, pagination)
+}
+
+func GetLogs(ctx context.Context, parkingID int, page int, pagination int) ([]entity.AdminLog, error) {
+	return logR.GetLogs(ctx, parkingID, page, pagination)
 }

@@ -36,4 +36,5 @@ data:
   PARKING_ADMIN_API_KEY: 'parking'
   HARDWARE_API_KEY: 'hardware'
   USER_API_KEY: 'user'
+  LOGS_PAGINATION: 10
 

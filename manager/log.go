@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/spf13/viper"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
@@ -58,15 +59,30 @@ func CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error {
 	return nil
 }
 
-func GetUserLogs(ctx context.Context, phone string) ([]entity.UserLog, error) {
+func GetUserLogs(ctx context.Context, phone string, page int) ([]entity.UserLog, error) {
 	userID, err := repository.GetUserIDByPhone(ctx, phone)
 	if err != nil {
 		return nil, err
 	}
 
-	userLogs, err := repository.GetUserLogs(ctx, userID)
+	pagination := viper.GetInt("logs_pagination")
+	userLogs, err := repository.GetUserLogs(ctx, userID, page, pagination)
 	if err != nil {
 		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
 	}
 	return userLogs, nil
+}
+
+func GetLogs(ctx context.Context, phone string, page int) ([]entity.AdminLog, error) {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	if err != nil {
+		return nil, err
+	}
+
+	pagination := viper.GetInt("logs_pagination")
+	adminLogs, err := repository.GetLogs(ctx, parkingID, page, pagination)
+	if err != nil {
+		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+	}
+	return adminLogs, nil
 }

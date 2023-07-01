@@ -321,6 +321,7 @@ func toWhitelistOfficeRes(whitelist entity.WhitelistOfficeData) entity.Whitelist
 		FirstName: whitelist.FirstName,
 		LastName:  whitelist.LastName,
 		CarTag:    whitelist.CarTag,
+		Phone:     whitelist.Phone,
 	}
 	return response
 }
@@ -437,4 +438,25 @@ func (u User) Phone() string {
 
 func (u User) Password() string {
 	return u.FPassword
+}
+
+func toAdminLogsRes(whitelist entity.AdminLog) entity.AdminLog {
+	response := entity.AdminLog{
+		ID:        whitelist.ID,
+		EnterTime: whitelist.EnterTime,
+		ExitTime:  whitelist.ExitTime,
+		FirstName: whitelist.FirstName,
+		LastName:  whitelist.LastName,
+		CarTag:    whitelist.CarTag,
+		Phone:     whitelist.Phone,
+	}
+	return response
+}
+
+func toAdminLogsResSlice(whitelists []entity.AdminLog) []entity.AdminLog {
+	adminLogsResSlice := make([]entity.AdminLog, 0)
+	for _, whitelist := range whitelists {
+		adminLogsResSlice = append(adminLogsResSlice, toAdminLogsRes(whitelist))
+	}
+	return adminLogsResSlice
 }

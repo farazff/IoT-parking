@@ -12,6 +12,7 @@ type WhitelistOfficeData struct {
 	FirstName string `json:"first_name" db:"first_name"`
 	LastName  string `json:"last_name" db:"last_name"`
 	CarTag    string `json:"car_tag" db:"car_tag"`
+	Phone     string `json:"phone" db:"phone"`
 }
 
 type WhitelistUserData struct {

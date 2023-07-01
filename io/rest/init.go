@@ -46,7 +46,7 @@ func init() {
 	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ParkingAdminApiKey)
 	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey)
 
-	// TODO: Add route for parking admin to check parking logs
+	rest.EchoGet("/v1/logs/:page", getLogs, middleware.ParkingAdminApiKey)
 
 	//User requests
 	rest.EchoPost("/user/signUp", userSignUp, middleware.UserApiKey)
@@ -57,7 +57,6 @@ func init() {
 	rest.EchoGet("/v1/user/whitelists/requested", getUserWhitelists, middleware.UserApiKey)
 	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey)
 
-	// TODO: fix pagination
 	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey)
 
 	//Raspberry PI requests

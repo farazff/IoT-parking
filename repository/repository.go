@@ -57,7 +57,8 @@ type WhitelistRepository interface {
 type LogRepository interface {
 	CarEnter(ctx context.Context, userID int, parkingUUID uuid.UUID) (int, error)
 	CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int) error
-	GetUserLogs(ctx context.Context, userID int) ([]entity.UserLog, error)
+	GetUserLogs(ctx context.Context, userID int, page int, pagination int) ([]entity.UserLog, error)
+	GetLogs(ctx context.Context, parkingID int, page int, pagination int) ([]entity.AdminLog, error)
 }
 
 type UserRepository interface {

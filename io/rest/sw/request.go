@@ -222,6 +222,15 @@ type getUserParkings struct {
 	sessionToken
 }
 
+// swagger:parameters getUserLogs getLogs
+type getUserLogs struct {
+	// required: true
+	// in: path
+	Page int
+	apiKey
+	sessionToken
+}
+
 // swagger:model
 type accessRequestCreator struct {
 	// required: true
