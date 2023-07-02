@@ -9,7 +9,7 @@ spec:
     - "ReadWriteOnce"
   resources:
     requests:
-      storage: "4Gi"
+      storage: "1Gi"
 
 ---
 
@@ -23,6 +23,21 @@ data:
   POSTGRES_DB: parking
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: admin
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
 
 ---
 
@@ -45,13 +60,13 @@ spec:
           image: postgres:latest # Sets Image
           resources:
             limits:
-              cpu: 1500m
-              ephemeral-storage: 1G
-              memory: 600M
+              cpu: 500m
+              ephemeral-storage: 0.3G
+              memory: 200M
             requests:
-              cpu: 1500m
-              ephemeral-storage: 1G
-              memory: 600M
+              cpu: 500m
+              ephemeral-storage: 0.3G
+              memory: 200M
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432  # Exposes container port

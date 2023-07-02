@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: parking-service
 spec:
+  type: LoadBalancer
   selector:
     app: parking
   ports:
     - protocol: TCP
-      port: 7676
-      targetPort: 65432
+      port: 80
+      targetPort: 8080

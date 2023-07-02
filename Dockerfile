@@ -1,15 +1,15 @@
-FROM golang:latest AS build
+FROM golang:1.19 AS build
 
 WORKDIR /app
 
-make swagger
+COPY . .
 
-COPY . ./
+RUN go mod download
 
 RUN go build -o /binary
 
 ## Deploy
-FROM golang:latest
+FROM golang:1.19
 
 WORKDIR /
 

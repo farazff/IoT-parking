@@ -27,13 +27,31 @@ data:
   REST_MIDDLEWARE_GZIP: 'false'
   REST_MIDDLEWARE_RECOVER: 'true'
   REST_MIDDLEWARE_REMOVE_TRAILING_SLASH: 'true'
-  REST_PORT: '65432'
+  REST_PORT: '8080'
   REST_VALIDATOR: 'true'
   DEBUG: 'true'
-  API_KEY: 'user'
-  ADMIN_API_KEY: 'admin'
   REDIS_HOST: 'redis'
   REDIS_PORT: '6379'
+  SYSTEM_ADMIN_API_KEY: 'system'
+  PARKING_ADMIN_API_KEY: 'parking'
+  HARDWARE_API_KEY: 'hardware'
+  USER_API_KEY: 'user'
+  LOGS_PAGINATION: '10'
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: parking-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: parking
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
 
 ---
 
@@ -57,36 +75,21 @@ spec:
         app: parking
     spec:
       containers:
-        - image: farazff/parking:1.3
+        - image: farazff/parking:1.4
           name: parking
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             limits:
-              cpu: 1500m
-              ephemeral-storage: 1G
-              memory: 600M
+              cpu: 300m
+              ephemeral-storage: 0.5G
+              memory: 200M
             requests:
-              cpu: 1500m
-              ephemeral-storage: 1G
-              memory: 600M
+              cpu: 300m
+              ephemeral-storage: 0.5G
+              memory: 200M
           ports:
             - containerPort: 65432
           envFrom:
             - configMapRef:
                 name: parking-config
 status: {}
-
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: parking-service
-spec:
-  selector:
-    app: parking
-  ports:
-    - protocol: TCP
-      port: 7676
-      targetPort: 65432
