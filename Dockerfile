@@ -9,7 +9,7 @@ RUN go mod download
 RUN go build -o /binary
 
 ## Deploy
-FROM golang:1.19
+FROM alpine:latest
 
 WORKDIR /
 
