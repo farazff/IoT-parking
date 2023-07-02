@@ -4,12 +4,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod download
-
 RUN go build -o /binary
 
 ## Deploy
-FROM alpine:latest
+FROM golang:1.19
 
 WORKDIR /
 
