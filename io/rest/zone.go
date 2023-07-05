@@ -30,6 +30,7 @@ func createZone(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -84,6 +85,7 @@ func getZones(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -118,6 +120,7 @@ func getZone(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -164,6 +167,7 @@ func updateZone(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -232,6 +236,7 @@ func deleteZone(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

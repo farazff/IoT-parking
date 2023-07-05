@@ -28,6 +28,7 @@ func createParkingAdmin(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -87,6 +88,7 @@ func getParkingAdmin(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -132,6 +134,7 @@ func getParkingAdmins(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -166,6 +169,7 @@ func updateParkingAdmin(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -232,6 +236,7 @@ func deleteParkingAdmin(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

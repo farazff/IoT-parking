@@ -30,6 +30,7 @@ func approveWhitelist(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -79,6 +80,7 @@ func requestWhitelist(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -139,6 +141,7 @@ func getWhitelistsApproved(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -171,6 +174,7 @@ func getWhitelistsToApprove(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -205,6 +209,7 @@ func deleteWhitelist(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -253,6 +258,7 @@ func getUserWhitelists(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

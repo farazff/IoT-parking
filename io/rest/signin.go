@@ -138,6 +138,7 @@ func parkingAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -207,6 +208,7 @@ func userSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

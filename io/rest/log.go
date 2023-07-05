@@ -88,6 +88,7 @@ func getUserLogs(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -132,6 +133,7 @@ func getLogs(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

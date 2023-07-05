@@ -33,6 +33,7 @@ func createParking(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -83,6 +84,7 @@ func getParking(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -122,6 +124,7 @@ func getParkings(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -155,6 +158,7 @@ func updateParking(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -216,6 +220,7 @@ func deleteParking(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
@@ -263,6 +268,7 @@ func getUserParkings(c echo.Context) error {
 		})
 	}
 
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,

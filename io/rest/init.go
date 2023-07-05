@@ -8,10 +8,13 @@ import (
 
 func init() {
 	customCORS := cors.CORSWithConfig(cors.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders: []string{"*"},
+		AllowOrigins:  []string{"*"},
+		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:  []string{"*"},
+		ExposeHeaders: []string{"Set-Cookie", "session_token"},
 	})
+
+	rest.Use(customCORS)
 
 	docs()
 
