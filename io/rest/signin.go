@@ -66,10 +66,13 @@ func systemAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+	c.Response().Header().Set("session_token", sessionToken)
 	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
+		Name:     "session_token",
+		Value:    sessionToken,
+		Expires:  time.Now().Add(120 * time.Second),
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	})
 	return c.NoContent(http.StatusNoContent)
 }
