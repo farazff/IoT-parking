@@ -2,14 +2,13 @@ package rest
 
 import (
 	"errors"
-	"github.com/google/uuid"
-	"net/http"
-	"strconv"
-	"time"
-
+	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
+	"net/http"
+	"strconv"
 )
 
 func carEnter(c echo.Context) error {
@@ -81,19 +80,7 @@ func carExit(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getUserLogs(c echo.Context) error {
-	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	page, err := strconv.Atoi(c.Param("page"))
 	if err != nil {
@@ -126,19 +113,7 @@ func getUserLogs(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getLogs(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	page, err := strconv.Atoi(c.Param("page"))
 	if err != nil {

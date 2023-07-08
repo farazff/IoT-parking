@@ -28,47 +28,50 @@ func init() {
 
 	//System admin requests
 	rest.EchoPost("/systemAdmin/signIn", systemAdminSignIn, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoPost("/systemAdmin/signOut", systemAdminSignOut, middleware.SystemAdminApiKey, customCORS)
+	rest.EchoPost("/systemAdmin/refresh-token", refreshToken, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoPost("/systemAdmin/signOut", systemAdminSignOut, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
 
-	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoGet("/v1/parking/:id", getParking, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoGet("/v1/parkings", getParkings, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoPut("/v1/parking/:id", updateParking, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.SystemAdminApiKey, customCORS)
+	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoGet("/v1/parking/:id", getParking, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoGet("/v1/parkings", getParkings, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoPut("/v1/parking/:id", updateParking, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoDelete("/v1/parking/:id", deleteParking, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
 
-	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoGet("/v1/parkingAdmins", getParkingAdmins, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.SystemAdminApiKey, customCORS)
+	rest.EchoPost("/v1/parkingAdmin", createParkingAdmin, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoGet("/v1/parkingAdmin/:id", getParkingAdmin, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoGet("/v1/parkingAdmins", getParkingAdmins, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoPut("/v1/parkingAdmin/:id", updateParkingAdmin, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoDelete("/v1/parkingAdmin/:id", deleteParkingAdmin, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
 
 	//Parking admin requests
 	rest.EchoPost("/parkingAdmin/signIn", parkingAdminSignIn, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoPost("/parkingAdmin/signOut", parkingAdminSignOut, middleware.ParkingAdminApiKey, customCORS)
+	rest.EchoPost("/parkingAdmin/refresh-token", refreshToken, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoPost("/parkingAdmin/signOut", parkingAdminSignOut, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
-	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoGet("/v1/zones", getZones, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoGet("/v1/zone/:id", getZone, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ParkingAdminApiKey, customCORS)
+	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoGet("/v1/zones", getZones, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoGet("/v1/zone/:id", getZone, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoPut("/v1/zone/:id", updateZone, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoDelete("/v1/zone/:id", deleteZone, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
-	rest.EchoGet("/v1/whitelists/toApprove", getWhitelistsToApprove, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoPut("/v1/whitelist/approve/:id", approveWhitelist, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey, customCORS)
+	rest.EchoGet("/v1/whitelists/toApprove", getWhitelistsToApprove, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoPut("/v1/whitelist/approve/:id", approveWhitelist, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
-	rest.EchoGet("/v1/logs/:page", getLogs, middleware.ParkingAdminApiKey, customCORS)
+	rest.EchoGet("/v1/logs/:page", getLogs, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
 	//User requests
 	rest.EchoPost("/user/signUp", userSignUp, middleware.UserApiKey, customCORS)
 	rest.EchoPost("/user/signIn", userSignIn, middleware.UserApiKey, customCORS)
-	rest.EchoPost("/user/signOut", userSignOut, middleware.UserApiKey, customCORS)
+	rest.EchoPost("/user/refresh-token", refreshToken, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+	rest.EchoPost("/user/signOut", userSignOut, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
 
-	rest.EchoGet("/v1/user/parkings", getUserParkings, middleware.UserApiKey, customCORS)
-	rest.EchoGet("/v1/user/whitelists/requested", getUserWhitelists, middleware.UserApiKey, customCORS)
-	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey, customCORS)
+	rest.EchoGet("/v1/user/parkings", getUserParkings, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+	rest.EchoGet("/v1/user/whitelists/requested", getUserWhitelists, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+	rest.EchoPost("/v1/user/whitelist/request", requestWhitelist, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
 
-	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey, customCORS)
+	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
 
 	//Raspberry PI requests
 	rest.EchoPost("v1/carEnter/:uuid/:tag", carEnter, middleware.HardwareApiKey)

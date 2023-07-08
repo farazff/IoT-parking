@@ -2,13 +2,13 @@ package rest
 
 import (
 	"errors"
+	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func healthCheck(c echo.Context) error {
@@ -26,20 +26,6 @@ func healthCheck(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func createParking(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	p := new(Parking)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -77,19 +63,6 @@ func createParking(c echo.Context) error {
 //	 404: ErrorMessage
 //		500: ErrorMessage
 func getParking(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
 	parkingID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -117,19 +90,6 @@ func getParking(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getParkings(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
 	parkings, err := manager.GetParkings(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -151,20 +111,6 @@ func getParkings(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func updateParking(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	p := new(Parking)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -213,20 +159,6 @@ func updateParking(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func deleteParking(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	parkingID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -261,20 +193,8 @@ func deleteParking(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getUserParkings(c echo.Context) error {
-	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-	parkings, err := manager.GetUserParkings(c.Request().Context(), phone)
+	user := c.Get("user").(*entity.CustomClaims)
+	parkings, err := manager.GetUserParkings(c.Request().Context(), user.Phone)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),

@@ -6,8 +6,8 @@ import (
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"github.com/okian/servo/v2/kv"
 	"github.com/okian/servo/v2/lg"
 	"github.com/okian/servo/v2/rest"
 	"net/http"
@@ -55,7 +55,7 @@ func systemAdminSignIn(c echo.Context) error {
 		})
 	}
 
-	sessionToken, err := manager.GetSystemAdminPasswordByPhone(c.Request().Context(), *cr)
+	jwtToken, err := manager.GetSystemAdminPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		if errors.Is(err, manager.ErrUnauthorized) {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
@@ -66,14 +66,7 @@ func systemAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:     "session_token",
-		Value:    sessionToken,
-		Expires:  time.Now().Add(120 * time.Second),
-		SameSite: http.SameSiteNoneMode,
-		Secure:   true,
-	})
+	c.Response().Header().Set("session_token", jwtToken)
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -87,18 +80,6 @@ func systemAdminSignIn(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorUnauthorizedMessage
 func systemAdminSignOut(c echo.Context) error {
-	_, _, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
-	}
 	return c.NoContent(http.StatusOK)
 }
 
@@ -127,7 +108,7 @@ func parkingAdminSignIn(c echo.Context) error {
 		})
 	}
 
-	sessionToken, err := manager.GetParkingAdminPasswordByPhone(c.Request().Context(), *cr)
+	jwtToken, err := manager.GetParkingAdminPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		if errors.Is(err, manager.ErrUnauthorized) {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
@@ -138,12 +119,7 @@ func parkingAdminSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	c.Response().Header().Set("session_token", jwtToken)
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -157,18 +133,6 @@ func parkingAdminSignIn(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorUnauthorizedMessage
 func parkingAdminSignOut(c echo.Context) error {
-	_, _, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
-	}
 	return c.NoContent(http.StatusOK)
 }
 
@@ -197,7 +161,7 @@ func userSignIn(c echo.Context) error {
 		})
 	}
 
-	sessionToken, err := manager.GetUserPasswordByPhone(c.Request().Context(), *cr)
+	jwtToken, err := manager.GetUserPasswordByPhone(c.Request().Context(), *cr)
 	if err != nil {
 		if errors.Is(err, manager.ErrUnauthorized) {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
@@ -208,12 +172,7 @@ func userSignIn(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	c.Response().Header().Set("session_token", jwtToken)
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -227,18 +186,6 @@ func userSignIn(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorUnauthorizedMessage
 func userSignOut(c echo.Context) error {
-	_, _, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-	err = kv.Delete(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
-	}
 	return c.NoContent(http.StatusOK)
 }
 
@@ -278,5 +225,30 @@ func userSignUp(c echo.Context) error {
 			"message": err.Error(),
 		})
 	}
+	return c.NoContent(http.StatusNoContent)
+}
+
+func refreshToken(c echo.Context) error {
+	// Retrieve the user information from the context
+	user := c.Get("user").(*entity.CustomClaims)
+
+	// Generate a new token with an extended expiration time
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := &entity.CustomClaims{
+		Phone: user.Phone,
+		Type:  user.Type,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(), // Token expires in 5 minutes
+		},
+	}
+	token.Claims = claims
+
+	// Generate encoded token and send it as response
+	t, err := token.SignedString(entity.SecretKey)
+	if err != nil {
+		return err
+	}
+
+	c.Response().Header().Set("session_token", t)
 	return c.NoContent(http.StatusNoContent)
 }

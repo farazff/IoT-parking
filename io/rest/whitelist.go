@@ -2,13 +2,12 @@ package rest
 
 import (
 	"errors"
-	"net/http"
-	"strconv"
-	"time"
-
+	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
+	"net/http"
+	"strconv"
 )
 
 // swagger:route PUT /v1/whitelist/approve/{id} Parking_Admin approveWhitelist
@@ -23,19 +22,7 @@ import (
 //	404: ErrorMessage
 //	500: ErrorMessage
 func approveWhitelist(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	whiteListID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -73,19 +60,7 @@ func approveWhitelist(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func requestWhitelist(c echo.Context) error {
-	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	w := new(Whitelist)
 	if err := c.Bind(w); err != nil {
@@ -134,19 +109,7 @@ func requestWhitelist(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getWhitelistsApproved(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	Whitelists, err := manager.GetWhitelists(c.Request().Context(), phone, true)
 	if err != nil {
@@ -167,19 +130,7 @@ func getWhitelistsApproved(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getWhitelistsToApprove(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	Whitelists, err := manager.GetWhitelists(c.Request().Context(), phone, false)
 	if err != nil {
@@ -202,19 +153,7 @@ func getWhitelistsToApprove(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func deleteWhitelist(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	whiteListID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -251,19 +190,7 @@ func deleteWhitelist(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getUserWhitelists(c echo.Context) error {
-	phone, sessionToken, err := authenticateUser(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	Whitelists, err := manager.GetUserWhitelists(c.Request().Context(), phone)
 	if err != nil {

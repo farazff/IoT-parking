@@ -4,13 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/golang-jwt/jwt"
 	"time"
 
 	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/repository"
-	"github.com/google/uuid"
-	"github.com/okian/servo/v2/kv"
-	"github.com/okian/servo/v2/lg"
 )
 
 func GetParkingAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (string, error) {
@@ -26,10 +24,25 @@ func GetParkingAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) 
 		return "", ErrUnauthorized
 	}
 
-	sessionToken := uuid.NewString()
-	lg.Debug(sessionToken)
-	kv.Set(ctx, sessionToken, fmt.Sprintf("pAdmin_%s", cr.Phone), time.Second*12000)
-	return sessionToken, nil
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set claims
+	claims := &entity.CustomClaims{
+		Phone: cr.Phone,
+		Type:  "parking",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(), // Token expires in 5 minutes
+		},
+	}
+
+	token.Claims = claims
+
+	// Generate encoded token and send it as response
+	t, err := token.SignedString(entity.SecretKey)
+	if err != nil {
+		return "", err
+	}
+	return t, nil
 }
 
 func GetSystemAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (string, error) {
@@ -45,10 +58,26 @@ func GetSystemAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (
 		return "", ErrUnauthorized
 	}
 
-	sessionToken := uuid.NewString()
-	lg.Debug(sessionToken)
-	kv.Set(ctx, sessionToken, fmt.Sprintf("sAdmin_%s", cr.Phone), time.Second*12000)
-	return sessionToken, nil
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set claims
+	claims := &entity.CustomClaims{
+		Phone: cr.Phone,
+		Type:  "system",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(), // Token expires in 5 minutes
+		},
+	}
+
+	token.Claims = claims
+
+	// Generate encoded token and send it as response
+	t, err := token.SignedString(entity.SecretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return t, nil
 }
 
 func GetUserPasswordByPhone(ctx context.Context, cr entity.Credentials) (string, error) {
@@ -64,8 +93,24 @@ func GetUserPasswordByPhone(ctx context.Context, cr entity.Credentials) (string,
 		return "", ErrUnauthorized
 	}
 
-	sessionToken := uuid.NewString()
-	lg.Debug(sessionToken)
-	kv.Set(ctx, sessionToken, fmt.Sprintf("user_%s", cr.Phone), time.Second*12000)
-	return sessionToken, nil
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set claims
+	claims := &entity.CustomClaims{
+		Phone: cr.Phone,
+		Type:  "user",
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(), // Token expires in 5 minutes
+		},
+	}
+
+	token.Claims = claims
+
+	// Generate encoded token and send it as response
+	t, err := token.SignedString(entity.SecretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return t, nil
 }

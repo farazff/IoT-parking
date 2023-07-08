@@ -2,14 +2,13 @@ package rest
 
 import (
 	"errors"
-	"github.com/google/uuid"
-	"net/http"
-	"strconv"
-	"time"
-
+	"github.com/farazff/IoT-parking/entity"
 	"github.com/farazff/IoT-parking/manager"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/okian/servo/v2/lg"
+	"net/http"
+	"strconv"
 )
 
 // swagger:route POST /v1/zone Parking_Admin createZone
@@ -23,19 +22,7 @@ import (
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func createZone(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	z := new(Zone)
 	if err := c.Bind(z); err != nil {
@@ -78,19 +65,7 @@ func createZone(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getZones(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	zones, err := manager.GetZones(c.Request().Context(), phone)
 	if err != nil {
@@ -113,19 +88,7 @@ func getZones(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func getZone(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	zoneID, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -160,19 +123,7 @@ func getZone(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func updateZone(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	z := new(Zone)
 	if err := c.Bind(z); err != nil {
@@ -229,19 +180,7 @@ func updateZone(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func deleteZone(c echo.Context) error {
-	phone, sessionToken, err := authenticateParkingAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
+	phone := c.Get("user").(*entity.CustomClaims).Phone
 
 	ZoneID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

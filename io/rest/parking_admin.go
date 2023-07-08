@@ -7,7 +7,6 @@ import (
 	"github.com/okian/servo/v2/lg"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 // swagger:route POST /v1/parkingAdmin System_Admin createParkingAdmin
@@ -21,20 +20,6 @@ import (
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func createParkingAdmin(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	p := new(ParkingAdmin)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -81,20 +66,6 @@ func createParkingAdmin(c echo.Context) error {
 //	 404: ErrorMessage
 //		500: ErrorMessage
 func getParkingAdmin(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	ParkingAdminID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -127,20 +98,6 @@ func getParkingAdmin(c echo.Context) error {
 //	401: ErrorUnauthorizedMessage
 //	500: ErrorMessage
 func getParkingAdmins(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	ParkingAdmins, err := manager.GetParkingAdmins(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
@@ -162,20 +119,6 @@ func getParkingAdmins(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func updateParkingAdmin(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	p := new(ParkingAdmin)
 	if err := c.Bind(p); err != nil {
 		lg.Error(err)
@@ -229,20 +172,6 @@ func updateParkingAdmin(c echo.Context) error {
 //	404: ErrorMessage
 //	500: ErrorMessage
 func deleteParkingAdmin(c echo.Context) error {
-	_, sessionToken, err := authenticateSystemAdmin(c.Request().Context(), c.Request().Header.Get("session_token"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	c.Response().Header().Set("session_token", sessionToken)
-	c.SetCookie(&http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(120 * time.Second),
-	})
-
 	ParkingAdminID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{
