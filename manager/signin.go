@@ -65,7 +65,7 @@ func GetSystemAdminPasswordByPhone(ctx context.Context, cr entity.Credentials) (
 		Phone: cr.Phone,
 		Type:  "system",
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(), // Token expires in 5 minutes
+			ExpiresAt: time.Now().Add(time.Minute * -5).Unix(), // Token expires in 5 minutes
 		},
 	}
 

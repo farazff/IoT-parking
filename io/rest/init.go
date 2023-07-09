@@ -28,7 +28,7 @@ func init() {
 
 	//System admin requests
 	rest.EchoPost("/systemAdmin/signIn", systemAdminSignIn, middleware.SystemAdminApiKey, customCORS)
-	rest.EchoPost("/systemAdmin/refresh-token", refreshToken, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
+	rest.EchoPost("/systemAdmin/refresh-token", refreshToken, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemTokenExpired)
 	rest.EchoPost("/systemAdmin/signOut", systemAdminSignOut, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
 
 	rest.EchoPost("/v1/parking", createParking, middleware.SystemAdminApiKey, customCORS, middleware.ValidateSystemToken)
@@ -45,7 +45,7 @@ func init() {
 
 	//Parking admin requests
 	rest.EchoPost("/parkingAdmin/signIn", parkingAdminSignIn, middleware.ParkingAdminApiKey, customCORS)
-	rest.EchoPost("/parkingAdmin/refresh-token", refreshToken, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoPost("/parkingAdmin/refresh-token", refreshToken, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingTokenExpired)
 	rest.EchoPost("/parkingAdmin/signOut", parkingAdminSignOut, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
 	rest.EchoPost("/v1/zone", createZone, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
@@ -64,7 +64,7 @@ func init() {
 	//User requests
 	rest.EchoPost("/user/signUp", userSignUp, middleware.UserApiKey, customCORS)
 	rest.EchoPost("/user/signIn", userSignIn, middleware.UserApiKey, customCORS)
-	rest.EchoPost("/user/refresh-token", refreshToken, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+	rest.EchoPost("/user/refresh-token", refreshToken, middleware.UserApiKey, customCORS, middleware.ValidateUserTokenExpired)
 	rest.EchoPost("/user/signOut", userSignOut, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
 
 	rest.EchoGet("/v1/user/parkings", getUserParkings, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
