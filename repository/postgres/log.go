@@ -20,11 +20,11 @@ const (
 
 	GetUserLogsQuery = `SELECT l.id AS id, l.enter_time AS enter_time, l.exit_time AS exit_time, p.name AS parking_name,
 					p.address AS parking_address FROM logs AS l JOIN parkings AS p 
-					    on l.parking_id = p.id WHERE l.user_id = $1 ORDER BY id DESC OFFSET $2 LIMIT $3`
+					    on l.parking_id = p.id WHERE l.user_id = $1 ORDER BY id DESC`
 
 	GetLogsQuery = `SELECT l.id AS id, l.enter_time AS enter_time, l.exit_time AS exit_time, 
        u.first_name as first_name, u.last_name as last_name, u.car_tag as car_tag, u.phone as phone FROM logs AS l JOIN users AS u 
-					    on l.user_id = u.id WHERE l.parking_id = $1 ORDER BY id DESC OFFSET $2 LIMIT $3`
+					    on l.user_id = u.id WHERE l.parking_id = $1 ORDER BY id DESC`
 )
 
 func (s *service) CarEnter(ctx context.Context, userID int, parkingUUID uuid.UUID) (int, error) {
@@ -53,7 +53,7 @@ func (s *service) CarExit(ctx context.Context, parkingUUID uuid.UUID, userID int
 
 func (s *service) GetUserLogs(ctx context.Context, userID int, page int, pagination int) ([]entity.UserLog, error) {
 	var wls []entity.UserLog
-	err := db.Select(ctx, &wls, GetUserLogsQuery, userID, (page-1)*pagination, pagination)
+	err := db.Select(ctx, &wls, GetUserLogsQuery, userID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound
@@ -70,7 +70,7 @@ func (s *service) GetUserLogs(ctx context.Context, userID int, page int, paginat
 
 func (s *service) GetLogs(ctx context.Context, parkingID int, page int, pagination int) ([]entity.AdminLog, error) {
 	var wls []entity.AdminLog
-	err := db.Select(ctx, &wls, GetLogsQuery, parkingID, (page-1)*pagination, pagination)
+	err := db.Select(ctx, &wls, GetLogsQuery, parkingID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, repository.ErrNotFound

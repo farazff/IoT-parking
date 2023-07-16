@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
+
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
 
@@ -59,30 +61,60 @@ func CarExit(ctx context.Context, parkingUUID uuid.UUID, carTag string) error {
 	return nil
 }
 
-func GetUserLogs(ctx context.Context, phone string, page int) ([]entity.UserLog, error) {
+func GetUserLogs(ctx context.Context, phone string, page int) ([]entity.UserLog, int, error) {
 	userID, err := repository.GetUserIDByPhone(ctx, phone)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	pagination := viper.GetInt("logs_pagination")
 	userLogs, err := repository.GetUserLogs(ctx, userID, page, pagination)
 	if err != nil {
-		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+		return nil, 0, fmt.Errorf("error in retrieving user logs, %w", err)
 	}
-	return userLogs, nil
+	offset := pagination * (page - 1)
+	lenAll := len(userLogs)
+	if len(userLogs) > offset {
+		userLogs = userLogs[offset:int(math.Min(float64(len(userLogs)), float64(offset+pagination)))]
+	} else {
+		userLogs = make([]entity.UserLog, 0)
+	}
+
+	pageCount := 0
+	if lenAll%pagination == 0 {
+		pageCount = lenAll / pagination
+	} else {
+		pageCount = (lenAll / pagination) + 1
+	}
+
+	return userLogs, pageCount, nil
 }
 
-func GetLogs(ctx context.Context, phone string, page int) ([]entity.AdminLog, error) {
+func GetLogs(ctx context.Context, phone string, page int) ([]entity.AdminLog, int, error) {
 	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	pagination := viper.GetInt("logs_pagination")
 	adminLogs, err := repository.GetLogs(ctx, parkingID, page, pagination)
 	if err != nil {
-		return nil, fmt.Errorf("error in retrieving Whitelists, %w", err)
+		return nil, 0, fmt.Errorf("error in retrieving logs, %w", err)
 	}
-	return adminLogs, nil
+	offset := pagination * (page - 1)
+	lenAll := len(adminLogs)
+	if len(adminLogs) > offset {
+		adminLogs = adminLogs[offset:int(math.Min(float64(len(adminLogs)), float64(offset+pagination)))]
+	} else {
+		adminLogs = make([]entity.AdminLog, 0)
+	}
+
+	pageCount := 0
+	if lenAll%pagination == 0 {
+		pageCount = lenAll / pagination
+	} else {
+		pageCount = (lenAll / pagination) + 1
+	}
+
+	return adminLogs, pageCount, nil
 }

@@ -93,13 +93,13 @@ func getUserLogs(c echo.Context) error {
 		page = 1
 	}
 
-	userLogs, err := manager.GetUserLogs(c.Request().Context(), phone, page)
+	userLogs, pageCount, err := manager.GetUserLogs(c.Request().Context(), phone, page)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, echo.Map{"logs": toUserLogsResSlice(userLogs)})
+	return c.JSON(http.StatusOK, echo.Map{"logs": toUserLogsResSlice(userLogs), "page_count": pageCount})
 }
 
 // swagger:route GET /v1/logs/{:page} Parking_Admin getLogs
@@ -126,11 +126,11 @@ func getLogs(c echo.Context) error {
 		page = 1
 	}
 
-	adminLogs, err := manager.GetLogs(c.Request().Context(), phone, page)
+	adminLogs, pageCount, err := manager.GetLogs(c.Request().Context(), phone, page)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": err.Error(),
 		})
 	}
-	return c.JSON(http.StatusOK, echo.Map{"logs": toAdminLogsResSlice(adminLogs)})
+	return c.JSON(http.StatusOK, echo.Map{"logs": toAdminLogsResSlice(adminLogs), "page_count": pageCount})
 }
