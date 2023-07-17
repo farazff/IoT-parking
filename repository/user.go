@@ -31,3 +31,11 @@ func GetUserIDByCarTag(ctx context.Context, carTag string) (int, error) {
 func CreateUser(ctx context.Context, user entity.User) error {
 	return userR.CreateUser(ctx, user)
 }
+
+func GetUser(ctx context.Context, phone string) (entity.User, error) {
+	return userR.GetUser(ctx, phone)
+}
+
+func UpdateUser(ctx context.Context, userUpdater entity.UserUpdater, userPhone string, updatePassword bool) error {
+	return userR.UpdateUser(ctx, userUpdater, userPhone, updatePassword)
+}

@@ -73,6 +73,9 @@ func init() {
 
 	rest.EchoGet("/v1/user/logs/:page", getUserLogs, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
 
+	rest.EchoGet("/v1/user", getUser, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+	rest.EchoPut("/v1/user", updateUser, middleware.UserApiKey, customCORS, middleware.ValidateUserToken)
+
 	//Raspberry PI requests
 	rest.EchoPost("v1/carEnter/:uuid/:tag", carEnter, middleware.HardwareApiKey)
 	rest.EchoPut("v1/carExit/:uuid/:tag", carExit, middleware.HardwareApiKey)

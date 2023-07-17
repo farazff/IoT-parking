@@ -460,3 +460,20 @@ func toAdminLogsResSlice(whitelists []entity.AdminLog) []entity.AdminLog {
 	}
 	return adminLogsResSlice
 }
+
+type UserRes struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	CarTag    string `json:"car_tag"`
+	Phone     string `json:"phone"`
+}
+
+func toUserRes(user entity.User) UserRes {
+	response := UserRes{
+		FirstName: user.FirstName(),
+		LastName:  user.LastName(),
+		CarTag:    user.CarTag(),
+		Phone:     user.Phone(),
+	}
+	return response
+}

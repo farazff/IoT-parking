@@ -66,4 +66,6 @@ type UserRepository interface {
 	GetUserIDByPhone(ctx context.Context, phone string) (int, error)
 	GetUserIDByCarTag(ctx context.Context, carTag string) (int, error)
 	CreateUser(ctx context.Context, user entity.User) error
+	GetUser(ctx context.Context, phone string) (entity.User, error)
+	UpdateUser(ctx context.Context, userUpdater entity.UserUpdater, userPhone string, updatePassword bool) error
 }
