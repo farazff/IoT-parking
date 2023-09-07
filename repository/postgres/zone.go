@@ -27,7 +27,7 @@ const (
 	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1
              where id = $1 AND $1 in (select zones.id from zones inner join parkings p on p.id = zones.parking_id where uuid = $2)`
 
-	addParkingCapQuery = `update parking set (capacity, remained_capacity) = (capacity + $1, capacity + $2) where id = $3`
+	addParkingCapQuery = `update parkings set (capacity, remained_capacity) = (capacity + $1, remained_capacity + $2) where id = $3`
 )
 
 func (s *service) CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error) {

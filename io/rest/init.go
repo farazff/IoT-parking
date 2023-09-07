@@ -59,7 +59,7 @@ func init() {
 	rest.EchoGet("/v1/whitelists/approved", getWhitelistsApproved, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 	rest.EchoDelete("/v1/whitelist/:id", deleteWhitelist, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
-	rest.EchoGet("/v1/parking", getAdminParking, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
+	rest.EchoGet("/v1/admin/parking", getAdminParking, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
 	rest.EchoGet("/v1/logs/:page", getLogs, middleware.ParkingAdminApiKey, customCORS, middleware.ValidateParkingToken)
 
