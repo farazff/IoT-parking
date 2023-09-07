@@ -26,6 +26,8 @@ const (
              where id = $1 AND $1 in (select zones.id from zones inner join parkings p on p.id = zones.parking_id where uuid = $2)`
 	carExitFromZoneQuery = `update zones set remained_capacity = remained_capacity + 1
              where id = $1 AND $1 in (select zones.id from zones inner join parkings p on p.id = zones.parking_id where uuid = $2)`
+
+	addParkingCapQuery = `update parking set (capacity, remained_capacity) = (capacity + $1, capacity + $2) where id = $3`
 )
 
 func (s *service) CreateZone(ctx context.Context, zone entity.Zone, parkingID int) (int, error) {
@@ -38,6 +40,12 @@ func (s *service) CreateZone(ctx context.Context, zone entity.Zone, parkingID in
 		}
 		return -1, err
 	}
+
+	_, err = db.Exec(ctx, addParkingCapQuery, zone.Capacity(), zone.RemainedCapacity(), parkingID)
+	if err != nil {
+		return -1, err
+	}
+
 	return id, nil
 }
 
@@ -59,6 +67,19 @@ func (s *service) GetZones(ctx context.Context, parkingID int) ([]entity.Zone, e
 }
 
 func (s *service) UpdateZone(ctx context.Context, zone entity.Zone, parkingID int) error {
+	t := Zone{}
+	err := db.Get(ctx, &t, getZoneByIdQuery, zone.ID(), parkingID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return err
+	}
+	_, err = db.Exec(ctx, addParkingCapQuery, -1*t.Capacity(), -1*t.RemainedCapacity(), parkingID)
+	if err != nil {
+		return err
+	}
+
 	ans, err := db.Exec(ctx, updateZoneQuery,
 		zone.ID(), zone.Capacity(), zone.RemainedCapacity(), zone.Enabled(), parkingID)
 	if err != nil {
@@ -74,10 +95,23 @@ func (s *service) UpdateZone(ctx context.Context, zone entity.Zone, parkingID in
 	if err != nil {
 		return err
 	}
+	_, err = db.Exec(ctx, addParkingCapQuery, zone.Capacity(), zone.RemainedCapacity(), parkingID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *service) DeleteZone(ctx context.Context, id int, parkingID int) error {
+	t := Zone{}
+	err := db.Get(ctx, &t, getZoneByIdQuery, id, parkingID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return repository.ErrNotFound
+		}
+		return err
+	}
+
 	ans, err := db.Exec(ctx, deleteZoneQuery, id, parkingID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -89,6 +123,11 @@ func (s *service) DeleteZone(ctx context.Context, id int, parkingID int) error {
 	if int(affected) < 1 {
 		return fmt.Errorf("zone doesn't exist: %w", repository.ErrNotFound)
 	}
+	_, err = db.Exec(ctx, addParkingCapQuery, -1*t.Capacity(), -1*t.RemainedCapacity(), parkingID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
