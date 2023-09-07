@@ -79,6 +79,18 @@ func getParking(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"parking": toParkingRes(parking, capacity, uuid.UUID{})})
 }
 
+func getAdminParking(c echo.Context) error {
+	phone := c.Get("user").(*entity.CustomClaims).Phone
+
+	parking, capacity, remainedCap, err := manager.GetAdminParking(c.Request().Context(), phone)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"parking": toAdminParkingRes(parking, capacity, remainedCap, uuid.UUID{})})
+}
+
 // swagger:route GET /v1/parkings System_Admin getParkings
 //
 // # This route is used to get all parkings

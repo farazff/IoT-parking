@@ -24,6 +24,10 @@ func GetParking(ctx context.Context, id int) (entity.Parking, error) {
 	return parkingR.GetParking(ctx, id)
 }
 
+func GetAdminParking(ctx context.Context, id int) (entity.Parking, int, int, error) {
+	return parkingR.GetAdminParking(ctx, id)
+}
+
 func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	return parkingR.GetParkings(ctx)
 }

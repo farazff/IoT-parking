@@ -22,6 +22,8 @@ const (
 							FROM parkings as p WHERE deleted_at is NULL AND enabled = true`
 	getParkingByIdQuery = `SELECT id, name, address, phone, enabled, uuid 
 							FROM parkings WHERE deleted_at is NULL AND id = $1`
+	getAdminParkingByIdQuery = `SELECT id, name, address, phone, enabled, uuid, capacity, remained_capacity 
+							FROM parkings WHERE deleted_at is NULL AND id = $1`
 	updateParkingQuery = `UPDATE parkings SET (name, address, phone, enabled, updated_at) = ($2, $3, $4, $5, now()) 
                 			WHERE id = $1 and deleted_at is null`
 	deleteParkingQuery = `UPDATE parkings SET deleted_at = now() where id = $1 and deleted_at is null`
@@ -51,6 +53,19 @@ func (s *service) GetParking(ctx context.Context, id int) (entity.Parking, error
 	}
 
 	return t, nil
+}
+
+func (s *service) GetAdminParking(ctx context.Context, id int) (entity.Parking, int, int, error) {
+	t := Parking{}
+	err := db.Get(ctx, &t, getAdminParkingByIdQuery, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, 0, 0, repository.ErrNotFound
+		}
+		return nil, 0, 0, err
+	}
+
+	return t, t.DBCapacity, t.DBRemainedCapacity, nil
 }
 
 func (s *service) GetParkings(ctx context.Context) ([]entity.Parking, error) {

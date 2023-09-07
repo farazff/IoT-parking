@@ -7,13 +7,15 @@ import (
 )
 
 type Parking struct {
-	DBID      int       `db:"id"`
-	DBName    string    `db:"name"`
-	DBAddress string    `db:"address"`
-	DBPhone   string    `db:"phone"`
-	DBEnabled bool      `db:"enabled"`
-	DBUuid    uuid.UUID `db:"uuid"`
-	DBAccess  int       `db:"access"`
+	DBID               int       `db:"id"`
+	DBName             string    `db:"name"`
+	DBAddress          string    `db:"address"`
+	DBPhone            string    `db:"phone"`
+	DBEnabled          bool      `db:"enabled"`
+	DBUuid             uuid.UUID `db:"uuid"`
+	DBAccess           int       `db:"access"`
+	DBCapacity         int       `db:"capacity"`
+	DBRemainedCapacity int       `db:"remained_capacity"`
 }
 
 type UserParking struct {

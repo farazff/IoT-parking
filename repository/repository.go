@@ -9,6 +9,7 @@ import (
 type ParkingRepository interface {
 	CreateParking(ctx context.Context, parking entity.Parking, uuid string) (int, error)
 	GetParking(ctx context.Context, id int) (entity.Parking, error)
+	GetAdminParking(ctx context.Context, id int) (entity.Parking, int, int, error)
 	GetParkings(ctx context.Context) ([]entity.Parking, error)
 	GetUserParkings(ctx context.Context, userID int) ([]entity.Parking, error)
 	UpdateParking(ctx context.Context, parking entity.Parking) error

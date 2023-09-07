@@ -25,7 +25,6 @@ data:
   POSTGRES_PASSWORD: admin
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -33,11 +32,29 @@ metadata:
   labels:
     app: postgres
 spec:
-  type: LoadBalancer
   ports:
-    - port: 5432
+    - name: postgres-port
+      port: 5432
+      targetPort: 5432
   selector:
     app: postgres
+  type: ClusterIP # Internal cluster communication
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-external
+  labels:
+    app: postgres
+spec:
+  ports:
+    - name: postgres-port
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres
+  type: LoadBalancer # Expose on each node's IP
 
 ---
 

@@ -41,14 +41,15 @@ func (p Parking) Uuid() uuid.UUID {
 }
 
 type ParkingRes struct {
-	ID         int    `json:"id"`
-	Name       string `json:"name"`
-	Address    string `json:"address"`
-	Phone      string `json:"phone"`
-	Enabled    bool   `json:"enabled"`
-	Capacity   int    `json:"capacity,omitempty"`
-	Uuid       string `json:"uuid,omitempty"`
-	HaveAccess *bool  `json:"have_access,omitempty"`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Phone       string `json:"phone"`
+	Enabled     bool   `json:"enabled"`
+	Capacity    int    `json:"capacity,omitempty"`
+	Uuid        string `json:"uuid,omitempty"`
+	HaveAccess  *bool  `json:"have_access,omitempty"`
+	RemainedCap int    `json:"remained_capacity,omitempty"`
 }
 
 func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) ParkingRes {
@@ -59,6 +60,34 @@ func toParkingRes(parking entity.Parking, capacity int, Puuid uuid.UUID) Parking
 		Phone:    parking.Phone(),
 		Enabled:  parking.Enabled(),
 		Capacity: capacity,
+	}
+	response.HaveAccess = nil
+
+	if Puuid != uuid.Nil {
+		response.Uuid = Puuid.String()
+	}
+
+	uP, ok := parking.(entity.UserParking)
+	if ok {
+		haveAccess := false
+		response.HaveAccess = &haveAccess
+		if uP.Access() > 0 {
+			haveAccess = true
+		}
+	}
+
+	return response
+}
+
+func toAdminParkingRes(parking entity.Parking, capacity int, remainedCap int, Puuid uuid.UUID) ParkingRes {
+	response := ParkingRes{
+		ID:          parking.ID(),
+		Name:        parking.Name(),
+		Address:     parking.Address(),
+		Phone:       parking.Phone(),
+		Enabled:     parking.Enabled(),
+		Capacity:    capacity,
+		RemainedCap: remainedCap,
 	}
 	response.HaveAccess = nil
 

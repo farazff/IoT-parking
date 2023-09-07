@@ -32,6 +32,21 @@ func GetParking(ctx context.Context, id int) (entity.Parking, int, error) {
 	return parking, parkingCapacity, nil
 }
 
+func GetAdminParking(ctx context.Context, phone string) (entity.Parking, int, int, error) {
+	parkingID, err := repository.GetParkingAdminParkingByPhone(ctx, phone)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+	parking, capacity, remainedCap, err := repository.GetAdminParking(ctx, parkingID)
+	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return nil, 0, 0, ErrNotFound
+		}
+		return nil, 0, 0, fmt.Errorf("error in retrieving parking, %w", err)
+	}
+	return parking, capacity, remainedCap, nil
+}
+
 func GetParkings(ctx context.Context) ([]entity.Parking, error) {
 	parkings, err := repository.GetParkings(ctx)
 	if err != nil {
